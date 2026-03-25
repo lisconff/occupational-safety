@@ -1,167 +1,285 @@
 第三章补充：面向对象设计（可直接并入“详细设计”）
 
 一、设计目标与分层
-结合现有文档“AI智能助手 + 求职交流论坛 + 个人主页”三大核心模块，建议采用“Controller（接口层）- Service（业务层）- Repository（数据访问层）- Domain（领域模型）”四层对象模型。
+结合现有文档“AI智能助手 + 求职交流论坛 + 个人主页 + 法律案件与模拟演练”四大核心模块，建议采用“Controller（接口层）- Service（业务层）- Repository（数据访问层）- Domain（领域模型）”四层对象模型。
 
-二、核心类与属性
+二、核心类（属性 + 方法）
 
 1）用户与身份模块
 （1）User
-- id: String（用户ID）
-- username: String（用户名）
-- passwordHash: String（密码哈希）
-- role: String（USER/ADMIN）
-- avatarUrl: String
-- email: String
-- phone: String
-- createdAt: DateTime
-- updatedAt: DateTime
+- userId: String（用户ID） // 用户唯一标识
+- username: String（用户名） // 登录名/展示名
+- passwordHash: String（密码哈希） // 加密后的密码
+- role: String（USER/ADMIN） // 用户角色
+- avatarImageUrl: String // 头像图片地址（支持jpg/png/webp）
+- email: String // 邮箱
+- phone: String // 手机号
+- createdAt: DateTime // 创建时间
+- updatedAt: DateTime // 更新时间
+- 方法：
+	- updateBaseInfo(username, avatarImageUrl, email, phone): void
+	- changeRole(role): void
+	- verifyPassword(rawPassword): Boolean
+	- resetPassword(newPasswordHash): void
 
 （2）UserProfile
-- userId: String
-- school: String
-- major: String
-- graduationYear: Integer
-- expectedCity: String
-- expectedSalary: String
-- bio: String
+- userId: String // 关联用户ID
+- school: String // 学校
+- major: String // 专业
+- graduationYear: Integer // 毕业年份
+- expectedCity: String // 期望城市
+- expectedSalary: String // 期望薪资
+- bio: String // 个人简介
+- 方法：
+	- updateProfile(school, major, graduationYear, expectedCity, expectedSalary, bio): void
+	- validateProfileCompleteness(): Boolean
+	- toResumeSummary(): String
 
 （3）AuthSession
-- token: String（JWT/会话令牌）
-- userId: String
-- issuedAt: DateTime
-- expiresAt: DateTime
-- deviceInfo: String
+- token: String（JWT/会话令牌） // 会话凭证
+- userId: String // 关联用户ID
+- issuedAt: DateTime // 签发时间
+- expiresAt: DateTime // 过期时间
+- deviceInfo: String // 设备信息
+- 方法：
+	- isExpired(currentTime): Boolean
+	- refresh(newExpiresAt): void
+	- revoke(): void
 
 2）AI智能助手模块
 （4）ContractDocument
-- id: String
-- userId: String
-- sourceType: String（TEXT/FILE）
-- originalText: String
-- fileName: String
-- fileUrl: String
-- uploadedAt: DateTime
+- documentId: String // 文档唯一标识
+- userId: String // 上传用户ID
+- sourceType: String（TEXT/FILE） // 输入来源类型
+- originalText: String // 原始文本
+- fileName: String // 文件名
+- fileUrl: String // 文件存储地址
+- uploadedAt: DateTime // 上传时间
+- 方法：
+	- updateSource(sourceType, originalText, fileName, fileUrl): void
+	- getPlainText(): String
+	- validateUpload(): Boolean
 
 （5）RiskRule
-- id: String
-- ruleCode: String
-- ruleName: String
-- category: String（劳动合同/黑话识别/岗位风险）
-- riskLevel: String（LOW/MEDIUM/HIGH）
-- keywords: List<String>
-- legalBasis: String（法规依据）
-- suggestionTemplate: String
-- enabled: Boolean
+- ruleId: String // 规则唯一标识
+- ruleCode: String // 规则编码
+- ruleName: String // 规则名称
+- category: String（劳动合同/黑话识别/岗位风险） // 规则分类
+- riskLevel: String（LOW/MEDIUM/HIGH） // 风险等级
+- keywords: List<String> // 命中关键词
+- legalBasis: String（法规依据） // 法律依据
+- suggestionTemplate: String // 建议模板
+- enabled: Boolean // 是否启用
+- 方法：
+	- match(text): Boolean
+	- evaluateRiskLevel(hitCount): String
+	- updateRuleConfig(ruleName, keywords, legalBasis, suggestionTemplate, enabled): void
 
 （6）RiskItem
-- id: String
-- reportId: String
-- matchedText: String
-- startIndex: Integer
-- endIndex: Integer
-- riskLevel: String
-- reason: String
-- legalBasis: String
-- suggestion: String
+- riskItemId: String // 风险项唯一标识
+- reportId: String // 所属报告ID
+- matchedText: String // 命中文本
+- startIndex: Integer // 起始下标
+- endIndex: Integer // 结束下标
+- riskLevel: String // 风险等级
+- reason: String // 风险原因
+- legalBasis: String // 法律依据
+- suggestion: String // 处理建议
+- 方法：
+	- updateSpan(startIndex, endIndex): void
+	- updateReason(reason, legalBasis, suggestion): void
+	- toHighlightSegment(): String
 
 （7）AnalysisReport
-- id: String
-- userId: String
-- businessType: String（CONTRACT/BLACK_SLANG/JOB_RISK）
-- inputSummary: String
-- score: Integer（0-100）
-- overallRiskLevel: String
-- riskItems: List<RiskItem>
-- createdAt: DateTime
+- reportId: String // 报告唯一标识
+- userId: String // 报告所属用户ID
+- businessType: String（CONTRACT/BLACK_SLANG/JOB_RISK） // 业务类型
+- inputSummary: String // 输入摘要
+- score: Integer（0-100） // 风险评分
+- overallRiskLevel: String // 总体风险等级
+- riskItems: List<RiskItem> // 风险项列表
+- createdAt: DateTime // 创建时间
+- 方法：
+	- addRiskItem(riskItem): void
+	- calculateScore(): Integer
+	- determineOverallRiskLevel(): String
+	- toViewModel(): ReportViewModel
 
 （8）AiQaMessage
-- id: String
-- sessionId: String
-- role: String（USER/ASSISTANT）
-- content: String
-- createdAt: DateTime
+- messageId: String // 消息唯一标识
+- sessionId: String // 会话ID
+- role: String（USER/ASSISTANT） // 发言角色
+- content: String // 消息内容
+- createdAt: DateTime // 发送时间
+- 方法：
+	- sanitizeContent(): String
+	- truncateIfTooLong(maxLength): String
+	- toHistoryLine(): String
 
 3）论坛模块
 （9）ForumPost
-- id: String
-- authorId: String
-- title: String
-- content: String
-- tags: List<String>
-- likeCount: Integer
-- commentCount: Integer
-- favoriteCount: Integer
-- createdAt: DateTime
-- updatedAt: DateTime
+- postId: String // 帖子唯一标识
+- userId: String // 发帖用户ID
+- title: String // 帖子标题
+- content: String // 帖子正文
+- tags: List<String> // 标签列表
+- likeCount: Integer // 点赞数
+- commentCount: Integer // 评论数
+- favoriteCount: Integer // 收藏数
+- createdAt: DateTime // 创建时间
+- updatedAt: DateTime // 更新时间
+- 方法：
+	- edit(title, content, tags): void
+	- increaseLikeCount(): void
+	- decreaseLikeCount(): void
+	- increaseCommentCount(): void
+	- increaseFavoriteCount(): void
+	- toPostCard(): PostCardDTO
 
 （10）ForumComment
-- id: String
-- postId: String
-- authorId: String
-- content: String
-- parentCommentId: String（支持回复）
-- createdAt: DateTime
+- commentId: String // 评论唯一标识
+- postId: String // 所属帖子ID
+- userId: String // 评论用户ID
+- content: String // 评论内容
+- parentCommentId: String（支持回复） // 父评论ID
+- createdAt: DateTime // 创建时间
+- 方法：
+	- edit(content): void
+	- bindParent(parentCommentId): void
+	- toThreadNode(): CommentNodeDTO
 
 （11）ForumFavorite
-- id: String
-- userId: String
-- postId: String
-- createdAt: DateTime
+- favoriteId: String // 收藏记录ID
+- userId: String // 用户ID
+- postId: String // 帖子ID
+- createdAt: DateTime // 收藏时间
+- 方法：
+	- bind(userId, postId): void
+	- unbind(): void
 
 4）个人中心模块
 （12）UserActivityRecord
-- id: String
-- userId: String
-- activityType: String（POST/COMMENT/ANALYSIS/LOGIN）
-- businessId: String
-- detail: String
-- createdAt: DateTime
+- activityId: String // 行为记录ID
+- userId: String // 用户ID
+- activityType: String（POST/COMMENT/ANALYSIS/LOGIN） // 行为类型
+- businessId: String // 关联业务ID
+- detail: String // 行为详情
+- createdAt: DateTime // 创建时间
+- 方法：
+	- create(activityType, businessId, detail): UserActivityRecord
+	- toTimelineItem(): TimelineItemDTO
 
 （13）Notification
-- id: String
-- userId: String
-- type: String（SYSTEM/COMMENT/AI）
-- title: String
-- content: String
-- isRead: Boolean
-- createdAt: DateTime
+- notificationId: String // 通知唯一标识
+- userId: String // 接收用户ID
+- type: String（SYSTEM/COMMENT/AI） // 通知类型
+- title: String // 通知标题
+- content: String // 通知内容
+- isRead: Boolean // 已读状态
+- createdAt: DateTime // 创建时间
+- 方法：
+	- markRead(): void
+	- markUnread(): void
+	- toNotificationCard(): NotificationCardDTO
+
+5）法律案件与模拟演练模块
+（14）LegalCase（法律案件）
+- caseId: String // 案例唯一标识
+- title: String // 案例标题
+- summary: String // 案例摘要
+- lawCategory: String（劳动争议/工伤认定/合同纠纷等） // 法律案件类型
+- riskLevel: String（LOW/MEDIUM/HIGH） // 风险等级
+- happenedAt: DateTime（事件发生时间） // 事件发生时间
+- source: String（来源单位/判例库链接） // 信息来源
+- coverUrl: String // 封面图地址
+- content: String（案例详情） // 案例正文
+- legalBasis: String（适用法条） // 法律依据
+- lessonsLearned: String（经验教训） // 复盘总结
+- createdAt: DateTime // 创建时间
+- 方法：
+	- updateCaseInfo(title, summary, lawCategory, riskLevel, source, coverUrl): void
+	- updateCaseContent(content, legalBasis, lessonsLearned): void
+	- matchTopic(topic): Boolean
+	- toCaseCard(): CaseCardDTO
+
+（15）SimulationGame（模拟游戏）
+- gameId: String // 游戏唯一标识
+- title: String // 游戏标题
+- description: String // 游戏简介
+- entryType: String（CARD/BUTTON） // 首页入口样式（模拟游戏选项）
+- isEnabled: Boolean // 是否启用
+- defaultSceneId: String // 默认场景ID
+- createdAt: DateTime // 创建时间
+- 方法：
+	- enable(): void
+	- disable(): void
+	- setDefaultScene(sceneId): void
+	- toEntryViewModel(): GameEntryDTO
+
+（16）GameScene（游戏场景）
+- sceneId: String // 场景唯一标识
+- gameId: String // 所属游戏ID
+- sceneName: String // 场景名称
+- sceneType: String（工地/车间/办公室/仓储） // 场景类型
+- sceneDescription: String // 场景描述
+- switchOrder: Integer // 场景切换顺序
+- isLocked: Boolean // 是否锁定
+- passCondition: String // 通关条件
+- resourceUrl: String // 场景资源地址
+- 方法：
+	- lock(): void
+	- unlock(): void
+	- canEnter(userProgress): Boolean
+	- toSceneSwitchItem(): SceneSwitchDTO
 
 三、服务类（建议）
 
 （1）AuthService
-- register(username, password)
-- login(username, password)
-- verifyToken(token)
+- register(username, password): AuthSession
+- login(username, password): AuthSession
+- verifyToken(token): Boolean
 
 （2）UserService
-- getProfile(userId)
-- updateProfile(userId, profileDTO)
-- getUserActivities(userId)
+- getProfile(userId): UserProfile
+- updateProfile(userId, profileDTO): UserProfile
+- getUserActivities(userId): List<UserActivityRecord>
 
 （3）AiAssistantService
-- analyzeContract(userId, textOrFile)
-- detectBlackSlang(userId, text)
-- evaluateJobRisk(userId, jdText)
-- askAi(sessionId, question)
+- analyzeContract(userId, textOrFile): AnalysisReport
+- detectBlackSlang(userId, text): AnalysisReport
+- evaluateJobRisk(userId, jdText): AnalysisReport
+- askAi(sessionId, question): String
 
 （4）RiskEngineService
-- parseText(rawText)
-- matchRules(parsedText, ruleSet)
-- scoreRisk(matchedItems)
-- buildReport(userId, businessType, result)
+- parseText(rawText): ParsedText
+- matchRules(parsedText, ruleSet): List<RiskItem>
+- scoreRisk(matchedItems): Integer
+- buildReport(userId, businessType, result): AnalysisReport
 
 （5）ForumService
-- createPost(userId, postDTO)
-- listPosts(query)
-- getPostDetail(postId)
-- addComment(userId, postId, commentDTO)
-- toggleFavorite(userId, postId)
+- createPost(userId, postDTO): ForumPost
+- listPosts(query): List<ForumPost>
+- getPostDetail(postId): ForumPost
+- addComment(userId, postId, commentDTO): ForumComment
+- toggleFavorite(userId, postId): Boolean
 
 （6）NotificationService
-- push(userId, type, title, content)
-- listByUser(userId)
-- markRead(notificationId)
+- push(userId, type, title, content): void
+- listByUser(userId): List<Notification>
+- markRead(notificationId): void
+
+（7）CaseService
+- listCases(query): List<LegalCase>
+- getCaseDetail(caseId): LegalCase
+- listHomepageFeaturedCases(limit): List<LegalCase>
+- listRelatedCasesByTopic(topic): List<LegalCase>
+
+（8）SimulationService
+- getGameEntry(moduleCode): SimulationGame
+- listScenes(gameId): List<GameScene>
+- getSceneDetail(sceneId): GameScene
+- switchScene(userId, gameId, targetSceneId): GameScene
+- submitSceneResult(userId, sceneId, resultDTO): void
 
 四、Repository类（建议）
 - UserRepository
@@ -174,6 +292,9 @@
 - ForumFavoriteRepository
 - UserActivityRepository
 - NotificationRepository
+- LegalCaseRepository
+- SimulationGameRepository
+- GameSceneRepository
 
 说明：Repository 仅负责 CRUD 与查询组合，不承担业务规则判断。
 
@@ -197,6 +318,14 @@
 - profile: UserProfile
 - activities: List<UserActivityRecord>
 - notifications: List<Notification>
+
+（5）法律案件与模拟演练页初始化
+- leftCaseList: List<LegalCase>（左侧案件列表）
+- selectedCase: LegalCase
+- gameEntry: SimulationGame（模拟游戏入口）
+- sceneList: List<GameScene>
+- activeScene: GameScene
+- 说明：案例区与演练区并行展示、独立加载，不建立 Case -> Scene 的强绑定关系。
 
 六、模块调用关系（按用例）
 
@@ -230,6 +359,27 @@
 前端页面 -> UserController.updateProfile() -> UserService.updateProfile() -> UserProfileRepository.update()
 前端页面 -> UserController.getActivities() -> UserService.getUserActivities() -> UserActivityRepository.queryByUser()
 
+6）首页案例预览调用链
+前端首页 -> ContentController.listHomepageFeaturedCases()
+-> CaseService.listHomepageFeaturedCases(limit=3)
+-> LegalCaseRepository.queryFeatured()
+-> 返回案例卡片列表。
+
+7）案件详情 + 模拟游戏推荐调用链
+前端案例详情页 -> ContentController.getCaseDetail(caseId)
+-> CaseService.getCaseDetail(caseId)
+-> LegalCaseRepository.findById(caseId)
+前端演练入口区 -> SimulationController.getGameEntry(moduleCode)
+-> SimulationService.getGameEntry(moduleCode)
+-> SimulationService.listScenes(gameId)
+-> 返回“案件正文 + 案例总结 + 模拟游戏入口 + 通用可切换场景列表（与案例解耦）”。
+
+8）知识点页推荐区调用链
+前端知识点页 -> ContentController.getKnowledgeRecommendations(topic)
+-> CaseService.listRelatedCasesByTopic(topic)
+-> SimulationService.listScenes(gameId)
+-> 返回“相关案件 + 通用演练场景推荐（非必做）”。
+
 七、关键对象关系（文字版类图说明）
 - User 1..1 UserProfile
 - User 1..n AnalysisReport
@@ -238,6 +388,7 @@
 - ForumPost 1..n ForumComment
 - User n..n ForumPost（通过 ForumFavorite 关联）
 - User 1..n Notification
+- SimulationGame 1..n GameScene
 
 八、实现建议（便于答辩）
 - 先落地最小闭环：登录 -> 合同审查 -> 报告展示 -> 历史记录。
