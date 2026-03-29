@@ -19,6 +19,13 @@
 2.  xxxx
 3.  xxxx
 
+#### 后端基础框架（已搭建）
+
+1.  后端工程目录：backend
+2.  启动方式：进入 backend 后执行 mvnw.cmd spring-boot:run
+3.  健康检查：http://localhost:10080/api/health
+4.  详细说明见：backend/README.md
+
 #### 参与贡献
 
 1.  Fork 本仓库

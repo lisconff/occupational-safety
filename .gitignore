@@ -1,0 +1,20 @@
+# Operating system
+.DS_Store
+Thumbs.db
+
+# IDE and editor
+.vscode/
+.idea/
+*.iml
+.classpath
+.project
+.settings/
+
+# Java and Maven build output
+**/target/
+*.log
+hs_err_pid*
+
+# Temporary files
+*.tmp
+*.swp
