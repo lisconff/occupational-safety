@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个人主页 - 大学生就业防坑服务平台</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #FOF9F8;
+        }
+        
+        /* 导航栏 */
+        .navbar {
+            background-color: #BFDEFF;
+            padding: 15px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo img {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            margin-right: 15px;
+        }
+        
+        .logo h1 {
+            font-size: 24px;
+            color: #333;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .nav-links a {
+            color: #333;
+            text-decoration: none;
+            font-size: 16px;
+            transition: color 0.3s ease;
+        }
+        
+        .nav-links a:hover {
+            color: #D30121;
+        }
+        
+        /* 主要内容区 */
+        .main-content {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        
+        /* 个人信息面板 */
+        .profile-header {
+            background-color: white;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            margin-right: 30px;
+            object-fit: cover;
+        }
+        
+        .profile-info {
+            flex: 1;
+            min-width: 250px;
+        }
+        
+        .profile-info h2 {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .profile-info p {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 15px;
+        }
+        
+        .skill-bar {
+            width: 100%;
+            height: 20px;
+            background-color: #F0F0F0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .skill-progress {
+            height: 100%;
+            background-color: #BFDEFF;
+            border-radius: 10px;
+            transition: width 1s ease;
+        }
+        
+        .skill-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+        
+        /* 内容布局 */
+        .content-layout {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+        
+        /* 左侧功能菜单 */
+        .sidebar {
+            flex: 0 0 250px;
+            min-width: 200px;
+        }
+        
+        .menu-card {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        
+        .menu-card h3 {
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #BFDEFF;
+            padding-bottom: 10px;
+        }
+        
+        .menu-item {
+            display: block;
+            padding: 10px 15px;
+            color: #333;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            margin-bottom: 5px;
+        }
+        
+        .menu-item:hover {
+            background-color: #BFDEFF;
+            color: #333;
+        }
+        
+        .menu-item.active {
+            background-color: #BFDEFF;
+            font-weight: bold;
+        }
+        
+        /* 右侧内容展示区 */
+        .content-area {
+            flex: 1;
+            min-width: 300px;
+        }
+        
+        .content-card {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        
+        .content-card h3 {
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #BFDEFF;
+            padding-bottom: 10px;
+        }
+        
+        /* 收藏和浏览记录 */
+        .record-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid #F0F0F0;
+            transition: background-color 0.3s ease;
+        }
+        
+        .record-item:hover {
+            background-color: #F9F9F9;
+        }
+        
+        .record-item:last-child {
+            border-bottom: none;
+        }
+        
+        .record-icon {
+            width: 50px;
+            height: 50px;
+            background-color: #BFDEFF;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-size: 24px;
+            color: #333;
+        }
+        
+        .record-info {
+            flex: 1;
+        }
+        
+        .record-info h4 {
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        
+        .record-info p {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .record-time {
+            font-size: 12px;
+            color: #999;
+        }
+        
+        /* 底部页脚 */
+        .footer {
+            background-color: #333;
+            color: white;
+            padding: 30px 0;
+            text-align: center;
+            margin-top: 60px;
+        }
+        
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .footer p {
+            margin-bottom: 10px;
+        }
+        
+        .footer-links {
+            margin-top: 15px;
+        }
+        
+        .footer-links a {
+            color: #BFDEFF;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+        
+        .footer-links a:hover {
+            text-decoration: underline;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .nav-container {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .logo {
+                margin-bottom: 10px;
+            }
+            
+            .nav-links {
+                justify-content: center;
+            }
+            
+            .profile-header {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .profile-avatar {
+                margin-right: 0;
+                margin-bottom: 20px;
+            }
+            
+            .content-layout {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                flex: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=university%20students%20employment%20safety%20logo%2C%20blue%20color%2C%20simple%20and%20modern&image_size=square" alt="平台Logo">
+                <h1>大学生就业防坑服务平台</h1>
+            </div>
+            <div class="nav-links">
+                <a href="index.html">首页</a>
+                <a href="profile.html" class="active">个人主页</a>
+                <a href="#">防坑指南</a>
+                <a href="#">关于我们</a>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- 主要内容区 -->
+    <div class="main-content">
+        <!-- 个人信息面板 -->
+        <div class="profile-header">
+            <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=college%20student%20avatar%2C%20friendly%20face%2C%20simple%20style&image_size=square" alt="用户头像" class="profile-avatar">
+            <div class="profile-info">
+                <h2>张三</h2>
+                <p>北京大学 · 计算机科学与技术专业</p>
+                <div class="skill-label">
+                    <span>防骗能力值</span>
+                    <span>75%</span>
+                </div>
+                <div class="skill-bar">
+                    <div class="skill-progress" style="width: 75%;"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 内容布局 -->
+        <div class="content-layout">
+            <!-- 左侧功能菜单 -->
+            <div class="sidebar">
+                <div class="menu-card">
+                    <h3>个人中心</h3>
+                    <a href="#" class="menu-item active">我的收藏案例</a>
+                    <a href="#" class="menu-item">学习历史</a>
+                    <a href="#" class="menu-item">风险评估报告</a>
+                    <a href="#" class="menu-item">修改资料</a>
+                </div>
+                <div class="menu-card">
+                    <h3>快捷功能</h3>
+                    <a href="index.html" class="menu-item">浏览案例</a>
+                    <a href="#" class="menu-item">模拟测试</a>
+                    <a href="#" class="menu-item">在线咨询</a>
+                </div>
+            </div>
+            
+            <!-- 右侧内容展示区 -->
+            <div class="content-area">
+                <!-- 最近浏览 -->
+                <div class="content-card">
+                    <h3>最近浏览</h3>
+                    <div class="record-item">
+                        <div class="record-icon">📄</div>
+                        <div class="record-info">
+                            <h4>面试收费骗局</h4>
+                            <p>了解面试中常见的收费陷阱</p>
+                            <div class="record-time">2024-05-15 14:30</div>
+                        </div>
+                    </div>
+                    <div class="record-item">
+                        <div class="record-icon">📄</div>
+                        <div class="record-info">
+                            <h4>培训贷骗局</h4>
+                            <p>如何识别和避免培训贷款陷阱</p>
+                            <div class="record-time">2024-05-14 09:15</div>
+                        </div>
+                    </div>
+                    <div class="record-item">
+                        <div class="record-icon">📄</div>
+                        <div class="record-info">
+                            <h4>虚假高薪岗位</h4>
+                            <p>如何判断岗位薪资的合理性</p>
+                            <div class="record-time">2024-05-13 16:45</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 我的收藏 -->
+                <div class="content-card">
+                    <h3>我的收藏</h3>
+                    <div class="record-item">
+                        <div class="record-icon">⭐</div>
+                        <div class="record-info">
+                            <h4>刷单兼职骗局</h4>
+                            <p>刷单兼职的危害和识别方法</p>
+                            <div class="record-time">2024-05-12 11:20</div>
+                        </div>
+                    </div>
+                    <div class="record-item">
+                        <div class="record-icon">⭐</div>
+                        <div class="record-info">
+                            <h4>扣押证件骗局</h4>
+                            <p>如何保护个人证件安全</p>
+                            <div class="record-time">2024-05-11 10:00</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 底部页脚 -->
+    <footer class="footer">
+        <div class="footer-content">
+            <p>© 2024 大学生就业防坑服务平台 版权所有</p>
+            <p>咨询渠道：</p>
+            <div class="footer-links">
+                <a href="#">在线咨询</a>
+                <a href="#">电话咨询：400-123-4567</a>
+                <a href="#">邮箱：contact@job-safety.com</a>
+            </div>
+        </div>
+    </footer>
+    
+    <script>
+        // 页面加载时的动画效果
+        window.onload = function() {
+            // 技能条动画
+            const skillProgress = document.querySelector('.skill-progress');
+            skillProgress.style.width = '0';
+            setTimeout(() => {
+                skillProgress.style.width = '75%';
+            }, 500);
+        };
+    </script>
+</body>
+</html>
