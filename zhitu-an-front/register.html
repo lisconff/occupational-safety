@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>注册 - 职途安</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="auth-page">
+        <div class="auth-card">
+            <h2>注册职途安账号</h2>
+            <form id="registerForm">
+                <div class="form-group">
+                    <label for="username">用户名</label>
+                    <input type="text" id="username" name="username" placeholder="请输入用户名" required>
+                    <div class="error-message" id="usernameError">用户名长度需3-16位</div>
+                </div>
+                <div class="form-group">
+                    <label for="email">邮箱</label>
+                    <input type="email" id="email" name="email" placeholder="请输入邮箱" required>
+                    <div class="error-message" id="emailError">请输入有效的邮箱地址</div>
+                </div>
+                <div class="form-group">
+                    <label for="password">密码</label>
+                    <input type="password" id="password" name="password" placeholder="请输入密码" required>
+                    <div class="error-message" id="passwordError">密码长度需8-20位，包含字母和数字</div>
+                </div>
+                <div class="form-group">
+                    <label for="confirmPassword">确认密码</label>
+                    <input type="password" id="confirmPassword" name="confirmPassword" placeholder="请再次输入密码" required>
+                    <div class="error-message" id="confirmPasswordError">两次输入的密码不一致</div>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%; padding: 12px; font-size: 16px;">注册</button>
+            </form>
+            <div class="auth-footer">
+                已有账号？<a href="login.html">立即登录</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 表单验证
+        const registerForm = document.getElementById('registerForm');
+        const usernameInput = document.getElementById('username');
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+        const confirmPasswordInput = document.getElementById('confirmPassword');
+
+        // 用户名验证
+        usernameInput.addEventListener('blur', () => {
+            const username = usernameInput.value.trim();
+            const error = document.getElementById('usernameError');
+            if (username.length < 3 || username.length > 16) {
+                error.style.display = 'block';
+            } else {
+                error.style.display = 'none';
+            }
+        });
+
+        // 邮箱验证
+        emailInput.addEventListener('blur', () => {
+            const email = emailInput.value.trim();
+            const error = document.getElementById('emailError');
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                error.style.display = 'block';
+            } else {
+                error.style.display = 'none';
+            }
+        });
+
+        // 密码验证
+        passwordInput.addEventListener('blur', () => {
+            const password = passwordInput.value;
+            const error = document.getElementById('passwordError');
+            const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,20}$/;
+            if (!passwordRegex.test(password)) {
+                error.style.display = 'block';
+            } else {
+                error.style.display = 'none';
+            }
+        });
+
+        // 确认密码验证
+        confirmPasswordInput.addEventListener('blur', () => {
+            const password = passwordInput.value;
+            const confirmPassword = confirmPasswordInput.value;
+            const error = document.getElementById('confirmPasswordError');
+            if (password !== confirmPassword) {
+                error.style.display = 'block';
+            } else {
+                error.style.display = 'none';
+            }
+        });
+
+        // 表单提交
+        registerForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            // 这里可以添加AJAX请求，对接Java17后端的注册接口
+            alert('注册成功！即将跳转到登录页');
+            window.location.href = 'login.html';
+        });
+    </script>
+</body>
+</html>
