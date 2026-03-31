@@ -58,31 +58,34 @@ public class AiAssistantServiceImpl implements AiAssistantService {
     }
 
     private AiDtos.AnalysisReportView analyzeByType(String businessType, AiDtos.AnalyzeRequest request) {
-        int score = Math.min(95, Math.max(5, request.text().length() % 100));
+        // [纯模拟实现] 暂时不调用真实的 AI API，直接根据输入的文本长度随机生成一个分数
+        int score = Math.min(95, Math.max(5, request.text().length() % 100)); // 随便算个伪随机分数
         String riskLevel = score >= 80 ? "HIGH" : score >= 50 ? "MEDIUM" : "LOW";
 
+        // 1. 创建假的 AI 分析报告并入库
         AnalysisReport report = AnalysisReport.builder()
                 .userId(request.userId())
                 .businessType(businessType)
+                // 截取前60个字作为摘要
                 .inputSummary(request.text().substring(0, Math.min(60, request.text().length())))
                 .score(score)
                 .overallRiskLevel(riskLevel)
                 .createdAt(LocalDateTime.now())
                 .build();
-
+        report.calculateOverallRiskLevel(); // 使用我们刚加的充血模型方法
         AnalysisReport saved = analysisReportRepository.save(report);
 
+        // 2. 也是假装发现了一个风险点
         RiskItem item = RiskItem.builder()
                 .reportId(saved.getReportId())
-                .matchedText(request.text().substring(0, Math.min(20, request.text().length())))
+                .matchedText(request.text().substring(0, Math.min(10, request.text().length()))) // 随便截几个字假装命中
                 .startIndex(0)
-                .endIndex(Math.min(20, request.text().length()))
+                .endIndex(Math.min(10, request.text().length()))
                 .riskLevel(riskLevel)
-                .reason("命中了基础演示规则")
-                .legalBasis("后续按规则库填充")
-                .suggestion("请结合平台建议进行修改")
+                .reason(businessType.equals("CONTRACT") ? "该条款可能存在试用期过长或克扣工资的霸王条款风险（模拟）" : "检测到疑似招聘黑话骗局（模拟）")
+                .legalBasis("《中华人民共和国劳动合同法》第十九条：劳动合同期限三个月以上不满一年的，试用期不得超过一个月。")
+                .suggestion(businessType.equals("CONTRACT") ? "建议明确试用期具体时长及薪资约定比例。" : "警惕用人单位以培训名义收取费用。")
                 .build();
-
         RiskItem savedItem = riskItemRepository.save(item);
 
         return new AiDtos.AnalysisReportView(
