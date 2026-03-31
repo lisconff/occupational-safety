@@ -95,11 +95,39 @@
         });
 
         // 表单提交
-        registerForm.addEventListener('submit', (e) => {
+        registerForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            // 这里可以添加AJAX请求，对接Java17后端的注册接口
-            alert('注册成功！即将跳转到登录页');
-            window.location.href = 'login.html';
+            
+            const username = usernameInput.value.trim();
+            const password = passwordInput.value;
+            const confirmPassword = confirmPasswordInput.value;
+
+            if (password !== confirmPassword) {
+                document.getElementById('confirmPasswordError').style.display = 'block';
+                return;
+            }
+
+            try {
+                const response = await fetch('http://localhost:8090/api/auth/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+
+                const data = await response.json();
+                
+                if (data.code === 200) {
+                    alert('注册成功！系统已为您自动登录，即将跳转到首页');
+                    localStorage.setItem('token', data.data.token);
+                    localStorage.setItem('username', data.data.username);
+                    window.location.href = 'home.html';
+                } else {
+                    alert('注册失败: ' + (data.message || '未知错误'));
+                }
+            } catch (error) {
+                console.error("注册异常:", error);
+                alert("网络错误，无法连接到服务器");
+            }
         });
     </script>
 </body>

@@ -21,7 +21,7 @@ public class UserProfile {
     private String expectedCity;
     private String expectedSalary;
 
-    @Column(length = 2000)
+    @Column(columnDefinition = "TEXT")
     private String bio;
 
     // --- 领域行为方法 (Rich Domain Model) ---

@@ -24,7 +24,7 @@ public class AnalysisReport {
     @Column(nullable = false)
     private String businessType;
 
-    @Column(length = 2000)
+    @Column(columnDefinition = "TEXT")
     private String inputSummary;
 
     private Integer score;

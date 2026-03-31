@@ -20,7 +20,7 @@ public class LegalCase {
 
     private String title;
 
-    @Column(length = 1000)
+    @Column(columnDefinition = "TEXT")
     private String summary;
 
     private String lawCategory;
@@ -29,13 +29,13 @@ public class LegalCase {
     private String source;
     private String coverUrl;
 
-    @Column(length = 10000)
+    @Column(columnDefinition = "TEXT")
     private String content;
 
-    @Column(length = 3000)
+    @Column(columnDefinition = "TEXT")
     private String legalBasis;
 
-    @Column(length = 3000)
+    @Column(columnDefinition = "TEXT")
     private String lessonsLearned;
 
     private LocalDateTime createdAt;

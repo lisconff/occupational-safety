@@ -19,20 +19,20 @@ public class RiskItem {
     @Column(nullable = false)
     private String reportId;
 
-    @Column(length = 1000)
+    @Column(columnDefinition = "TEXT")
     private String matchedText;
 
     private Integer startIndex;
     private Integer endIndex;
     private String riskLevel;
 
-    @Column(length = 2000)
+    @Column(columnDefinition = "TEXT")
     private String reason;
 
-    @Column(length = 2000)
+    @Column(columnDefinition = "TEXT")
     private String legalBasis;
 
-    @Column(length = 2000)
+    @Column(columnDefinition = "TEXT")
     private String suggestion;
 
     // --- 领域行为方法 (Rich Domain Model) ---

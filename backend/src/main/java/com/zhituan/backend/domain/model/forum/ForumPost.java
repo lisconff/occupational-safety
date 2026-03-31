@@ -21,7 +21,7 @@ public class ForumPost {
     private String userId;
     private String title;
 
-    @Column(length = 5000)
+    @Column(columnDefinition = "TEXT")
     private String content;
 
     private Integer likeCount;
