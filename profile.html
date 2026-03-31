@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个人主页 - 大学生就业防坑服务平台</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #F0F9F8;
+        }
+        
+        /* 导航栏 */
+        .navbar {
+            background-color: #BFDEFF;
+            padding: 15px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo img {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            margin-right: 15px;
+        }
+        
+        .logo h1 {
+            font-size: 24px;
+            color: #333;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .nav-links a {
+            color: #333;
+            text-decoration: none;
+            font-size: 16px;
+            transition: color 0.3s ease;
+        }
+        
+        .nav-links a:hover {
+            color: #D30121;
+        }
+        
+        /* 主要内容区 */
+        .main-content {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        
+        /* 个人信息面板 */
+        .profile-header {
+            background-color: white;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            margin-right: 30px;
+            object-fit: cover;
+        }
+        
+        .profile-info {
+            flex: 1;
+            min-width: 250px;
+        }
+        
+        .profile-info h2 {
+            font-size: 24px;
+            color: #D30121;
+            margin-bottom: 10px;
+        }
+        
+        .profile-info p {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 15px;
+        }
+        
+        .skill-bar {
+            width: 100%;
+            height: 20px;
+            background-color: #F0F0F0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .skill-progress {
+            height: 100%;
+            background-color: #D30121;
+            border-radius: 10px;
+            transition: width 1s ease;
+        }
+        
+        .skill-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+        
+        /* 内容布局 */
+        .content-layout {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+        
+        /* 左侧功能菜单 */
+        .sidebar {
+            flex: 0 0 250px;
+            min-width: 200px;
+        }
+        
+        .menu-card {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        
+        .menu-card h3 {
+            font-size: 18px;
+            color: #D30121;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #FBEC8E;
+            padding-bottom: 10px;
+        }
+        
+        .menu-item {
+            display: block;
+            padding: 10px 15px;
+            color: #333;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            margin-bottom: 5px;
+            border-left: 3px solid transparent;
+        }
+        
+        .menu-item:hover {
+            background-color: #F0F9F8;
+            color: #D30121;
+            border-left-color: #D30121;
+        }
+        
+        .menu-item.active {
+            background-color: #F0F9F8;
+            font-weight: bold;
+            color: #D30121;
+            border-left-color: #D30121;
+        }
+        
+        /* 右侧内容展示区 */
+        .content-area {
+            flex: 1;
+            min-width: 300px;
+        }
+        
+        .content-card {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            border-left: 4px solid #BFDEFF;
+        }
+        
+        .content-card h3 {
+            font-size: 18px;
+            color: #D30121;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #FBEC8E;
+            padding-bottom: 10px;
+        }
+        
+        /* 收藏和浏览记录 */
+        .record-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid #F0F0F0;
+            transition: all 0.3s ease;
+        }
+        
+        .record-item:hover {
+            background-color: #F0F9F8;
+            transform: translateX(5px);
+        }
+        
+        .record-item:last-child {
+            border-bottom: none;
+        }
+        
+        .record-icon {
+            width: 50px;
+            height: 50px;
+            background-color: #BFDEFF;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-size: 24px;
+            color: #D30121;
+            transition: all 0.3s ease;
+        }
+        
+        .record-item:hover .record-icon {
+            background-color: #D30121;
+            color: white;
+        }
+        
+        .record-info {
+            flex: 1;
+        }
+        
+        .record-info h4 {
+            font-size: 16px;
+            color: #D30121;
+            margin-bottom: 5px;
+        }
+        
+        .record-info p {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .record-time {
+            font-size: 12px;
+            color: #999;
+        }
+        
+        /* 底部页脚 */
+        .footer {
+            background-color: #333;
+            color: white;
+            padding: 30px 0;
+            text-align: center;
+            margin-top: 60px;
+        }
+        
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .footer p {
+            margin-bottom: 10px;
+        }
+        
+        .footer-links {
+            margin-top: 15px;
+        }
+        
+        .footer-links a {
+            color: #BFDEFF;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+        
+        .footer-links a:hover {
+            text-decoration: underline;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .nav-container {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .logo {
+                margin-bottom: 10px;
+            }
+            
+            .nav-links {
+                justify-content: center;
+            }
+            
+            .profile-header {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .profile-avatar {
+                margin-right: 0;
+                margin-bottom: 20px;
+            }
+            
+            .content-layout {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                flex: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=university%20students%20employment%20safety%20logo%2C%20blue%20color%2C%20simple%20and%20modern&image_size=square" alt="平台Logo">
+                <h1>大学生就业防坑服务平台</h1>
+            </div>
+            <div class="nav-links">
+                <a href="index.html">首页</a>
+                <a href="profile.html" class="active">个人主页</a>
+                <a href="#">防坑指南</a>
+                <a href="#">关于我们</a>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- 主要内容区 -->
+    <div class="main-content">
+        <!-- 个人信息面板 -->
+        <div class="profile-header">
+            <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=college%20student%20avatar%2C%20friendly%20face%2C%20simple%20style&image_size=square" alt="用户头像" class="profile-avatar">
+            <div class="profile-info">
+                <h2>张三</h2>
+                <p>北京大学 · 计算机科学与技术专业</p>
+                <div class="skill-label">
+                    <span>防骗能力值</span>
+                    <span>75%</span>
+                </div>
+                <div class="skill-bar">
+                    <div class="skill-progress" style="width: 75%;"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 内容布局 -->
+        <div class="content-layout">
+            <!-- 左侧功能菜单 -->
+            <div class="sidebar">
+                <div class="menu-card">
+                    <h3>个人中心</h3>
+                    <a href="#" class="menu-item active">我的收藏案例</a>
+                    <a href="#" class="menu-item">学习历史</a>
+                    <a href="#" class="menu-item">风险评估报告</a>
+                    <a href="#" class="menu-item">我的发帖记录</a>
+                    <a href="#" class="menu-item">修改资料</a>
+                </div>
+                <div class="menu-card">
+                    <h3>快捷功能</h3>
+                    <a href="index.html" class="menu-item">浏览案例</a>
+                    <a href="#" class="menu-item">模拟测试</a>
+                    <a href="#" class="menu-item">在线咨询</a>
+                </div>
+            </div>
+            
+            <!-- 右侧内容展示区 -->
+            <div class="content-area">
+                <!-- 最近浏览 -->
+                <div class="content-card">
+                    <h3>最近浏览</h3>
+                    <div class="record-item">
+                        <div class="record-icon">📄</div>
+                        <div class="record-info">
+                            <h4>面试收费骗局</h4>
+                            <p>了解面试中常见的收费陷阱</p>
+                            <div class="record-time">2024-05-15 14:30</div>
+                        </div>
+                    </div>
+                    <div class="record-item">
+                        <div class="record-icon">📄</div>
+                        <div class="record-info">
+                            <h4>培训贷骗局</h4>
+                            <p>如何识别和避免培训贷款陷阱</p>
+                            <div class="record-time">2024-05-14 09:15</div>
+                        </div>
+                    </div>
+                    <div class="record-item">
+                        <div class="record-icon">📄</div>
+                        <div class="record-info">
+                            <h4>虚假高薪岗位</h4>
+                            <p>如何判断岗位薪资的合理性</p>
+                            <div class="record-time">2024-05-13 16:45</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 我的收藏 -->
+                <div class="content-card">
+                    <h3>我的收藏</h3>
+                    <div class="record-item">
+                        <div class="record-icon">⭐</div>
+                        <div class="record-info">
+                            <h4>刷单兼职骗局</h4>
+                            <p>刷单兼职的危害和识别方法</p>
+                            <div class="record-time">2024-05-12 11:20</div>
+                        </div>
+                    </div>
+                    <div class="record-item">
+                        <div class="record-icon">⭐</div>
+                        <div class="record-info">
+                            <h4>扣押证件骗局</h4>
+                            <p>如何保护个人证件安全</p>
+                            <div class="record-time">2024-05-11 10:00</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 底部页脚 -->
+    <footer class="footer">
+        <div class="footer-content">
+            <p>© 2024 大学生就业防坑服务平台 版权所有</p>
+            <p>咨询渠道：</p>
+            <div class="footer-links">
+                <a href="#">在线咨询</a>
+                <a href="#">电话咨询：400-123-4567</a>
+                <a href="#">邮箱：contact@job-safety.com</a>
+            </div>
+        </div>
+    </footer>
+    
+    <script>
+        // 用户数据存储
+        let userProfile = {
+            name: '张三',
+            school: '北京大学',
+            major: '计算机科学与技术',
+            email: 'zhangsan@example.com'
+        };
+        
+        // 更新个人信息面板
+        function updateProfileHeader() {
+            const profileInfo = document.querySelector('.profile-info');
+            profileInfo.innerHTML = `
+                <h2>${userProfile.name}</h2>
+                <p>${userProfile.school} · ${userProfile.major}</p>
+                <div class="skill-label">
+                    <span>防骗能力值</span>
+                    <span>75%</span>
+                </div>
+                <div class="skill-bar">
+                    <div class="skill-progress" style="width: 75%;"></div>
+                </div>
+            `;
+        }
+        
+        // 页面加载时的动画效果
+        window.onload = function() {
+            // 技能条动画
+            const skillProgress = document.querySelector('.skill-progress');
+            skillProgress.style.width = '0';
+            setTimeout(() => {
+                skillProgress.style.width = '75%';
+            }, 500);
+            
+            // 绑定菜单项点击事件
+            const menuItems = document.querySelectorAll('.menu-item');
+            menuItems.forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // 移除所有菜单项的active类
+                    menuItems.forEach(menuItem => {
+                        menuItem.classList.remove('active');
+                    });
+                    
+                    // 添加当前菜单项的active类
+                    this.classList.add('active');
+                    
+                    // 根据菜单项文本内容更新右侧内容
+                    const menuText = this.textContent.trim();
+                    updateContent(menuText);
+                });
+            });
+        };
+        
+        // 更新右侧内容
+        function updateContent(menuText) {
+            const contentArea = document.querySelector('.content-area');
+            
+            switch(menuText) {
+                case '我的收藏案例':
+                    contentArea.innerHTML = `
+                        <div class="content-card">
+                            <h3>我的收藏案例</h3>
+                            <div class="record-item">
+                                <div class="record-icon">⭐</div>
+                                <div class="record-info">
+                                    <h4>刷单兼职骗局</h4>
+                                    <p>刷单兼职的危害和识别方法</p>
+                                    <div class="record-time">2024-05-12 11:20</div>
+                                </div>
+                            </div>
+                            <div class="record-item">
+                                <div class="record-icon">⭐</div>
+                                <div class="record-info">
+                                    <h4>扣押证件骗局</h4>
+                                    <p>如何保护个人证件安全</p>
+                                    <div class="record-time">2024-05-11 10:00</div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    break;
+                case '学习历史':
+                    contentArea.innerHTML = `
+                        <div class="content-card">
+                            <h3>学习历史</h3>
+                            <div class="record-item">
+                                <div class="record-icon">📖</div>
+                                <div class="record-info">
+                                    <h4>面试收费骗局</h4>
+                                    <p>了解面试中常见的收费陷阱</p>
+                                    <div class="record-time">2024-05-15 14:30</div>
+                                </div>
+                            </div>
+                            <div class="record-item">
+                                <div class="record-icon">📖</div>
+                                <div class="record-info">
+                                    <h4>培训贷骗局</h4>
+                                    <p>如何识别和避免培训贷款陷阱</p>
+                                    <div class="record-time">2024-05-14 09:15</div>
+                                </div>
+                            </div>
+                            <div class="record-item">
+                                <div class="record-icon">📖</div>
+                                <div class="record-info">
+                                    <h4>虚假高薪岗位</h4>
+                                    <p>如何判断岗位薪资的合理性</p>
+                                    <div class="record-time">2024-05-13 16:45</div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    break;
+                case '风险评估报告':
+                    contentArea.innerHTML = `
+                        <div class="content-card">
+                            <h3>风险评估报告</h3>
+                            <p style="margin-bottom: 20px;">根据您的学习情况和互动记录，我们为您生成了以下风险评估报告：</p>
+                            <div style="margin-bottom: 15px;">
+                                <h4>防骗意识评估</h4>
+                                <div class="skill-label">
+                                    <span>防骗意识</span>
+                                    <span>85%</span>
+                                </div>
+                                <div class="skill-bar">
+                                    <div class="skill-progress" style="width: 85%;"></div>
+                                </div>
+                            </div>
+                            <div style="margin-bottom: 15px;">
+                                <h4>风险识别能力</h4>
+                                <div class="skill-label">
+                                    <span>风险识别</span>
+                                    <span>75%</span>
+                                </div>
+                                <div class="skill-bar">
+                                    <div class="skill-progress" style="width: 75%;"></div>
+                                </div>
+                            </div>
+                            <div style="margin-bottom: 15px;">
+                                <h4>应对能力</h4>
+                                <div class="skill-label">
+                                    <span>应对能力</span>
+                                    <span>70%</span>
+                                </div>
+                                <div class="skill-bar">
+                                    <div class="skill-progress" style="width: 70%;"></div>
+                                </div>
+                            </div>
+                            <p style="margin-top: 20px;"><strong>建议：</strong>继续学习培训贷和虚假offer相关内容，提高风险识别能力。</p>
+                        </div>
+                    `;
+                    break;
+                case '修改资料':
+                    contentArea.innerHTML = `
+                        <div class="content-card">
+                            <h3>修改资料</h3>
+                            <form id="profileForm" style="margin-top: 20px;">
+                                <div style="margin-bottom: 15px;">
+                                    <label for="name" style="display: block; margin-bottom: 5px;">姓名：</label>
+                                    <input type="text" id="name" value="${userProfile.name}" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                                </div>
+                                <div style="margin-bottom: 15px;">
+                                    <label for="school" style="display: block; margin-bottom: 5px;">学校：</label>
+                                    <input type="text" id="school" value="${userProfile.school}" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                                </div>
+                                <div style="margin-bottom: 15px;">
+                                    <label for="major" style="display: block; margin-bottom: 5px;">专业：</label>
+                                    <input type="text" id="major" value="${userProfile.major}" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                                </div>
+                                <div style="margin-bottom: 15px;">
+                                    <label for="email" style="display: block; margin-bottom: 5px;">邮箱：</label>
+                                    <input type="email" id="email" value="${userProfile.email}" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                                </div>
+                                <button type="submit" style="background-color: #BFDEFF; color: #333; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; transition: background-color 0.3s ease;">保存修改</button>
+                            </form>
+                        </div>
+                    `;
+                    
+                    // 绑定表单提交事件
+                    document.getElementById('profileForm').addEventListener('submit', function(e) {
+                        e.preventDefault();
+                        
+                        // 获取表单数据
+                        userProfile.name = document.getElementById('name').value;
+                        userProfile.school = document.getElementById('school').value;
+                        userProfile.major = document.getElementById('major').value;
+                        userProfile.email = document.getElementById('email').value;
+                        
+                        // 更新个人信息面板
+                        updateProfileHeader();
+                        
+                        // 显示保存成功提示
+                        alert('资料保存成功！');
+                    });
+                    break;
+                case '浏览案例':
+                    window.location.href = 'index.html';
+                    break;
+                case '模拟测试':
+                    window.location.href = 'index.html#scenarios';
+                    break;
+                case '我的发帖记录':
+                    contentArea.innerHTML = `
+                        <div class="content-card">
+                            <h3>我的发帖记录</h3>
+                            <div class="record-item">
+                                <div class="record-icon">📝</div>
+                                <div class="record-info">
+                                    <h4>分享面试收费骗局经历</h4>
+                                    <p>我在某招聘平台面试时遇到了要求缴纳体检费的情况，幸好提前了解过相关知识，及时识破了骗局。</p>
+                                    <div class="record-time">2024-05-10 15:30</div>
+                                </div>
+                            </div>
+                            <div class="record-item">
+                                <div class="record-icon">📝</div>
+                                <div class="record-info">
+                                    <h4>培训贷骗局的警示</h4>
+                                    <p>朋友差点被培训贷骗局坑了，分享给大家一些识别方法：1. 要求先交费的培训要谨慎；2. 承诺高薪包就业的要核实；3. 签订合同时要仔细阅读条款。</p>
+                                    <div class="record-time">2024-05-08 10:15</div>
+                                </div>
+                            </div>
+                            <div class="record-item">
+                                <div class="record-icon">📝</div>
+                                <div class="record-info">
+                                    <h4>关于虚假offer的疑问</h4>
+                                    <p>收到一个offer要求缴纳保证金，这个靠谱吗？大家有没有遇到过类似情况？</p>
+                                    <div class="record-time">2024-05-05 09:45</div>
+                                </div>
+                            </div>
+                            <div class="record-item">
+                                <div class="record-icon">💬</div>
+                                <div class="record-info">
+                                    <h4>回复：扣押证件骗局的应对方法</h4>
+                                    <p>感谢大家的建议，我已经成功要回了证件，并且向相关部门举报了这家公司。</p>
+                                    <div class="record-time">2024-05-03 14:20</div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    break;
+                case '在线咨询':
+                    contentArea.innerHTML = `
+                        <div class="content-card">
+                            <h3>在线咨询</h3>
+                            <p style="margin-bottom: 20px;">如有任何关于就业防坑的问题，您可以通过以下方式咨询：</p>
+                            <div style="margin-bottom: 15px;">
+                                <h4>在线客服</h4>
+                                <p>工作时间：周一至周五 9:00-18:00</p>
+                                <button style="background-color: #BFDEFF; color: #333; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; transition: background-color 0.3s ease;">立即咨询</button>
+                            </div>
+                            <div style="margin-bottom: 15px;">
+                                <h4>电话咨询</h4>
+                                <p>热线电话：400-123-4567</p>
+                                <p>工作时间：周一至周日 9:00-21:00</p>
+                            </div>
+                            <div style="margin-bottom: 15px;">
+                                <h4>邮箱咨询</h4>
+                                <p>邮箱：contact@job-safety.com</p>
+                                <p>我们会在24小时内回复您的邮件</p>
+                            </div>
+                        </div>
+                    `;
+                    break;
+                default:
+                    // 默认显示最近浏览和收藏
+                    contentArea.innerHTML = `
+                        <div class="content-card">
+                            <h3>最近浏览</h3>
+                            <div class="record-item">
+                                <div class="record-icon">📄</div>
+                                <div class="record-info">
+                                    <h4>面试收费骗局</h4>
+                                    <p>了解面试中常见的收费陷阱</p>
+                                    <div class="record-time">2024-05-15 14:30</div>
+                                </div>
+                            </div>
+                            <div class="record-item">
+                                <div class="record-icon">📄</div>
+                                <div class="record-info">
+                                    <h4>培训贷骗局</h4>
+                                    <p>如何识别和避免培训贷款陷阱</p>
+                                    <div class="record-time">2024-05-14 09:15</div>
+                                </div>
+                            </div>
+                            <div class="record-item">
+                                <div class="record-icon">📄</div>
+                                <div class="record-info">
+                                    <h4>虚假高薪岗位</h4>
+                                    <p>如何判断岗位薪资的合理性</p>
+                                    <div class="record-time">2024-05-13 16:45</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="content-card">
+                            <h3>我的收藏</h3>
+                            <div class="record-item">
+                                <div class="record-icon">⭐</div>
+                                <div class="record-info">
+                                    <h4>刷单兼职骗局</h4>
+                                    <p>刷单兼职的危害和识别方法</p>
+                                    <div class="record-time">2024-05-12 11:20</div>
+                                </div>
+                            </div>
+                            <div class="record-item">
+                                <div class="record-icon">⭐</div>
+                                <div class="record-info">
+                                    <h4>扣押证件骗局</h4>
+                                    <p>如何保护个人证件安全</p>
+                                    <div class="record-time">2024-05-11 10:00</div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+            }
+        }
+    </script>
+</body>
+</html>

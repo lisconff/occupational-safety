@@ -1,0 +1,1814 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>大学生就业防坑服务平台</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #F0F9F8;
+        }
+        
+        /* 导航栏 */
+        .navbar {
+            background-color: #BFDEFF;
+            padding: 15px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo img {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            margin-right: 15px;
+        }
+        
+        .logo h1 {
+            font-size: 24px;
+            color: #333;
+        }
+        
+        /* Banner区 */
+        .banner {
+            background-color: #BFDEFF;
+            padding: 80px 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .banner::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(211, 1, 33, 0.05);
+            z-index: 1;
+        }
+        
+        .banner-content {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .banner h2 {
+            font-size: 36px;
+            color: #D30121;
+            margin-bottom: 15px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+        
+        .banner p {
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        
+        .banner-btn {
+            display: inline-block;
+            background-color: #D30121;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .banner-btn:hover {
+            background-color: #BF001F;
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(211, 1, 33, 0.3);
+        }
+        
+        /* 主要内容区 */
+        .main-content {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        
+        .section-title {
+            font-size: 28px;
+            color: #D30121;
+            margin-bottom: 30px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background-color: #FBEC8E;
+            border-radius: 2px;
+        }
+        
+        /* 经典案件和场景模拟区 */
+        .content-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 40px;
+            margin-bottom: 60px;
+        }
+        
+        .cases-section, .scenarios-section {
+            flex: 1;
+            min-width: 300px;
+        }
+        
+        /* 经典案件卡片 */
+        .cases-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+        
+        .case-card {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            border-left: 4px solid #BFDEFF;
+        }
+        
+        .case-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            border-left-color: #D30121;
+        }
+        
+        .case-card h3 {
+            font-size: 18px;
+            color: #D30121;
+            margin-bottom: 10px;
+        }
+        
+        .case-type {
+            display: inline-block;
+            background-color: #FBEC8E;
+            color: #333;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            margin-bottom: 10px;
+        }
+        
+        .case-desc {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 15px;
+        }
+        
+        .case-tips {
+            font-size: 14px;
+            color: #333;
+            font-weight: bold;
+        }
+        
+        /* 场景模拟区 */
+        .scenario-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .scenario-btn {
+            background-color: white;
+            border: 1px solid #BFDEFF;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            border-left: 4px solid #BFDEFF;
+        }
+        
+        .scenario-btn:hover {
+            background-color: #F0F9F8;
+            transform: translateX(5px);
+            border-left-color: #D30121;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .scenario-btn h3 {
+            font-size: 18px;
+            color: #D30121;
+            margin-bottom: 5px;
+        }
+        
+        .scenario-btn p {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .scenario-btn.completed::after {
+            content: '✓';
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 20px;
+            color: #4CAF50;
+            font-weight: bold;
+        }
+        
+        .case-card {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+            position: relative;
+        }
+        
+        .case-card.completed::after {
+            content: '✓';
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 20px;
+            color: #4CAF50;
+            font-weight: bold;
+        }
+        
+        /* 场景对话弹窗 */
+        .dialog-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1000;
+        }
+        
+        .dialog-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            border-radius: 8px;
+            padding: 30px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .dialog-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .dialog-header h3 {
+            font-size: 20px;
+            color: #333;
+        }
+        
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+        }
+        
+        .chat-container {
+            margin-bottom: 20px;
+        }
+        
+        .chat-message {
+            margin-bottom: 15px;
+            max-width: 80%;
+        }
+        
+        .recruiter-message {
+            align-self: flex-start;
+            background-color: #F0F0F0;
+            padding: 10px 15px;
+            border-radius: 18px 18px 18px 0;
+        }
+        
+        .user-message {
+            align-self: flex-end;
+            background-color: #BFDEFF;
+            padding: 10px 15px;
+            border-radius: 18px 18px 0 18px;
+            margin-left: auto;
+        }
+        
+        .options-container {
+            margin-top: 20px;
+        }
+        
+        .options-container h4 {
+            margin-bottom: 10px;
+            color: #333;
+        }
+        
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+        
+        .option-btn {
+            background-color: #FBEC8E;
+            border: 1px solid #FBEC8E;
+            border-radius: 8px;
+            padding: 10px;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .option-btn:hover {
+            background-color: #F8D77E;
+        }
+        
+        /* 底部页脚 */
+        .footer {
+            background-color: #333;
+            color: white;
+            padding: 30px 0;
+            text-align: center;
+        }
+        
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .footer p {
+            margin-bottom: 10px;
+        }
+        
+        .footer-links {
+            margin-top: 15px;
+        }
+        
+        .footer-links a {
+            color: #BFDEFF;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+        
+        .footer-links a:hover {
+            text-decoration: underline;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .nav-container {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .logo {
+                margin-bottom: 10px;
+            }
+            
+            .banner h2 {
+                font-size: 28px;
+            }
+            
+            .content-container {
+                flex-direction: column;
+            }
+            
+            .cases-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .options-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=university%20students%20employment%20safety%20logo%2C%20blue%20color%2C%20simple%20and%20modern&image_size=square" alt="平台Logo">
+                <h1>大学生就业防坑服务平台</h1>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Banner区 -->
+    <section class="banner">
+        <div class="banner-content">
+            <h2>大学生就业防坑指南</h2>
+            <p>远离求职陷阱，守护自身权益</p>
+            <a href="#scenarios" class="banner-btn">开始场景模拟</a>
+        </div>
+    </section>
+    
+    <!-- 主要内容区 -->
+    <div class="main-content">
+        <!-- 经典案件和场景模拟区 -->
+        <div class="content-container">
+            <!-- 经典案件展示区 -->
+            <div class="cases-section">
+                <h2 class="section-title">经典案件</h2>
+                <div class="cases-grid">
+                    <!-- 案例1 -->
+                    <div class="case-card">
+                        <h3>面试收费骗局</h3>
+                        <span class="case-type">收费骗局</span>
+                        <p class="case-desc">【真实案例】2024年，大学生小王在某招聘平台看到一家公司招聘行政助理，面试时被告知需要缴纳200元体检费和300元服装费，承诺入职后全额退还。小王缴费后，公司以各种理由拖延入职，最终失联。</p>
+                        <p class="case-desc">招聘方以体检费、服装费、押金等名义向求职者收取费用，收费后以各种理由拒绝录用或消失。</p>
+                        <p class="case-tips">防范要点：正规公司不会向求职者收取任何费用，遇到收费要求应立即拒绝并报警。</p>
+                    </div>
+                    
+                    <!-- 案例2 -->
+                    <div class="case-card">
+                        <h3>培训贷骗局</h3>
+                        <span class="case-type">贷款骗局</span>
+                        <p class="case-desc">【真实案例】2024年，多地大学生遭遇“招聘转培训贷”陷阱，近百名学生被套近300万元。招聘方以“高薪包就业”“先学后付”为诱饵，诱导求职者办理贷款，培训质量差，就业无保障。</p>
+                        <p class="case-desc">招聘方以培训为名，诱导求职者办理高额贷款，声称培训后包就业，实则培训质量差，就业无保障。</p>
+                        <p class="case-tips">防范要点：谨慎对待要求贷款的培训，核实培训机构资质，签订正规合同，注意保留相关证据。</p>
+                    </div>
+                    
+                    <!-- 案例3 -->
+                    <div class="case-card">
+                        <h3>刷单兼职骗局</h3>
+                        <span class="case-type">兼职骗局</span>
+                        <p class="case-desc">【真实案例】2024年，求职者小龚发送简历后收到“高薪邀约”，对方先让他小额刷单并返现，后要求大额刷单，完成后以各种理由拒绝返现，最终损失数千元。</p>
+                        <p class="case-desc">招聘方以刷单兼职为名，先让求职者小额刷单并返现，后要求大额刷单，完成后以各种理由拒绝返现。</p>
+                        <p class="case-tips">防范要点：刷单本身违法，任何要求先垫资的兼职都可能是骗局，不要轻易相信“日赚百元”的兼职广告。</p>
+                    </div>
+                    
+                    <!-- 案例4 -->
+                    <div class="case-card">
+                        <h3>虚假高薪岗位</h3>
+                        <span class="case-type">虚假招聘</span>
+                        <p class="case-desc">【真实案例】2024年，大学生小李看到某公司招聘行政助理，月薪15000元，要求本科以上学历，无需工作经验。投递简历后，对方以各种理由要求缴纳费用，最终发现是虚假招聘。</p>
+                        <p class="case-desc">招聘方发布薪资远高于市场水平的岗位，吸引求职者投递简历，实则为收集个人信息或进行其他诈骗。</p>
+                        <p class="case-tips">防范要点：对薪资异常高的岗位保持警惕，核实公司资质和岗位真实性，通过正规渠道查询公司信息。</p>
+                    </div>
+                    
+                    <!-- 案例5 -->
+                    <div class="case-card">
+                        <h3>扣押证件骗局</h3>
+                        <span class="case-type">证件骗局</span>
+                        <p class="case-desc">【真实案例】2024年，大学生小张在入职时，公司以办理社保、公积金为名，扣押了他的身份证和学历证书，后以此要挟他缴纳各种费用，否则不归还证件。</p>
+                        <p class="case-desc">招聘方以办理入职手续为名，扣押求职者身份证、学历证书等证件，后以此要挟求职者。</p>
+                        <p class="case-tips">防范要点：任何单位无权扣押个人证件，可提供复印件，但原件应妥善保管，遇到扣押证件的情况应立即报警。</p>
+                    </div>
+                    
+                    <!-- 案例6 -->
+                    <div class="case-card">
+                        <h3>虚假offer骗局</h3>
+                        <span class="case-type">虚假招聘</span>
+                        <p class="case-desc">【真实案例】2024年，大学生小陈收到某公司的录用通知，要求缴纳5000元保证金，否则取消录用资格。小陈缴费后，公司失联，最终发现是虚假offer。</p>
+                        <p class="case-desc">招聘方发送虚假录用通知，要求求职者缴纳保证金或其他费用，否则取消录用资格。</p>
+                        <p class="case-tips">防范要点：收到offer后核实公司信息，正规公司不会以录用为由收取费用，遇到要求缴费的情况应谨慎核实。</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 场景模拟区 -->
+            <div class="scenarios-section" id="scenarios">
+                <h2 class="section-title">场景模拟</h2>
+                <div class="scenario-buttons">
+                    <!-- 场景1 -->
+                    <div class="scenario-btn" onclick="openDialog('dialog1')">
+                        <h3>面试收费骗局</h3>
+                        <p>模拟面试中遇到收费要求的场景</p>
+                    </div>
+                    
+                    <!-- 场景2 -->
+                    <div class="scenario-btn" onclick="openDialog('dialog2')">
+                        <h3>培训贷骗局</h3>
+                        <p>模拟遇到培训贷款的场景</p>
+                    </div>
+                    
+                    <!-- 场景3 -->
+                    <div class="scenario-btn" onclick="openDialog('dialog3')">
+                        <h3>刷单兼职骗局</h3>
+                        <p>模拟遇到刷单兼职的场景</p>
+                    </div>
+                    
+                    <!-- 场景4 -->
+                    <div class="scenario-btn" onclick="openDialog('dialog4')">
+                        <h3>虚假高薪岗位</h3>
+                        <p>模拟遇到虚假高薪岗位的场景</p>
+                    </div>
+                    
+                    <!-- 场景5 -->
+                    <div class="scenario-btn" onclick="openDialog('dialog5')">
+                        <h3>扣押证件骗局</h3>
+                        <p>模拟遇到扣押证件要求的场景</p>
+                    </div>
+                    
+                    <!-- 场景6 -->
+                    <div class="scenario-btn" onclick="openDialog('dialog6')">
+                        <h3>虚假offer骗局</h3>
+                        <p>模拟收到虚假offer的场景</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 场景对话弹窗 -->
+    <!-- 对话1：面试收费 -->
+    <div id="dialog1" class="dialog-modal">
+        <div class="dialog-content">
+            <div class="dialog-header">
+                <h3>面试收费骗局</h3>
+                <button class="close-btn" onclick="closeDialog('dialog1')">&times;</button>
+            </div>
+            <div class="chat-container"></div>
+            <div class="options-container"></div>
+        </div>
+    </div>
+    
+    <!-- 对话2：培训贷 -->
+    <div id="dialog2" class="dialog-modal">
+        <div class="dialog-content">
+            <div class="dialog-header">
+                <h3>培训贷骗局</h3>
+                <button class="close-btn" onclick="closeDialog('dialog2')">&times;</button>
+            </div>
+            <div class="chat-container"></div>
+            <div class="options-container"></div>
+        </div>
+    </div>
+    
+    <!-- 对话3：刷单兼职 -->
+    <div id="dialog3" class="dialog-modal">
+        <div class="dialog-content">
+            <div class="dialog-header">
+                <h3>刷单兼职骗局</h3>
+                <button class="close-btn" onclick="closeDialog('dialog3')">&times;</button>
+            </div>
+            <div class="chat-container"></div>
+            <div class="options-container"></div>
+        </div>
+    </div>
+    
+    <!-- 对话4：虚假高薪岗位 -->
+    <div id="dialog4" class="dialog-modal">
+        <div class="dialog-content">
+            <div class="dialog-header">
+                <h3>虚假高薪岗位</h3>
+                <button class="close-btn" onclick="closeDialog('dialog4')">&times;</button>
+            </div>
+            <div class="chat-container"></div>
+            <div class="options-container"></div>
+        </div>
+    </div>
+    
+    <!-- 对话5：扣押证件 -->
+    <div id="dialog5" class="dialog-modal">
+        <div class="dialog-content">
+            <div class="dialog-header">
+                <h3>扣押证件骗局</h3>
+                <button class="close-btn" onclick="closeDialog('dialog5')">&times;</button>
+            </div>
+            <div class="chat-container"></div>
+            <div class="options-container"></div>
+        </div>
+    </div>
+    
+    <!-- 对话6：虚假offer -->
+    <div id="dialog6" class="dialog-modal">
+        <div class="dialog-content">
+            <div class="dialog-header">
+                <h3>虚假offer骗局</h3>
+                <button class="close-btn" onclick="closeDialog('dialog6')">&times;</button>
+            </div>
+            <div class="chat-container"></div>
+            <div class="options-container"></div>
+        </div>
+    </div>
+    
+    <!-- 底部页脚 -->
+    <footer class="footer">
+        <div class="footer-content">
+            <p>© 2024 大学生就业防坑服务平台 版权所有</p>
+            <p>咨询渠道：</p>
+            <div class="footer-links">
+                <a href="#">在线咨询</a>
+                <a href="#">电话咨询：400-123-4567</a>
+                <a href="#">邮箱：contact@job-safety.com</a>
+            </div>
+        </div>
+    </footer>
+    
+    <script>
+        // 对话数据
+        const dialogData = {
+            dialog1: {
+                title: '面试收费骗局',
+                dialogs: [
+                    {
+                        type: 'recruiter',
+                        text: '你好，欢迎来面试我们公司的销售经理职位。首先，我们需要收取200元的面试费用，用于安排后续的培训和体检。',
+                        options: [
+                            {
+                                text: 'A. 拒绝缴费，转身离开',
+                                userText: '我拒绝缴费，这是不合理的要求。',
+                                feedback: '正确！正规公司不会向求职者收取任何费用，遇到这种情况应立即拒绝并离开。',
+                                next: -1 // 结束对话
+                            },
+                            {
+                                text: 'B. 为什么要收费？其他公司都不收费',
+                                userText: '为什么要收费？其他公司都不收费。',
+                                feedback: '',
+                                next: 1
+                            },
+                            {
+                                text: 'C. 这个费用是做什么用的？',
+                                userText: '这个费用是做什么用的？',
+                                feedback: '',
+                                next: 2
+                            },
+                            {
+                                text: 'D. 我没带钱，能不能下次再交？',
+                                userText: '我没带钱，能不能下次再交？',
+                                feedback: '',
+                                next: 3
+                            }
+                        ]
+                    },
+                    {
+                        type: 'recruiter',
+                        text: '这是我们公司的规定，所有求职者都需要缴纳。其他公司不收费是因为他们规模小，没有我们这样的培训体系。',
+                        options: [
+                            {
+                                text: 'A. 坚持拒绝，离开公司',
+                                userText: '我坚持拒绝，这是不合理的要求。',
+                                feedback: '正确！正规公司不会向求职者收取任何费用，遇到这种情况应立即拒绝并离开。',
+                                next: -1
+                            },
+                            {
+                                text: 'B. 那为什么其他大公司也不收费？',
+                                userText: '那为什么其他大公司也不收费？',
+                                feedback: '',
+                                next: 4
+                            },
+                            {
+                                text: 'C. 这个费用入职后会退还吗？',
+                                userText: '这个费用入职后会退还吗？',
+                                feedback: '',
+                                next: 5
+                            },
+                            {
+                                text: 'D. 我可以只交一部分吗？',
+                                userText: '我可以只交一部分吗？',
+                                feedback: '',
+                                next: 6
+                            }
+                        ]
+                    },
+                    {
+                        type: 'recruiter',
+                        text: '这个费用主要用于安排你的培训和体检，这些都是需要成本的。培训是由行业专家授课，体检是在正规医院进行的。',
+                        options: [
+                            {
+                                text: 'A. 坚持拒绝，离开公司',
+                                userText: '我坚持拒绝，这是不合理的要求。',
+                                feedback: '正确！正规公司不会向求职者收取任何费用，遇到这种情况应立即拒绝并离开。',
+                                next: -1
+                            },
+                            {
+                                text: 'B. 培训和体检不是公司应该承担的吗？',
+                                userText: '培训和体检不是公司应该承担的吗？',
+                                feedback: '',
+                                next: 7
+                            },
+                            {
+                                text: 'C. 这个费用入职后会退还吗？',
+                                userText: '这个费用入职后会退还吗？',
+                                feedback: '',
+                                next: 5
+                            },
+                            {
+                                text: 'D. 我没带钱，能不能下次再交？',
+                                userText: '我没带钱，能不能下次再交？',
+                                feedback: '',
+                                next: 3
+                            }
+                        ]
+                    },
+                    {
+                        type: 'recruiter',
+                        text: '不行，这是公司的规定，必须在面试时缴纳。如果你现在不交，就无法参加后续的面试流程，我们会立即安排其他人面试。',
+                        options: [
+                            {
+                                text: 'A. 拒绝缴费，转身离开',
+                                userText: '我拒绝缴费，这是不合理的要求。',
+                                feedback: '正确！正规公司不会向求职者收取任何费用，遇到这种情况应立即拒绝并离开。',
+                                next: -1
+                            },
+                            {
+                                text: 'B. 为什么必须现在交？',
+                                userText: '为什么必须现在交？',
+                                feedback: '',
+                                next: 8
+                            },
+                            {
+                                text: 'C. 这个费用是做什么用的？',
+                                userText: '这个费用是做什么用的？',
+                                feedback: '',
+                                next: 2
+                            },
+                            {
+                                text: 'D. 我可以用支付宝支付吗？',
+                                userText: '我可以用支付宝支付吗？',
+                                feedback: '错误！无论通过什么方式支付，正规公司都不会向求职者收取任何费用。一旦支付，很可能无法退回，这是典型的面试收费骗局。',
+                                next: -1
+                            }
+                        ]
+                    },
+                    {
+                        type: 'recruiter',
+                        text: '其他大公司的情况我不了解，我们公司有自己的规定。我们是行业龙头企业，有正规的流程和体系，你可以放心。',
+                        options: [
+                            {
+                                text: 'A. 坚持拒绝，离开公司',
+                                userText: '我坚持拒绝，这是不合理的要求。',
+                                feedback: '正确！正规公司不会向求职者收取任何费用，遇到这种情况应立即拒绝并离开。',
+                                next: -1
+                            },
+                            {
+                                text: 'B. 我还是觉得不合理',
+                                userText: '我还是觉得不合理。',
+                                feedback: '',
+                                next: 10
+                            },
+                            {
+                                text: 'C. 这个费用入职后会退还吗？',
+                                userText: '这个费用入职后会退还吗？',
+                                feedback: '',
+                                next: 5
+                            },
+                            {
+                                text: 'D. 我可以只交一部分吗？',
+                                userText: '我可以只交一部分吗？',
+                                feedback: '',
+                                next: 6
+                            }
+                        ]
+                    },
+                    {
+                        type: 'recruiter',
+                        text: '当然会退还！我们会给你开收据，入职后一个月内全额退还。这只是一个押金，确保你会按时入职。',
+                        options: [
+                            {
+                                text: 'A. 坚持拒绝，离开公司',
+                                userText: '我坚持拒绝，这是不合理的要求。',
+                                feedback: '正确！正规公司不会向求职者收取任何费用，遇到这种情况应立即拒绝并离开。',
+                                next: -1
+                            },
+                            {
+                                text: 'B. 为什么需要押金？',
+                                userText: '为什么需要押金？',
+                                feedback: '',
+                                next: 11
+                            },
+                            {
+                                text: 'C. 我再考虑一下',
+                                userText: '我再考虑一下。',
+                                feedback: '',
+                                next: 12
+                            },
+                            {
+                                text: 'D. 我可以用支付宝支付吗？',
+                                userText: '我可以用支付宝支付吗？',
+                                feedback: '错误！无论通过什么方式支付，正规公司都不会向求职者收取任何费用。一旦支付，很可能无法退回，这是典型的面试收费骗局。',
+                                next: -1
+                            }
+                        ]
+                    },
+                    {
+                        type: 'recruiter',
+                        text: '不行，必须全额缴纳。这是公司的规定，我们需要统一安排培训和体检，部分缴纳无法覆盖成本。',
+                        options: [
+                            {
+                                text: 'A. 坚持拒绝，离开公司',
+                                userText: '我坚持拒绝，这是不合理的要求。',
+                                feedback: '正确！正规公司不会向求职者收取任何费用，遇到这种情况应立即拒绝并离开。',
+                                next: -1
+                            },
+                            {
+                                text: 'B. 为什么必须全额缴纳？',
+                                userText: '为什么必须全额缴纳？',
+                                feedback: '',
+                                next: 13
+                            },
+                            {
+                                text: 'C. 这个费用入职后会退还吗？',
+                                userText: '这个费用入职后会退还吗？',
+                                feedback: '',
+                                next: 5
+                            },
+                            {
+                                text: 'D. 我没带钱，能不能下次再交？',
+                                userText: '我没带钱，能不能下次再交？',
+                                feedback: '',
+                                next: 3
+                            }
+                        ]
+                    },
+                    {
+                        type: 'recruiter',
+                        text: '在我们公司，培训和体检是由求职者先垫付，入职后公司会全额报销。这是为了确保求职者的诚意，避免有人占用培训资源却不来入职。',
+                        options: [
+                            {
+                                text: 'A. 坚持拒绝，离开公司',
+                                userText: '我坚持拒绝，这是不合理的要求。',
+                                feedback: '正确！正规公司不会向求职者收取任何费用，遇到这种情况应立即拒绝并离开。',
+                                next: -1
+                            },
+                            {
+                                text: 'B. 其他公司都是公司承担的',
+                                userText: '其他公司都是公司承担的。',
+                                feedback: '',
+                                next: 4
+                            },
+                            {
+                                text: 'C. 这个费用入职后会退还吗？',
+                                userText: '这个费用入职后会退还吗？',
+                                feedback: '',
+                                next: 5
+                            },
+                            {
+                                text: 'D. 我再考虑一下',
+                                userText: '我再考虑一下。',
+                                feedback: '',
+                                next: 12
+                            }
+                        ]
+                    },
+                    {
+                        type: 'recruiter',
+                        text: '因为我们需要立即安排你的培训和体检，如果现在不交，就无法进入下一步流程。我们每天都有很多人面试，机会有限。',
+                        options: [
+                            {
+                                text: 'A. 拒绝缴费，转身离开',
+                                userText: '我拒绝缴费，这是不合理的要求。',
+                                feedback: '正确！正规公司不会向求职者收取任何费用，遇到这种情况应立即拒绝并离开。',
+                                next: -1
+                            },
+                            {
+                                text: 'B. 我还是觉得不合理',
+                                userText: '我还是觉得不合理。',
+                                feedback: '',
+                                next: 10
+                            },
+                            {
+                                text: 'C. 这个费用是做什么用的？',
+                                userText: '这个费用是做什么用的？',
+                                feedback: '',
+                                next: 2
+                            },
+                            {
+                                text: 'D. 我可以用支付宝支付吗？',
+                                userText: '我可以用支付宝支付吗？',
+                                feedback: '错误！无论通过什么方式支付，正规公司都不会向求职者收取任何费用。一旦支付，很可能无法退回，这是典型的面试收费骗局。',
+                                next: -1
+                            }
+                        ]
+                    },
+                    {
+                        type: 'recruiter',
+                        text: '可以，我们支持支付宝、微信、现金等多种支付方式。你现在就可以支付，然后我们就可以安排你进入下一轮面试。',
+                        options: [
+                            {
+                                text: 'A. 拒绝缴费，转身离开',
+                                userText: '我拒绝缴费，这是不合理的要求。',
+                                feedback: '正确！正规公司不会向求职者收取任何费用，遇到这种情况应立即拒绝并离开。',
+                                next: -1
+                            },
+                            {
+                                text: 'B. 我还是觉得不合理',
+                                userText: '我还是觉得不合理。',
+                                feedback: '',
+                                next: 10
+                            },
+                            {
+                                text: 'C. 这个费用入职后会退还吗？',
+                                userText: '这个费用入职后会退还吗？',
+                                feedback: '',
+                                next: 5
+                            },
+                            {
+                                text: 'D. 我再考虑一下',
+                                userText: '我再考虑一下。',
+                                feedback: '',
+                                next: 12
+                            },
+                            {
+                                text: 'E. 我用支付宝支付',
+                                userText: '我用支付宝支付。',
+                                feedback: '错误！无论通过什么方式支付，正规公司都不会向求职者收取任何费用。一旦支付，很可能无法退回，这是典型的面试收费骗局。',
+                                next: -1
+                            }
+                        ]
+                    },
+                    {
+                        type: 'recruiter',
+                        text: '这是公司的规定，我们也没有办法。如果你不愿意缴纳，只能遗憾地告诉你，你无法获得这个职位。我们会立即安排其他人面试。',
+                        options: [
+                            {
+                                text: 'A. 拒绝缴费，转身离开',
+                                userText: '我拒绝缴费，这是不合理的要求。',
+                                feedback: '正确！正规公司不会向求职者收取任何费用，遇到这种情况应立即拒绝并离开。',
+                                next: -1
+                            },
+                            {
+                                text: 'B. 我还是坚持拒绝',
+                                userText: '我还是坚持拒绝。',
+                                feedback: '正确！正规公司不会向求职者收取任何费用，遇到这种情况应立即拒绝并离开。',
+                                next: -1
+                            },
+                            {
+                                text: 'C. 好吧，我缴纳费用',
+                                userText: '好吧，我缴纳费用。',
+                                feedback: '错误！缴纳费用后很可能无法退回，这是典型的面试收费骗局。',
+                                next: -1
+                            },
+                            {
+                                text: 'D. 我再考虑一下',
+                                userText: '我再考虑一下。',
+                                feedback: '错误！犹豫只会让骗子有更多机会说服你，应立即拒绝。',
+                                next: -1
+                            }
+                        ]
+                    },
+                    {
+                        type: 'recruiter',
+                        text: '这是为了确保你会按时入职，避免我们为你安排了培训和体检后你却不来，给公司造成损失。入职后我们会全额退还，你不用担心。',
+                        options: [
+                            {
+                                text: 'A. 坚持拒绝，离开公司',
+                                userText: '我坚持拒绝，这是不合理的要求。',
+                                feedback: '正确！正规公司不会向求职者收取任何费用，遇到这种情况应立即拒绝并离开。',
+                                next: -1
+                            },
+                            {
+                                text: 'B. 我还是觉得不合理',
+                                userText: '我还是觉得不合理。',
+                                feedback: '',
+                                next: 10
+                            },
+                            {
+                                text: 'C. 我再考虑一下',
+                                userText: '我再考虑一下。',
+                                feedback: '',
+                                next: 12
+                            },
+                            {
+                                text: 'D. 我可以用支付宝支付吗？',
+                                userText: '我可以用支付宝支付吗？',
+                                feedback: '错误！无论通过什么方式支付，正规公司都不会向求职者收取任何费用。一旦支付，很可能无法退回，这是典型的面试收费骗局。',
+                                next: -1
+                            }
+                        ]
+                    },
+                    {
+                        type: 'recruiter',
+                        text: '好的，你可以考虑一下。但是机会有限，我们每天都有很多人面试，如果你决定了，尽快联系我们。',
+                        options: [
+                            {
+                                text: 'A. 拒绝缴费，转身离开',
+                                userText: '我拒绝缴费，这是不合理的要求。',
+                                feedback: '正确！正规公司不会向求职者收取任何费用，遇到这种情况应立即拒绝并离开。',
+                                next: -1
+                            },
+                            {
+                                text: 'B. 我还是觉得不合理',
+                                userText: '我还是觉得不合理。',
+                                feedback: '',
+                                next: 10
+                            },
+                            {
+                                text: 'C. 好吧，我缴纳费用',
+                                userText: '好吧，我缴纳费用。',
+                                feedback: '错误！缴纳费用后很可能无法退回，这是典型的面试收费骗局。',
+                                next: -1
+                            },
+                            {
+                                text: 'D. 我决定离开',
+                                userText: '我决定离开。',
+                                feedback: '正确！正规公司不会向求职者收取任何费用，遇到这种情况应立即拒绝并离开。',
+                                next: -1
+                            }
+                        ]
+                    },
+                    {
+                        type: 'recruiter',
+                        text: '因为培训和体检的成本是固定的，无法部分覆盖。如果你只交一部分，我们无法为你安排完整的培训和体检流程。',
+                        options: [
+                            {
+                                text: 'A. 坚持拒绝，离开公司',
+                                userText: '我坚持拒绝，这是不合理的要求。',
+                                feedback: '正确！正规公司不会向求职者收取任何费用，遇到这种情况应立即拒绝并离开。',
+                                next: -1
+                            },
+                            {
+                                text: 'B. 我还是觉得不合理',
+                                userText: '我还是觉得不合理。',
+                                feedback: '',
+                                next: 10
+                            },
+                            {
+                                text: 'C. 这个费用入职后会退还吗？',
+                                userText: '这个费用入职后会退还吗？',
+                                feedback: '',
+                                next: 5
+                            },
+                            {
+                                text: 'D. 我没带钱，能不能下次再交？',
+                                userText: '我没带钱，能不能下次再交？',
+                                feedback: '',
+                                next: 3
+                            }
+                        ]
+                    }
+                ]
+            },
+            dialog2: {
+                title: '培训贷骗局',
+                dialogs: [
+                    {
+                        type: 'recruiter',
+                        text: '你好，我们公司正在招聘软件工程师，月薪15000元起，福利丰厚。虽然你没有相关经验，但我们提供免费培训，培训后直接入职。',
+                        options: [
+                            {
+                                text: 'A. 详细询问培训内容和就业保障',
+                                userText: '免费培训？那太好了，我愿意参加。我对软件行业很感兴趣。详细说说培训内容和就业保障吧。',
+                                feedback: '正确！应该详细了解培训内容和就业保障，避免陷入培训贷骗局。',
+                                next: 1
+                            },
+                            {
+                                text: 'B. 立即同意参加培训',
+                                userText: '免费培训？那太好了，我愿意参加。我对软件行业很感兴趣。',
+                                feedback: '错误！没有了解清楚就同意，可能会陷入培训贷骗局。',
+                                next: 1
+                            },
+                            {
+                                text: 'C. 询问是否需要缴费',
+                                userText: '免费培训？那太好了，我愿意参加。但需要缴费吗？',
+                                feedback: '正确！应该先询问是否需要缴费，避免陷入培训贷骗局。',
+                                next: 1
+                            },
+                            {
+                                text: 'D. 考虑一下',
+                                userText: '免费培训？听起来不错，我需要考虑一下。',
+                                feedback: '正确！应该仔细考虑，避免陷入培训贷骗局。',
+                                next: 1
+                            }
+                        ]
+                    },
+                    {
+                        type: 'recruiter',
+                        text: '非常好！我们的培训课程价值19800元，由行业专家授课，内容非常实用。不过，你需要先缴纳这笔培训费用。',
+                        options: [
+                            {
+                                text: 'A. 拒绝贷款，离开公司',
+                                userText: '可是我没有这么多钱，我拒绝贷款，这看起来像是培训贷骗局。',
+                                feedback: '正确！这是典型的培训贷骗局，正规公司不会要求求职者贷款培训。',
+                                next: -1
+                            },
+                            {
+                                text: 'B. 询问是否有其他支付方式',
+                                userText: '可是我没有这么多钱，有其他支付方式吗？',
+                                feedback: '错误！即使有其他支付方式，这仍然是培训贷骗局。',
+                                next: 2
+                            },
+                            {
+                                text: 'C. 考虑贷款',
+                                userText: '可是我没有这么多钱，能贷款吗？',
+                                feedback: '错误！贷款后你可能面临高额利息和无法就业的风险。',
+                                next: 2
+                            },
+                            {
+                                text: 'D. 回家咨询朋友',
+                                userText: '可是我没有这么多钱，我回家咨询一下朋友再决定。',
+                                feedback: '正确！应该咨询他人，避免陷入培训贷骗局。',
+                                next: -1
+                            }
+                        ]
+                    },
+                    {
+                        type: 'recruiter',
+                        text: '没关系，我们可以帮你办理分期贷款，利息很低，每个月只需要还几百块。入职后，我们会从你的工资中直接扣除，不会有任何压力。',
+                        options: [
+                            {
+                                text: 'A. 拒绝贷款，离开公司',
+                                userText: '这样啊，那培训后真的能保证入职吗？我还是拒绝贷款，感觉这是骗局。',
+                                feedback: '正确！这是典型的培训贷骗局，正规公司不会要求求职者贷款培训。',
+                                next: -1
+                            },
+                            {
+                                text: 'B. 同意贷款',
+                                userText: '这样啊，那培训后真的能保证入职吗？好吧，我同意贷款。',
+                                feedback: '错误！贷款后你可能面临高额利息和无法就业的风险。',
+                                next: -1
+                            },
+                            {
+                                text: 'C. 询问贷款详情',
+                                userText: '这样啊，那培训后真的能保证入职吗？能详细说说贷款的情况吗？',
+                                feedback: '错误！即使了解贷款详情，这仍然是培训贷骗局。',
+                                next: 3
+                            },
+                            {
+                                text: 'D. 再考虑一下',
+                                userText: '这样啊，那培训后真的能保证入职吗？我再考虑一下。',
+                                feedback: '正确！应该仔细考虑，避免陷入培训贷骗局。',
+                                next: -1
+                            }
+                        ]
+                    },
+                    {
+                        type: 'recruiter',
+                        text: '我们与多家银行合作，贷款手续简单，审批快，当天就能放款。利息是年化3.5%，比市场上的贷款产品低很多。入职后，你每个月的工资是15000元，扣除贷款后还有12000元左右，生活完全没问题。',
+                        options: [
+                            {
+                                text: 'A. 拒绝贷款，离开公司',
+                                userText: '我还是觉得有风险，拒绝贷款，这看起来像是培训贷骗局。',
+                                feedback: '正确！这是典型的培训贷骗局，正规公司不会要求求职者贷款培训。',
+                                next: -1
+                            },
+                            {
+                                text: 'B. 同意贷款',
+                                userText: '听起来不错，我同意贷款。',
+                                feedback: '错误！贷款后你可能面临高额利息和无法就业的风险。',
+                                next: -1
+                            }
+                        ]
+                    }
+                ]
+            },
+            dialog3: {
+                title: '刷单兼职骗局',
+                dialogs: [
+                    {
+                        type: 'recruiter',
+                        text: '你好，我们正在招聘兼职刷单人员，工作简单，只需在网上购物并给予好评，每单佣金10-50元，日结工资，时间自由，适合学生。',
+                        options: [
+                            {
+                                text: 'A. 详细询问操作流程',
+                                userText: '听起来不错，具体怎么操作？需要什么条件吗？',
+                                feedback: '正确！应该详细了解操作流程，避免陷入刷单骗局。',
+                                next: 1
+                            },
+                            {
+                                text: 'B. 立即同意加入',
+                                userText: '听起来不错，我立即同意加入。',
+                                feedback: '错误！没有了解清楚就同意，可能会陷入刷单骗局。',
+                                next: 1
+                            },
+                            {
+                                text: 'C. 询问是否需要垫资',
+                                userText: '听起来不错，需要我自己垫付资金吗？',
+                                feedback: '正确！应该先询问是否需要垫资，避免陷入刷单骗局。',
+                                next: 1
+                            },
+                            {
+                                text: 'D. 考虑一下',
+                                userText: '听起来不错，我需要考虑一下。',
+                                feedback: '正确！应该仔细考虑，避免陷入刷单骗局。',
+                                next: 1
+                            }
+                        ]
+                    },
+                    {
+                        type: 'recruiter',
+                        text: '不需要任何条件，只要有淘宝账号就可以。操作流程很简单：我们会给你商品链接，你点击购买，完成付款后截图给我们，我们会立即将本金和佣金返还给你。',
+                        options: [
+                            {
+                                text: 'A. 拒绝参与，删除联系方式',
+                                userText: '需要我自己垫付资金吗？这听起来像是骗局，我拒绝参与。',
+                                feedback: '正确！刷单本身违法，任何要求垫资的兼职都可能是骗局。',
+                                next: -1
+                            },
+                            {
+                                text: 'B. 询问是否可以先返现',
+                                userText: '需要我自己垫付资金吗？可以先返现吗？',
+                                feedback: '错误！即使要求先返现，这仍然是刷单骗局。',
+                                next: 2
+                            },
+                            {
+                                text: 'C. 考虑小额尝试',
+                                userText: '需要我自己垫付资金吗？可以先小额尝试吗？',
+                                feedback: '错误！即使是小额测试，也可能是骗子的诱饵，后续会要求大额垫资。',
+                                next: 2
+                            },
+                            {
+                                text: 'D. 回家咨询朋友',
+                                userText: '需要我自己垫付资金吗？我回家咨询一下朋友再决定。',
+                                feedback: '正确！应该咨询他人，避免陷入刷单骗局。',
+                                next: -1
+                            }
+                        ]
+                    },
+                    {
+                        type: 'recruiter',
+                        text: '是的，需要你先垫付购物资金，不过你放心，我们是正规公司，第一单我们会安排小额测试，比如50元的商品，完成后立即返现55元，让你体验一下流程。',
+                        options: [
+                            {
+                                text: 'A. 拒绝参与，删除联系方式',
+                                userText: '那如果我完成后你们不返现怎么办？我拒绝参与，这看起来像是刷单骗局。',
+                                feedback: '正确！刷单本身违法，任何要求垫资的兼职都可能是骗局。',
+                                next: -1
+                            },
+                            {
+                                text: 'B. 尝试小额刷单',
+                                userText: '那如果我完成后你们不返现怎么办？好吧，我尝试小额刷单。',
+                                feedback: '错误！即使是小额测试，也可能是骗子的诱饵，后续会要求大额垫资。',
+                                next: -1
+                            },
+                            {
+                                text: 'C. 询问公司信息',
+                                userText: '那如果我完成后你们不返现怎么办？能提供公司的具体信息吗？',
+                                feedback: '错误！即使提供公司信息，这仍然是刷单骗局。',
+                                next: 3
+                            },
+                            {
+                                text: 'D. 再考虑一下',
+                                userText: '那如果我完成后你们不返现怎么办？我再考虑一下。',
+                                feedback: '正确！应该仔细考虑，避免陷入刷单骗局。',
+                                next: -1
+                            }
+                        ]
+                    },
+                    {
+                        type: 'recruiter',
+                        text: '我们是正规公司，有营业执照，你可以在工商网站上查到。我们已经运营了5年，有 thousands of happy customers。你可以放心，我们不会为了这点小钱而失去信誉。',
+                        options: [
+                            {
+                                text: 'A. 拒绝参与，删除联系方式',
+                                userText: '我还是觉得有风险，拒绝参与，这看起来像是刷单骗局。',
+                                feedback: '正确！刷单本身违法，任何要求垫资的兼职都可能是骗局。',
+                                next: -1
+                            },
+                            {
+                                text: 'B. 尝试小额刷单',
+                                userText: '听起来不错，我尝试小额刷单。',
+                                feedback: '错误！即使是小额测试，也可能是骗子的诱饵，后续会要求大额垫资。',
+                                next: -1
+                            }
+                        ]
+                    }
+                ]
+            },
+            dialog4: {
+                title: '虚假高薪岗位',
+                dialogs: [
+                    {
+                        type: 'recruiter',
+                        text: '你好，我们公司正在招聘行政助理，月薪15000元，要求本科以上学历，无需工作经验，包吃包住，还有各种福利。',
+                        options: [
+                            {
+                                text: 'A. 先在网上核实公司信息，再决定是否面试',
+                                userText: '薪资这么高，要求却这么低，是真的吗？我之前了解的行政助理薪资一般在5000-8000元左右。我先在网上核实公司信息，再决定是否面试。',
+                                feedback: '正确！薪资异常高的岗位很可能是虚假招聘，应先核实公司信息。',
+                                next: -1
+                            },
+                            {
+                                text: 'B. 立即去面试，机会难得',
+                                userText: '薪资这么高，要求却这么低，是真的吗？我之前了解的行政助理薪资一般在5000-8000元左右。机会难得，我立即去面试。',
+                                feedback: '错误！直接去面试可能会陷入骗局，应先核实公司真实性。',
+                                next: 1
+                            },
+                            {
+                                text: 'C. 详细询问薪资构成和工作内容',
+                                userText: '薪资这么高，要求却这么低，是真的吗？我之前了解的行政助理薪资一般在5000-8000元左右。能详细说说薪资构成和工作内容吗？',
+                                feedback: '错误！虽然询问薪资详情是合理的，但更重要的是核实公司信息。',
+                                next: 1
+                            },
+                            {
+                                text: 'D. 告诉朋友一起去面试',
+                                userText: '薪资这么高，要求却这么低，是真的吗？我之前了解的行政助理薪资一般在5000-8000元左右。我告诉朋友一起去面试。',
+                                feedback: '错误！即使朋友推荐，也不能保证岗位的真实性，仍需核实。',
+                                next: 1
+                            }
+                        ]
+                    },
+                    {
+                        type: 'recruiter',
+                        text: '当然是真的！我们公司是行业龙头，正在快速扩张，急需人才。我们重视人才培养，所以给出的薪资待遇远高于行业平均水平。',
+                        options: [
+                            {
+                                text: 'A. 先在网上核实公司信息',
+                                userText: '那具体工作内容是什么呢？我先在网上核实公司信息。',
+                                feedback: '正确！薪资异常高的岗位很可能是虚假招聘，应先核实公司信息。',
+                                next: -1
+                            },
+                            {
+                                text: 'B. 询问具体工作内容',
+                                userText: '那具体工作内容是什么呢？',
+                                feedback: '错误！虽然询问工作内容是合理的，但更重要的是核实公司信息。',
+                                next: 2
+                            },
+                            {
+                                text: 'C. 决定去面试',
+                                userText: '那具体工作内容是什么呢？我决定去面试。',
+                                feedback: '错误！直接去面试可能会陷入骗局，应先核实公司真实性。',
+                                next: 2
+                            },
+                            {
+                                text: 'D. 考虑一下',
+                                userText: '那具体工作内容是什么呢？我再考虑一下。',
+                                feedback: '正确！应该仔细考虑，避免陷入虚假招聘骗局。',
+                                next: -1
+                            }
+                        ]
+                    },
+                    {
+                        type: 'recruiter',
+                        text: '工作内容很简单，主要负责日常行政事务，比如文件整理、会议安排、接待等。不需要太多经验，我们会有专人培训。',
+                        options: [
+                            {
+                                text: 'A. 先在网上核实公司信息',
+                                userText: '那面试需要准备什么材料吗？我先在网上核实公司信息。',
+                                feedback: '正确！薪资异常高的岗位很可能是虚假招聘，应先核实公司信息。',
+                                next: -1
+                            },
+                            {
+                                text: 'B. 准备材料去面试',
+                                userText: '那面试需要准备什么材料吗？我准备材料去面试。',
+                                feedback: '错误！直接去面试可能会陷入骗局，应先核实公司真实性。',
+                                next: -1
+                            },
+                            {
+                                text: 'C. 询问公司地址',
+                                userText: '那面试需要准备什么材料吗？能提供公司地址吗？',
+                                feedback: '错误！即使了解公司地址，这仍然可能是虚假招聘。',
+                                next: 3
+                            },
+                            {
+                                text: 'D. 再考虑一下',
+                                userText: '那面试需要准备什么材料吗？我再考虑一下。',
+                                feedback: '正确！应该仔细考虑，避免陷入虚假招聘骗局。',
+                                next: -1
+                            }
+                        ]
+                    },
+                    {
+                        type: 'recruiter',
+                        text: '我们公司地址在市中心的高档写字楼，交通便利。面试时需要带上身份证、学历证书和简历。我们会安排专人接待你。',
+                        options: [
+                            {
+                                text: 'A. 先在网上核实公司信息',
+                                userText: '我还是觉得有风险，先在网上核实公司信息。',
+                                feedback: '正确！薪资异常高的岗位很可能是虚假招聘，应先核实公司信息。',
+                                next: -1
+                            },
+                            {
+                                text: 'B. 准备材料去面试',
+                                userText: '听起来不错，我准备材料去面试。',
+                                feedback: '错误！直接去面试可能会陷入骗局，应先核实公司真实性。',
+                                next: -1
+                            }
+                        ]
+                    }
+                ]
+            },
+            dialog5: {
+                title: '扣押证件骗局',
+                dialogs: [
+                    {
+                        type: 'recruiter',
+                        text: '你好，恭喜你通过面试，现在需要办理入职手续。请将身份证和学历证书原件交给我们，用于办理社保、公积金和档案转移。',
+                        options: [
+                            {
+                                text: 'A. 拒绝提供原件，只提供复印件',
+                                userText: '需要扣押原件吗？我可以提供复印件。我听说公司不应该扣押员工的证件原件。我拒绝提供原件，只提供复印件。',
+                                feedback: '正确！任何单位无权扣押个人证件，可提供复印件，但原件应妥善保管。',
+                                next: -1
+                            },
+                            {
+                                text: 'B. 提供原件，相信公司会归还',
+                                userText: '需要扣押原件吗？我可以提供复印件。我听说公司不应该扣押员工的证件原件。好吧，我提供原件，相信公司会归还。',
+                                feedback: '错误！扣押证件可能会被用于非法用途，或被公司要挟。',
+                                next: 1
+                            },
+                            {
+                                text: 'C. 要求公司写收条后提供原件',
+                                userText: '需要扣押原件吗？我可以提供复印件。我听说公司不应该扣押员工的证件原件。如果我提供原件，公司能写个收条吗？',
+                                feedback: '错误！即使写收条，也不能保证证件安全，应直接拒绝提供原件。',
+                                next: 1
+                            },
+                            {
+                                text: 'D. 先回家咨询家人再决定',
+                                userText: '需要扣押原件吗？我可以提供复印件。我听说公司不应该扣押员工的证件原件。我先回家咨询家人再决定。',
+                                feedback: '错误！咨询家人可能会耽误时间，应直接拒绝这种不合理要求。',
+                                next: 1
+                            }
+                        ]
+                    },
+                    {
+                        type: 'recruiter',
+                        text: '这是公司的规定，所有新员工都需要提交证件原件。我们需要用原件去相关部门办理手续，复印件是不行的。',
+                        options: [
+                            {
+                                text: 'A. 拒绝提供原件，只提供复印件',
+                                userText: '可是我担心证件安全，万一丢失了怎么办？我拒绝提供原件，只提供复印件。',
+                                feedback: '正确！任何单位无权扣押个人证件，可提供复印件，但原件应妥善保管。',
+                                next: -1
+                            },
+                            {
+                                text: 'B. 提供原件',
+                                userText: '可是我担心证件安全，万一丢失了怎么办？好吧，我提供原件。',
+                                feedback: '错误！扣押证件可能会被用于非法用途，或被公司要挟。',
+                                next: 2
+                            },
+                            {
+                                text: 'C. 要求公司写收条',
+                                userText: '可是我担心证件安全，万一丢失了怎么办？如果我提供原件，公司能写个收条吗？',
+                                feedback: '错误！即使写收条，也不能保证证件安全，应直接拒绝提供原件。',
+                                next: 2
+                            },
+                            {
+                                text: 'D. 再考虑一下',
+                                userText: '可是我担心证件安全，万一丢失了怎么办？我再考虑一下。',
+                                feedback: '错误！犹豫只会让公司有更多机会说服你，应直接拒绝。',
+                                next: 2
+                            }
+                        ]
+                    },
+                    {
+                        type: 'recruiter',
+                        text: '你放心，我们会妥善保管你的证件，入职一个月后就会归还。我们是正规公司，不会拿你的证件做任何违法的事情。',
+                        options: [
+                            {
+                                text: 'A. 拒绝提供原件，只提供复印件',
+                                userText: '我还是觉得不太放心，能不能只提供复印件？我拒绝提供原件，只提供复印件。',
+                                feedback: '正确！任何单位无权扣押个人证件，可提供复印件，但原件应妥善保管。',
+                                next: -1
+                            },
+                            {
+                                text: 'B. 提供原件',
+                                userText: '我还是觉得不太放心，能不能只提供复印件？好吧，我提供原件。',
+                                feedback: '错误！扣押证件可能会被用于非法用途，或被公司要挟。',
+                                next: -1
+                            },
+                            {
+                                text: 'C. 询问法律依据',
+                                userText: '我还是觉得不太放心，能不能只提供复印件？公司这样做有法律依据吗？',
+                                feedback: '错误！即使有法律依据，扣押证件仍然是不合理的。',
+                                next: 3
+                            },
+                            {
+                                text: 'D. 再考虑一下',
+                                userText: '我还是觉得不太放心，能不能只提供复印件？我再考虑一下。',
+                                feedback: '错误！犹豫只会让公司有更多机会说服你，应直接拒绝。',
+                                next: -1
+                            }
+                        ]
+                    },
+                    {
+                        type: 'recruiter',
+                        text: '我们这样做是符合法律规定的，你可以去查相关法律法规。我们只是暂时保管你的证件，入职一个月后就会归还，不会有任何问题。',
+                        options: [
+                            {
+                                text: 'A. 拒绝提供原件，只提供复印件',
+                                userText: '我还是觉得有风险，拒绝提供原件，只提供复印件。',
+                                feedback: '正确！任何单位无权扣押个人证件，可提供复印件，但原件应妥善保管。',
+                                next: -1
+                            },
+                            {
+                                text: 'B. 提供原件',
+                                userText: '听起来合理，我提供原件。',
+                                feedback: '错误！扣押证件可能会被用于非法用途，或被公司要挟。',
+                                next: -1
+                            }
+                        ]
+                    }
+                ]
+            },
+            dialog6: {
+                title: '虚假offer骗局',
+                dialogs: [
+                    {
+                        type: 'recruiter',
+                        text: '你好，恭喜你被我们公司录用！这是你的录用通知书，职位是市场专员，月薪8000元，福利丰厚。',
+                        options: [
+                            {
+                                text: 'A. 询问入职时间和地点',
+                                userText: '太好了，谢谢！我什么时候可以入职？能告诉我入职时间和地点吗？',
+                                feedback: '正确！应该询问入职时间和地点，同时注意是否有不合理的要求。',
+                                next: 1
+                            },
+                            {
+                                text: 'B. 立即确认入职',
+                                userText: '太好了，谢谢！我什么时候可以入职？我立即确认入职。',
+                                feedback: '错误！没有了解清楚就确认，可能会陷入虚假offer骗局。',
+                                next: 1
+                            },
+                            {
+                                text: 'C. 询问是否需要缴纳费用',
+                                userText: '太好了，谢谢！我什么时候可以入职？需要缴纳什么费用吗？',
+                                feedback: '正确！应该先询问是否需要缴纳费用，避免陷入虚假offer骗局。',
+                                next: 1
+                            },
+                            {
+                                text: 'D. 考虑一下',
+                                userText: '太好了，谢谢！我什么时候可以入职？我需要考虑一下。',
+                                feedback: '正确！应该仔细考虑，避免陷入虚假offer骗局。',
+                                next: 1
+                            }
+                        ]
+                    },
+                    {
+                        type: 'recruiter',
+                        text: '在入职前，我们需要你缴纳5000元的保证金，用于保证你会按时入职，并且在试用期内不会离职。',
+                        options: [
+                            {
+                                text: 'A. 拒绝缴纳保证金，核实公司真实性',
+                                userText: '为什么需要缴纳保证金？我之前收到的offer都没有这个要求。我拒绝缴纳保证金，需要核实公司真实性。',
+                                feedback: '正确！正规公司不会以录用为由收取保证金，这是典型的虚假offer骗局。',
+                                next: -1
+                            },
+                            {
+                                text: 'B. 询问保证金的用途',
+                                userText: '为什么需要缴纳保证金？我之前收到的offer都没有这个要求。能详细说说保证金的用途吗？',
+                                feedback: '错误！即使询问用途，这仍然是虚假offer骗局。',
+                                next: 2
+                            },
+                            {
+                                text: 'C. 考虑缴纳保证金',
+                                userText: '为什么需要缴纳保证金？我之前收到的offer都没有这个要求。我考虑缴纳保证金。',
+                                feedback: '错误！缴纳保证金后很可能无法退回，这是典型的骗局。',
+                                next: 2
+                            },
+                            {
+                                text: 'D. 回家咨询朋友',
+                                userText: '为什么需要缴纳保证金？我之前收到的offer都没有这个要求。我回家咨询朋友再决定。',
+                                feedback: '正确！应该咨询他人，避免陷入虚假offer骗局。',
+                                next: -1
+                            }
+                        ]
+                    },
+                    {
+                        type: 'recruiter',
+                        text: '这是我们公司的规定，主要是为了防止求职者接受offer后不来入职，给公司造成损失。入职后3个月，我们会全额退还保证金。',
+                        options: [
+                            {
+                                text: 'A. 拒绝缴纳保证金，核实公司真实性',
+                                userText: '可是我现在没有这么多钱，能不能入职后再交？我拒绝缴纳保证金，需要核实公司真实性。',
+                                feedback: '正确！正规公司不会以录用为由收取保证金，这是典型的虚假offer骗局。',
+                                next: -1
+                            },
+                            {
+                                text: 'B. 同意缴纳保证金',
+                                userText: '可是我现在没有这么多钱，能不能入职后再交？好吧，我同意缴纳保证金。',
+                                feedback: '错误！缴纳保证金后很可能无法退回，这是典型的骗局。',
+                                next: -1
+                            },
+                            {
+                                text: 'C. 询问是否有其他支付方式',
+                                userText: '可是我现在没有这么多钱，能不能入职后再交？有其他支付方式吗？',
+                                feedback: '错误！即使有其他支付方式，这仍然是虚假offer骗局。',
+                                next: 3
+                            },
+                            {
+                                text: 'D. 再考虑一下',
+                                userText: '可是我现在没有这么多钱，能不能入职后再交？我再考虑一下。',
+                                feedback: '正确！应该仔细考虑，避免陷入虚假offer骗局。',
+                                next: -1
+                            }
+                        ]
+                    },
+                    {
+                        type: 'recruiter',
+                        text: '我们可以帮你办理分期支付，每个月只需要还几百块。或者你可以先交一部分，入职后再交剩余的部分。我们是正规公司，不会欺骗你。',
+                        options: [
+                            {
+                                text: 'A. 拒绝缴纳保证金，核实公司真实性',
+                                userText: '我还是觉得有风险，拒绝缴纳保证金，需要核实公司真实性。',
+                                feedback: '正确！正规公司不会以录用为由收取保证金，这是典型的虚假offer骗局。',
+                                next: -1
+                            },
+                            {
+                                text: 'B. 同意缴纳保证金',
+                                userText: '听起来合理，我同意缴纳保证金。',
+                                feedback: '错误！缴纳保证金后很可能无法退回，这是典型的骗局。',
+                                next: -1
+                            }
+                        ]
+                    }
+                ]
+            }
+        };
+        
+        // 当前对话状态
+        const dialogState = {};
+        
+        // 打开对话弹窗
+        function openDialog(dialogId) {
+            // 初始化对话状态
+            dialogState[dialogId] = {
+                currentStep: 0,
+                history: []
+            };
+            
+            // 显示弹窗
+            const dialog = document.getElementById(dialogId);
+            dialog.style.display = 'block';
+            
+            // 渲染对话
+            renderDialog(dialogId);
+        }
+        
+        // 关闭对话弹窗
+        function closeDialog(dialogId) {
+            document.getElementById(dialogId).style.display = 'none';
+            // 不标记为已完成，只有通过completeScenario函数才会标记
+        }
+        
+        // 渲染对话
+        function renderDialog(dialogId) {
+            const dialog = document.getElementById(dialogId);
+            const chatContainer = dialog.querySelector('.chat-container');
+            const optionsContainer = dialog.querySelector('.options-container');
+            
+            // 清空容器
+            chatContainer.innerHTML = '';
+            optionsContainer.innerHTML = '';
+            
+            // 获取对话数据
+            const data = dialogData[dialogId];
+            const state = dialogState[dialogId];
+            
+            // 渲染对话历史
+            if (state.history) {
+                state.history.forEach(item => {
+                    // 渲染招聘者消息
+                    const recruiterDiv = document.createElement('div');
+                    recruiterDiv.className = 'chat-message recruiter-message';
+                    recruiterDiv.innerHTML = `<p>${item.recruiterText}</p>`;
+                    chatContainer.appendChild(recruiterDiv);
+                    
+                    // 渲染用户消息
+                    if (item.userText) {
+                        const userDiv = document.createElement('div');
+                        userDiv.className = 'chat-message user-message';
+                        userDiv.innerHTML = `<p>${item.userText}</p>`;
+                        chatContainer.appendChild(userDiv);
+                    }
+                });
+            }
+            
+            // 渲染当前步骤的招聘者消息
+            const currentDialog = data.dialogs[state.currentStep];
+            if (currentDialog) {
+                // 渲染招聘者消息
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `chat-message ${currentDialog.type}-message`;
+                messageDiv.innerHTML = `<p>${currentDialog.text}</p>`;
+                chatContainer.appendChild(messageDiv);
+            }
+            
+            // 检查是否需要显示选项
+            if (currentDialog && currentDialog.type === 'recruiter' && currentDialog.options) {
+                // 显示选项
+                const optionsTitle = document.createElement('h4');
+                optionsTitle.textContent = '你会怎么做？';
+                optionsContainer.appendChild(optionsTitle);
+                
+                const optionsGrid = document.createElement('div');
+                optionsGrid.className = 'options-grid';
+                
+                currentDialog.options.forEach((option, index) => {
+                    const optionBtn = document.createElement('button');
+                    optionBtn.className = 'option-btn';
+                    optionBtn.textContent = option.text;
+                    optionBtn.onclick = function() {
+                        handleOptionClick(dialogId, index);
+                    };
+                    optionsGrid.appendChild(optionBtn);
+                });
+                
+                optionsContainer.appendChild(optionsGrid);
+            }
+        }
+        
+        // 处理选项点击
+        function handleOptionClick(dialogId, optionIndex) {
+            const data = dialogData[dialogId];
+            const state = dialogState[dialogId];
+            
+            // 获取当前招聘者消息
+            const currentDialog = data.dialogs[state.currentStep];
+            
+            if (currentDialog && currentDialog.type === 'recruiter' && currentDialog.options) {
+                const selectedOption = currentDialog.options[optionIndex];
+                
+                // 保存对话历史
+                if (!state.history) {
+                    state.history = [];
+                }
+                state.history.push({
+                    recruiterText: currentDialog.text,
+                    userText: selectedOption.userText
+                });
+                
+                // 检查是否结束对话
+                if (selectedOption.next === -1) {
+                    // 显示反馈
+                    showFeedback(dialogId, selectedOption.feedback);
+                } else {
+                    // 继续对话
+                    state.currentStep = selectedOption.next;
+                    renderDialog(dialogId);
+                }
+            }
+        }
+        
+        // 显示反馈
+        function showFeedback(dialogId, feedback) {
+            const dialog = document.getElementById(dialogId);
+            const optionsContainer = dialog.querySelector('.options-container');
+            optionsContainer.innerHTML = `
+                <h4>反馈</h4>
+                <p style="background-color: #BFDEFF; padding: 15px; border-radius: 8px;">${feedback}</p>
+                <div style="display: flex; gap: 10px; margin-top: 15px;">
+                    <button class="option-btn" onclick="completeScenario('${dialogId}')">关闭</button>
+                    <button class="option-btn" onclick="openDialog('${dialogId}')">再来一次</button>
+                </div>
+            `;
+        }
+        
+        // 完成场景模拟
+        function completeScenario(dialogId) {
+            // 关闭弹窗
+            closeDialog(dialogId);
+            
+            // 为对应的场景按钮添加 completed 类
+            const scenarioIndex = dialogId.replace('dialog', '');
+            const scenarioBtn = document.querySelector(`.scenario-buttons .scenario-btn:nth-child(${scenarioIndex})`);
+            if (scenarioBtn) {
+                scenarioBtn.classList.add('completed');
+            }
+        }
+        
+        // 点击案例卡片标记为已读
+        document.addEventListener('DOMContentLoaded', function() {
+            const caseCards = document.querySelectorAll('.case-card');
+            caseCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    this.classList.add('completed');
+                });
+            });
+        });
+        
+        // 点击弹窗外部关闭
+        window.onclick = function(event) {
+            const modals = document.getElementsByClassName('dialog-modal');
+            for (let i = 0; i < modals.length; i++) {
+                if (event.target == modals[i]) {
+                    modals[i].style.display = 'none';
+                }
+            }
+        }
+    </script>
+</body>
+</html>
