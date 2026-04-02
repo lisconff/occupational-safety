@@ -3,10 +3,13 @@ package com.zhituan.backend.service.impl;
 import com.zhituan.backend.domain.model.ai.AnalysisReport;
 import com.zhituan.backend.domain.model.ai.RiskItem;
 import com.zhituan.backend.dto.AiDtos;
+import com.zhituan.backend.common.exception.BusinessException;
 import com.zhituan.backend.repository.ai.AnalysisReportRepository;
 import com.zhituan.backend.repository.ai.RiskItemRepository;
 import com.zhituan.backend.service.AiAssistantService;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -16,10 +19,17 @@ public class AiAssistantServiceImpl implements AiAssistantService {
 
     private final AnalysisReportRepository analysisReportRepository;
     private final RiskItemRepository riskItemRepository;
+    private final CozeStreamClient cozeStreamClient;
+    private final DocumentTextExtractor documentTextExtractor;
 
-    public AiAssistantServiceImpl(AnalysisReportRepository analysisReportRepository, RiskItemRepository riskItemRepository) {
+    public AiAssistantServiceImpl(AnalysisReportRepository analysisReportRepository,
+                                  RiskItemRepository riskItemRepository,
+                                  CozeStreamClient cozeStreamClient,
+                                  DocumentTextExtractor documentTextExtractor) {
         this.analysisReportRepository = analysisReportRepository;
         this.riskItemRepository = riskItemRepository;
+        this.cozeStreamClient = cozeStreamClient;
+        this.documentTextExtractor = documentTextExtractor;
     }
 
     @Override
@@ -35,6 +45,43 @@ public class AiAssistantServiceImpl implements AiAssistantService {
     @Override
     public AiDtos.AnalysisReportView evaluateJobRisk(AiDtos.AnalyzeRequest request) {
         return analyzeByType("JOB_RISK", request);
+    }
+
+    @Override
+    public AiDtos.CozeQueryResponse queryCozeAgent(AiDtos.CozeQueryRequest request) {
+        CozeStreamClient.CozeResult result = cozeStreamClient.streamRun(request.prompt(), request.sessionId());
+        return new AiDtos.CozeQueryResponse(result.answer(), result.eventCount(), result.sessionId());
+    }
+
+    @Override
+    public AiDtos.CozeFileQueryResponse queryCozeAgentWithFile(String prompt, String sessionId, MultipartFile file) {
+        if (!StringUtils.hasText(prompt) && (file == null || file.isEmpty())) {
+            throw new BusinessException("prompt 和 file 不能同时为空");
+        }
+
+        if (file == null || file.isEmpty()) {
+            CozeStreamClient.CozeResult textOnlyResult = cozeStreamClient.streamRun(prompt, sessionId);
+            return new AiDtos.CozeFileQueryResponse(
+                    textOnlyResult.answer(),
+                    textOnlyResult.eventCount(),
+                    textOnlyResult.sessionId(),
+                    null,
+                    null,
+                    0
+            );
+        }
+
+        DocumentTextExtractor.ExtractResult extracted = documentTextExtractor.extract(file);
+        String mergedPrompt = buildFilePrompt(prompt, extracted.text());
+        CozeStreamClient.CozeResult result = cozeStreamClient.streamRun(mergedPrompt, sessionId);
+        return new AiDtos.CozeFileQueryResponse(
+                result.answer(),
+                result.eventCount(),
+                result.sessionId(),
+                extracted.fileName(),
+                extracted.fileType(),
+                extracted.text().length()
+        );
     }
 
     @Override
@@ -100,5 +147,16 @@ public class AiAssistantServiceImpl implements AiAssistantService {
                         savedItem.getSuggestion()
                 ))
         );
+    }
+
+    private String buildFilePrompt(String prompt, String extractedText) {
+        StringBuilder sb = new StringBuilder();
+        if (StringUtils.hasText(prompt)) {
+            sb.append("用户补充要求：\n").append(prompt.trim()).append("\n\n");
+        } else {
+            sb.append("请基于下面上传的劳动合同或三方协议文本，做风险审查，输出主要风险点与修改建议。\n\n");
+        }
+        sb.append("文档正文：\n").append(extractedText);
+        return sb.toString();
     }
 }

@@ -22,3 +22,11 @@ spring:
     properties:
       hibernate:
         format_sql: true
+
+coze:
+  stream-url: ${COZE_STREAM_URL:https://k7zcnck7q6.coze.site/stream_run}
+  token: ${COZE_TOKEN:}
+  project-id: ${COZE_PROJECT_ID:}
+  session-id: ${COZE_SESSION_ID:}
+  connect-timeout-seconds: ${COZE_CONNECT_TIMEOUT_SECONDS:15}
+  read-timeout-seconds: ${COZE_READ_TIMEOUT_SECONDS:120}

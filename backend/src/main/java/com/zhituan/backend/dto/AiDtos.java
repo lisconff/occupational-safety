@@ -20,4 +20,20 @@ public class AiDtos {
             List<RiskItemView> riskItems
     ) {
     }
+
+    public record CozeQueryRequest(@NotBlank String prompt, String sessionId) {
+    }
+
+    public record CozeQueryResponse(String answer, Integer eventCount, String sessionId) {
+    }
+
+    public record CozeFileQueryResponse(
+            String answer,
+            Integer eventCount,
+            String sessionId,
+            String fileName,
+            String fileType,
+            Integer extractedTextLength
+    ) {
+    }
 }

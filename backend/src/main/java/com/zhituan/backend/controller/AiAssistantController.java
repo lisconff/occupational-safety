@@ -4,6 +4,8 @@ import com.zhituan.backend.common.api.ApiResponse;
 import com.zhituan.backend.dto.AiDtos;
 import com.zhituan.backend.service.AiAssistantService;
 import jakarta.validation.Valid;
+import org.springframework.http.MediaType;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -31,6 +33,20 @@ public class AiAssistantController {
     @PostMapping("/analyze/job-risk")
     public ApiResponse<AiDtos.AnalysisReportView> evaluateJobRisk(@Valid @RequestBody AiDtos.AnalyzeRequest request) {
         return ApiResponse.ok(aiAssistantService.evaluateJobRisk(request));
+    }
+
+    @PostMapping("/coze/query")
+    public ApiResponse<AiDtos.CozeQueryResponse> queryCozeAgent(@Valid @RequestBody AiDtos.CozeQueryRequest request) {
+        return ApiResponse.ok(aiAssistantService.queryCozeAgent(request));
+    }
+
+    @PostMapping(value = "/coze/query-with-file", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ApiResponse<AiDtos.CozeFileQueryResponse> queryCozeAgentWithFile(
+            @RequestPart(value = "file", required = false) MultipartFile file,
+            @RequestParam(value = "prompt", required = false) String prompt,
+            @RequestParam(value = "sessionId", required = false) String sessionId
+    ) {
+        return ApiResponse.ok(aiAssistantService.queryCozeAgentWithFile(prompt, sessionId, file));
     }
 
     @GetMapping("/reports/{userId}")

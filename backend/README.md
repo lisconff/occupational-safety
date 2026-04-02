@@ -72,3 +72,92 @@
 - 引入 Flyway 管理数据库版本
 - 把 AI 规则库独立为 RiskRule 表并实现可配置规则引擎
 - 为核心接口补充集成测试
+
+## 7. Coze 智能体接入
+
+### 7.1 配置
+推荐在环境变量或 `application-local.yml` 中配置：
+
+- `COZE_TOKEN`: Coze Bearer Token
+- `COZE_PROJECT_ID`: Coze 项目 ID
+- `COZE_SESSION_ID`: 默认会话 ID（可选，接口里也可传）
+- `COZE_STREAM_URL`: 流式地址（默认 `https://k7zcnck7q6.coze.site/stream_run`）
+
+示例（PowerShell）：
+
+```powershell
+$env:COZE_TOKEN="你的token"
+$env:COZE_PROJECT_ID="你的project_id"
+$env:COZE_SESSION_ID="你的默认session_id"
+```
+
+### 7.2 后端接口
+
+新增接口：`POST /api/ai/coze/query`
+
+请求体：
+
+```json
+{
+  "prompt": "请帮我分析这段合同文本",
+  "sessionId": "可选，不传则用默认配置"
+}
+```
+
+响应体（`data` 字段）：
+
+```json
+{
+  "answer": "智能体返回文本",
+  "eventCount": 12,
+  "sessionId": "Mfh0..."
+}
+```
+
+说明：
+- 后端会调用 Coze `text/event-stream` 并自动聚合文本。
+- 当前返回聚合后的最终文本，适合先快速接入业务页面。
+
+### 7.3 文件上传审查接口
+
+新增接口：`POST /api/ai/coze/query-with-file`
+
+请求类型：`multipart/form-data`
+
+字段：
+- `file`: 选填，支持 `pdf/doc/docx/txt`，最大 10MB
+- `prompt`: 可选，用户补充提问
+- `sessionId`: 可选，Coze 会话 ID
+
+约束：`prompt` 和 `file` 不能同时为空。
+
+响应体（`data` 字段）：
+
+```json
+{
+  "answer": "智能体返回文本",
+  "eventCount": 18,
+  "sessionId": "Mfh0...",
+  "fileName": "劳动合同.pdf",
+  "fileType": "pdf",
+  "extractedTextLength": 6321
+}
+```
+
+前端调用示例（fetch）：
+
+```javascript
+const formData = new FormData();
+formData.append('file', file);
+formData.append('prompt', '请重点检查试用期和违约金条款');
+// formData.append('sessionId', '可选');
+
+const res = await fetch('/api/ai/coze/query-with-file', {
+  method: 'POST',
+  headers: {
+    Authorization: `Bearer ${token}`
+  },
+  body: formData
+});
+const json = await res.json();
+```

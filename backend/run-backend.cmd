@@ -16,8 +16,8 @@ if not errorlevel 1 (
         echo [backend] Health: http://localhost:8090/api/health
         echo ===================================================
         echo.
-        echo [backend] Opening browser...
-        start http://localhost:8090/
+        echo [backend] Ready to accept requests.
+        :: start http://localhost:8090/
         set "EXIT_CODE=0"
         goto FINISH
 )
@@ -48,10 +48,10 @@ if defined READY (
         echo [backend] Log: %LOG_FILE%
         echo ===================================================
         echo.
-        echo [backend] Opening browser...
-        start http://localhost:8090/
+        echo [backend] Ready to accept requests.
+        :: start http://localhost:8090/
         set "EXIT_CODE=0"
-) else (
+    ) else (
         echo [backend] Failed to become ready. See log: %LOG_FILE%
         set "EXIT_CODE=1"
 )
