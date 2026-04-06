@@ -150,9 +150,16 @@
         
         /* 经典案件卡片 */
         .cases-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            display: flex;
+            flex-direction: column;
             gap: 20px;
+        }
+        
+        /* 确保左右两边的卡片大小一致 */
+        .case-card, .scenario-btn {
+            width: 100%;
+            min-height: 200px;
+            box-sizing: border-box;
         }
         
         .case-card {
@@ -162,6 +169,9 @@
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
             transition: all 0.3s ease;
             border-left: 4px solid #BFDEFF;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
         
         .case-card:hover {
@@ -171,9 +181,9 @@
         }
         
         .case-card h3 {
-            font-size: 18px;
+            font-size: 28px;
             color: #D30121;
-            margin-bottom: 10px;
+            margin-bottom: 5px;
         }
         
         .case-type {
@@ -182,32 +192,44 @@
             color: #333;
             padding: 4px 12px;
             border-radius: 12px;
-            font-size: 12px;
-            margin-bottom: 10px;
+            font-size: 16px;
+            margin-bottom: 5px;
         }
         
         .case-desc {
-            font-size: 14px;
+            font-size: 16px;
             color: #666;
             margin-bottom: 15px;
         }
         
         .case-tips {
-            font-size: 14px;
+            font-size: 18px;
             color: #333;
             font-weight: bold;
+            margin: 0;
+        }
+        
+        /* 案例详细内容 */
+        .case-details {
+            display: none;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #f0f0f0;
+        }
+        
+        .case-card.expanded .case-details {
+            display: block;
         }
         
         /* 场景模拟区 */
         .scenario-buttons {
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 20px;
         }
         
         .scenario-btn {
             background-color: white;
-            border: 1px solid #BFDEFF;
             border-radius: 8px;
             padding: 20px;
             text-align: left;
@@ -215,6 +237,10 @@
             transition: all 0.3s ease;
             position: relative;
             border-left: 4px solid #BFDEFF;
+            min-height: 186px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
         
         .scenario-btn:hover {
@@ -224,15 +250,42 @@
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
         
+        /* 场景模拟图片 */
+        .scenario-img {
+            width: 80px;
+            height: 80px;
+            border-radius: 8px;
+            margin-right: 15px;
+        }
+        
+        .scenario-header {
+            display: flex;
+            align-items: flex-start;
+            width: 100%;
+        }
+        
+        .scenario-title-container {
+            flex: 1;
+        }
+        
         .scenario-btn h3 {
-            font-size: 18px;
+            font-size: 28px;
             color: #D30121;
             margin-bottom: 5px;
         }
         
         .scenario-btn p {
-            font-size: 14px;
+            font-size: 18px;
             color: #666;
+            margin: 0;
+        }
+        
+        /* 调整案例卡片的高度 */
+        .case-card {
+            min-height: 180px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
         
         .scenario-btn.completed::after {
@@ -453,57 +506,69 @@
                 <h2 class="section-title">经典案件</h2>
                 <div class="cases-grid">
                     <!-- 案例1 -->
-                    <div class="case-card">
+                    <div class="case-card" onclick="toggleCaseDetails(this)">
                         <h3>面试收费骗局</h3>
                         <span class="case-type">收费骗局</span>
-                        <p class="case-desc">【真实案例】2024年，大学生小王在某招聘平台看到一家公司招聘行政助理，面试时被告知需要缴纳200元体检费和300元服装费，承诺入职后全额退还。小王缴费后，公司以各种理由拖延入职，最终失联。</p>
-                        <p class="case-desc">招聘方以体检费、服装费、押金等名义向求职者收取费用，收费后以各种理由拒绝录用或消失。</p>
-                        <p class="case-tips">防范要点：正规公司不会向求职者收取任何费用，遇到收费要求应立即拒绝并报警。</p>
+                        <p class="case-tips">⚠️ 防范要点：正规公司不会向求职者收取任何费用，遇到收费要求应立即拒绝并报警。</p>
+                        <div class="case-details">
+                            <p class="case-desc">【真实案例】2024年，大学生小王在某招聘平台看到一家公司招聘行政助理，面试时被告知需要缴纳200元体检费和300元服装费，承诺入职后全额退还。小王缴费后，公司以各种理由拖延入职，最终失联。</p>
+                            <p class="case-desc">招聘方以体检费、服装费、押金等名义向求职者收取费用，收费后以各种理由拒绝录用或消失。</p>
+                        </div>
                     </div>
                     
                     <!-- 案例2 -->
-                    <div class="case-card">
+                    <div class="case-card" onclick="toggleCaseDetails(this)">
                         <h3>培训贷骗局</h3>
                         <span class="case-type">贷款骗局</span>
-                        <p class="case-desc">【真实案例】2024年，多地大学生遭遇“招聘转培训贷”陷阱，近百名学生被套近300万元。招聘方以“高薪包就业”“先学后付”为诱饵，诱导求职者办理贷款，培训质量差，就业无保障。</p>
-                        <p class="case-desc">招聘方以培训为名，诱导求职者办理高额贷款，声称培训后包就业，实则培训质量差，就业无保障。</p>
-                        <p class="case-tips">防范要点：谨慎对待要求贷款的培训，核实培训机构资质，签订正规合同，注意保留相关证据。</p>
+                        <p class="case-tips">⚠️ 防范要点：谨慎对待要求贷款的培训，核实培训机构资质，签订正规合同，注意保留相关证据。</p>
+                        <div class="case-details">
+                            <p class="case-desc">【真实案例】2024年，多地大学生遭遇“招聘转培训贷”陷阱，近百名学生被套近300万元。招聘方以“高薪包就业”“先学后付”为诱饵，诱导求职者办理贷款，培训质量差，就业无保障。</p>
+                            <p class="case-desc">招聘方以培训为名，诱导求职者办理高额贷款，声称培训后包就业，实则培训质量差，就业无保障。</p>
+                        </div>
                     </div>
                     
                     <!-- 案例3 -->
-                    <div class="case-card">
+                    <div class="case-card" onclick="toggleCaseDetails(this)">
                         <h3>刷单兼职骗局</h3>
                         <span class="case-type">兼职骗局</span>
-                        <p class="case-desc">【真实案例】2024年，求职者小龚发送简历后收到“高薪邀约”，对方先让他小额刷单并返现，后要求大额刷单，完成后以各种理由拒绝返现，最终损失数千元。</p>
-                        <p class="case-desc">招聘方以刷单兼职为名，先让求职者小额刷单并返现，后要求大额刷单，完成后以各种理由拒绝返现。</p>
-                        <p class="case-tips">防范要点：刷单本身违法，任何要求先垫资的兼职都可能是骗局，不要轻易相信“日赚百元”的兼职广告。</p>
+                        <p class="case-tips">⚠️ 防范要点：刷单本身违法，任何要求先垫资的兼职都可能是骗局，不要轻易相信“日赚百元”的兼职广告。</p>
+                        <div class="case-details">
+                            <p class="case-desc">【真实案例】2024年，求职者小龚发送简历后收到“高薪邀约”，对方先让他小额刷单并返现，后要求大额刷单，完成后以各种理由拒绝返现，最终损失数千元。</p>
+                            <p class="case-desc">招聘方以刷单兼职为名，先让求职者小额刷单并返现，后要求大额刷单，完成后以各种理由拒绝返现。</p>
+                        </div>
                     </div>
                     
                     <!-- 案例4 -->
-                    <div class="case-card">
+                    <div class="case-card" onclick="toggleCaseDetails(this)">
                         <h3>虚假高薪岗位</h3>
                         <span class="case-type">虚假招聘</span>
-                        <p class="case-desc">【真实案例】2024年，大学生小李看到某公司招聘行政助理，月薪15000元，要求本科以上学历，无需工作经验。投递简历后，对方以各种理由要求缴纳费用，最终发现是虚假招聘。</p>
-                        <p class="case-desc">招聘方发布薪资远高于市场水平的岗位，吸引求职者投递简历，实则为收集个人信息或进行其他诈骗。</p>
-                        <p class="case-tips">防范要点：对薪资异常高的岗位保持警惕，核实公司资质和岗位真实性，通过正规渠道查询公司信息。</p>
+                        <p class="case-tips">⚠️ 防范要点：对薪资异常高的岗位保持警惕，核实公司资质和岗位真实性，通过正规渠道查询公司信息。</p>
+                        <div class="case-details">
+                            <p class="case-desc">【真实案例】2024年，大学生小李看到某公司招聘行政助理，月薪15000元，要求本科以上学历，无需工作经验。投递简历后，对方以各种理由要求缴纳费用，最终发现是虚假招聘。</p>
+                            <p class="case-desc">招聘方发布薪资远高于市场水平的岗位，吸引求职者投递简历，实则为收集个人信息或进行其他诈骗。</p>
+                        </div>
                     </div>
                     
                     <!-- 案例5 -->
-                    <div class="case-card">
+                    <div class="case-card" onclick="toggleCaseDetails(this)">
                         <h3>扣押证件骗局</h3>
                         <span class="case-type">证件骗局</span>
-                        <p class="case-desc">【真实案例】2024年，大学生小张在入职时，公司以办理社保、公积金为名，扣押了他的身份证和学历证书，后以此要挟他缴纳各种费用，否则不归还证件。</p>
-                        <p class="case-desc">招聘方以办理入职手续为名，扣押求职者身份证、学历证书等证件，后以此要挟求职者。</p>
-                        <p class="case-tips">防范要点：任何单位无权扣押个人证件，可提供复印件，但原件应妥善保管，遇到扣押证件的情况应立即报警。</p>
+                        <p class="case-tips">⚠️ 防范要点：任何单位无权扣押个人证件，可提供复印件，但原件应妥善保管，遇到扣押证件的情况应立即报警。</p>
+                        <div class="case-details">
+                            <p class="case-desc">【真实案例】2024年，大学生小张在入职时，公司以办理社保、公积金为名，扣押了他的身份证和学历证书，后以此要挟他缴纳各种费用，否则不归还证件。</p>
+                            <p class="case-desc">招聘方以办理入职手续为名，扣押求职者身份证、学历证书等证件，后以此要挟求职者。</p>
+                        </div>
                     </div>
                     
                     <!-- 案例6 -->
-                    <div class="case-card">
+                    <div class="case-card" onclick="toggleCaseDetails(this)">
                         <h3>虚假offer骗局</h3>
                         <span class="case-type">虚假招聘</span>
-                        <p class="case-desc">【真实案例】2024年，大学生小陈收到某公司的录用通知，要求缴纳5000元保证金，否则取消录用资格。小陈缴费后，公司失联，最终发现是虚假offer。</p>
-                        <p class="case-desc">招聘方发送虚假录用通知，要求求职者缴纳保证金或其他费用，否则取消录用资格。</p>
-                        <p class="case-tips">防范要点：收到offer后核实公司信息，正规公司不会以录用为由收取费用，遇到要求缴费的情况应谨慎核实。</p>
+                        <p class="case-tips">⚠️ 防范要点：收到offer后核实公司信息，正规公司不会以录用为由收取费用，遇到要求缴费的情况应谨慎核实。</p>
+                        <div class="case-details">
+                            <p class="case-desc">【真实案例】2024年，大学生小陈收到某公司的录用通知，要求缴纳5000元保证金，否则取消录用资格。小陈缴费后，公司失联，最终发现是虚假offer。</p>
+                            <p class="case-desc">招聘方发送虚假录用通知，要求求职者缴纳保证金或其他费用，否则取消录用资格。</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -514,38 +579,68 @@
                 <div class="scenario-buttons">
                     <!-- 场景1 -->
                     <div class="scenario-btn" onclick="openDialog('dialog1')">
-                        <h3>面试收费骗局</h3>
-                        <p>模拟面试中遇到收费要求的场景</p>
+                        <div class="scenario-header">
+                            <img src="D:\职\occupational-safety\image\1.jpg" alt="面试收费骗局" class="scenario-img">
+                            <div class="scenario-title-container">
+                                <h3>面试收费骗局</h3>
+                                <p>模拟面试中遇到收费要求的场景</p>
+                            </div>
+                        </div>
                     </div>
                     
                     <!-- 场景2 -->
                     <div class="scenario-btn" onclick="openDialog('dialog2')">
-                        <h3>培训贷骗局</h3>
-                        <p>模拟遇到培训贷款的场景</p>
+                        <div class="scenario-header">
+                            <img src="D:\职\occupational-safety\image\2.jpg" alt="培训贷骗局" class="scenario-img">
+                            <div class="scenario-title-container">
+                                <h3>培训贷骗局</h3>
+                                <p>模拟遇到培训贷款的场景</p>
+                            </div>
+                        </div>
                     </div>
                     
                     <!-- 场景3 -->
                     <div class="scenario-btn" onclick="openDialog('dialog3')">
-                        <h3>刷单兼职骗局</h3>
-                        <p>模拟遇到刷单兼职的场景</p>
+                        <div class="scenario-header">
+                            <img src="D:\职\occupational-safety\image\3.jpg" alt="刷单兼职骗局" class="scenario-img">
+                            <div class="scenario-title-container">
+                                <h3>刷单兼职骗局</h3>
+                                <p>模拟遇到刷单兼职的场景</p>
+                            </div>
+                        </div>
                     </div>
                     
                     <!-- 场景4 -->
                     <div class="scenario-btn" onclick="openDialog('dialog4')">
-                        <h3>虚假高薪岗位</h3>
-                        <p>模拟遇到虚假高薪岗位的场景</p>
+                        <div class="scenario-header">
+                            <img src="D:\职\occupational-safety\image\4.jpg" alt="虚假高薪岗位" class="scenario-img">
+                            <div class="scenario-title-container">
+                                <h3>虚假高薪岗位</h3>
+                                <p>模拟遇到虚假高薪岗位的场景</p>
+                            </div>
+                        </div>
                     </div>
                     
                     <!-- 场景5 -->
                     <div class="scenario-btn" onclick="openDialog('dialog5')">
-                        <h3>扣押证件骗局</h3>
-                        <p>模拟遇到扣押证件要求的场景</p>
+                        <div class="scenario-header">
+                            <img src="D:\职\occupational-safety\image\5.jpg" alt="扣押证件骗局" class="scenario-img">
+                            <div class="scenario-title-container">
+                                <h3>扣押证件骗局</h3>
+                                <p>模拟遇到扣押证件要求的场景</p>
+                            </div>
+                        </div>
                     </div>
                     
                     <!-- 场景6 -->
                     <div class="scenario-btn" onclick="openDialog('dialog6')">
-                        <h3>虚假offer骗局</h3>
-                        <p>模拟收到虚假offer的场景</p>
+                        <div class="scenario-header">
+                            <img src="D:\职\occupational-safety\image\6.jpg" alt="虚假offer骗局" class="scenario-img">
+                            <div class="scenario-title-container">
+                                <h3>虚假offer骗局</h3>
+                                <p>模拟收到虚假offer的场景</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -639,6 +734,11 @@
     </footer>
     
     <script>
+        // 切换案例详细内容的显示/隐藏
+        function toggleCaseDetails(element) {
+            element.classList.toggle('expanded');
+        }
+        
         // 对话数据
         const dialogData = {
             dialog1: {
