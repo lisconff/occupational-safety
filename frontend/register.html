@@ -4,131 +4,111 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>注册 - 职途安</title>
-    <link rel="stylesheet" href="style.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+        }
+        body {
+            background: linear-gradient(135deg, #F0F9FF 0%, #E6F7FF 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .register-box {
+            width: 450px;
+            backdrop-filter: blur(12px);
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 25px;
+            padding: 60px 50px;
+            box-shadow: 0 10px 35px rgba(0, 0, 0, 0.08);
+        }
+        .register-title {
+            text-align: center;
+            font-size: 28px;
+            font-weight: 700;
+            color: #1D4ED8;
+            margin-bottom: 40px;
+        }
+        .input-group {
+            margin-bottom: 25px;
+        }
+        .input-label {
+            display: block;
+            font-size: 15px;
+            color: #334155;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+        .register-input {
+            width: 100%;
+            padding: 16px 20px;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.2);
+            font-size: 16px;
+            outline: none;
+        }
+        .register-input:focus {
+            border-color: #1D4ED8;
+            background: rgba(255, 255, 255, 0.3);
+        }
+        .register-btn {
+            width: 100%;
+            padding: 18px;
+            background: #1D4ED8;
+            color: #fff;
+            border: none;
+            border-radius: 15px;
+            font-size: 17px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 10px;
+        }
+        .register-btn:hover {
+            transform: scale(1.03);
+            background: #1E40AF;
+        }
+        .link-tip {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 15px;
+            color: #64748B;
+        }
+        .link-tip a {
+            color: #1D4ED8;
+            text-decoration: none;
+            font-weight: 500;
+        }
+    </style>
 </head>
 <body>
-    <div class="auth-page">
-        <div class="auth-card">
-            <h2>注册职途安账号</h2>
-            <form id="registerForm">
-                <div class="form-group">
-                    <label for="username">用户名</label>
-                    <input type="text" id="username" name="username" placeholder="请输入用户名" required>
-                    <div class="error-message" id="usernameError">用户名长度需3-16位</div>
-                </div>
-                <div class="form-group">
-                    <label for="email">邮箱</label>
-                    <input type="email" id="email" name="email" placeholder="请输入邮箱" required>
-                    <div class="error-message" id="emailError">请输入有效的邮箱地址</div>
-                </div>
-                <div class="form-group">
-                    <label for="password">密码</label>
-                    <input type="password" id="password" name="password" placeholder="请输入密码" required>
-                    <div class="error-message" id="passwordError">密码长度需8-20位，包含字母和数字</div>
-                </div>
-                <div class="form-group">
-                    <label for="confirmPassword">确认密码</label>
-                    <input type="password" id="confirmPassword" name="confirmPassword" placeholder="请再次输入密码" required>
-                    <div class="error-message" id="confirmPasswordError">两次输入的密码不一致</div>
-                </div>
-                <button type="submit" class="btn btn-primary" style="width: 100%; padding: 12px; font-size: 16px;">注册</button>
-            </form>
-            <div class="auth-footer">
-                已有账号？<a href="login.html">立即登录</a>
-            </div>
+    <div class="register-box">
+        <h2 class="register-title">职途安 - 注册</h2>
+        <div class="input-group">
+            <label class="input-label">用户名</label>
+            <input type="text" class="register-input" placeholder="请输入用户名">
         </div>
+        <div class="input-group">
+            <label class="input-label">手机号</label>
+            <input type="text" class="register-input" placeholder="请输入手机号">
+        </div>
+        <div class="input-group">
+            <label class="input-label">设置密码</label>
+            <input type="password" class="register-input" placeholder="请输入6-16位密码">
+        </div>
+        <div class="input-group">
+            <label class="input-label">确认密码</label>
+            <input type="password" class="register-input" placeholder="请再次输入密码">
+        </div>
+        <button class="register-btn">注册</button>
+        <div class="link-tip">已有账号？<a href="login.html">立即登录</a></div>
     </div>
-
-    <script>
-        // 表单验证
-        const registerForm = document.getElementById('registerForm');
-        const usernameInput = document.getElementById('username');
-        const emailInput = document.getElementById('email');
-        const passwordInput = document.getElementById('password');
-        const confirmPasswordInput = document.getElementById('confirmPassword');
-
-        // 用户名验证
-        usernameInput.addEventListener('blur', () => {
-            const username = usernameInput.value.trim();
-            const error = document.getElementById('usernameError');
-            if (username.length < 3 || username.length > 16) {
-                error.style.display = 'block';
-            } else {
-                error.style.display = 'none';
-            }
-        });
-
-        // 邮箱验证
-        emailInput.addEventListener('blur', () => {
-            const email = emailInput.value.trim();
-            const error = document.getElementById('emailError');
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailRegex.test(email)) {
-                error.style.display = 'block';
-            } else {
-                error.style.display = 'none';
-            }
-        });
-
-        // 密码验证
-        passwordInput.addEventListener('blur', () => {
-            const password = passwordInput.value;
-            const error = document.getElementById('passwordError');
-            const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,20}$/;
-            if (!passwordRegex.test(password)) {
-                error.style.display = 'block';
-            } else {
-                error.style.display = 'none';
-            }
-        });
-
-        // 确认密码验证
-        confirmPasswordInput.addEventListener('blur', () => {
-            const password = passwordInput.value;
-            const confirmPassword = confirmPasswordInput.value;
-            const error = document.getElementById('confirmPasswordError');
-            if (password !== confirmPassword) {
-                error.style.display = 'block';
-            } else {
-                error.style.display = 'none';
-            }
-        });
-
-        // 表单提交
-        registerForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            const username = usernameInput.value.trim();
-            const password = passwordInput.value;
-            const confirmPassword = confirmPasswordInput.value;
-
-            if (password !== confirmPassword) {
-                document.getElementById('confirmPasswordError').style.display = 'block';
-                return;
-            }
-
-            try {
-                const response = await fetch('http://localhost:8090/api/auth/register', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ username, password })
-                });
-
-                const data = await response.json();
-                
-                if (data.code === 200) {
-                    alert('注册成功！系统已为您自动登录，即将跳转到首页');
-                    localStorage.setItem('token', data.data.token);
-                    localStorage.setItem('username', data.data.username);
-                    window.location.href = 'home.html';
-                } else {
-                    alert('注册失败: ' + (data.message || '未知错误'));
-                }
-            } catch (error) {
-                console.error("注册异常:", error);
-                alert("网络错误，无法连接到服务器");
-            }
-        });
-    </script>
 </body>
 </html>
