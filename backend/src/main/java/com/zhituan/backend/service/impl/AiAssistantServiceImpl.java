@@ -10,9 +10,12 @@ import com.zhituan.backend.service.AiAssistantService;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 public class AiAssistantServiceImpl implements AiAssistantService {
@@ -51,6 +54,105 @@ public class AiAssistantServiceImpl implements AiAssistantService {
     public AiDtos.CozeQueryResponse queryCozeAgent(AiDtos.CozeQueryRequest request) {
         CozeStreamClient.CozeResult result = cozeStreamClient.streamRun(request.prompt(), request.sessionId());
         return new AiDtos.CozeQueryResponse(result.answer(), result.eventCount(), result.sessionId());
+    }
+
+    @Override
+    public SseEmitter queryCozeAgentStream(AiDtos.CozeQueryRequest request) {
+        SseEmitter emitter = new SseEmitter(0L);
+
+        CompletableFuture.runAsync(() -> {
+            try {
+                emitter.send(SseEmitter.event().name("ready").data("connected"));
+
+                CozeStreamClient.CozeResult result = cozeStreamClient.streamRun(request.prompt(), request.sessionId(), chunk -> {
+                    if (!StringUtils.hasText(chunk)) {
+                        return;
+                    }
+                    try {
+                        emitter.send(SseEmitter.event().name("chunk").data(chunk));
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                });
+
+                emitter.send(SseEmitter.event()
+                        .name("done")
+                        .data(Map.of(
+                                "sessionId", result.sessionId(),
+                                "eventCount", result.eventCount(),
+                                "answer", result.answer()
+                        )));
+                emitter.complete();
+            } catch (Exception e) {
+                try {
+                    emitter.send(SseEmitter.event().name("error").data(e.getMessage()));
+                } catch (Exception ignored) {
+                }
+                emitter.completeWithError(e);
+            }
+        });
+
+        return emitter;
+    }
+
+    @Override
+    public SseEmitter queryCozeAgentWithFileStream(String prompt, String sessionId, MultipartFile file) {
+        if (!StringUtils.hasText(prompt) && (file == null || file.isEmpty())) {
+            throw new BusinessException("prompt 和 file 不能同时为空");
+        }
+
+        SseEmitter emitter = new SseEmitter(0L);
+        CompletableFuture.runAsync(() -> {
+            try {
+                emitter.send(SseEmitter.event().name("ready").data("connected"));
+
+                String mergedPrompt = prompt;
+                String fileName = null;
+                String fileType = null;
+                int extractedLen = 0;
+
+                if (file != null && !file.isEmpty()) {
+                    emitter.send(SseEmitter.event().name("phase").data("extracting"));
+                    DocumentTextExtractor.ExtractResult extracted = documentTextExtractor.extract(file);
+                    mergedPrompt = buildFilePrompt(prompt, extracted.text());
+                    fileName = extracted.fileName();
+                    fileType = extracted.fileType();
+                    extractedLen = extracted.text().length();
+                    emitter.send(SseEmitter.event().name("phase").data("calling-coze"));
+                }
+
+                CozeStreamClient.CozeResult result = cozeStreamClient.streamRun(mergedPrompt, sessionId, chunk -> {
+                    if (!StringUtils.hasText(chunk)) {
+                        return;
+                    }
+                    try {
+                        emitter.send(SseEmitter.event().name("chunk").data(chunk));
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                });
+
+                emitter.send(SseEmitter.event()
+                        .name("done")
+                        .data(Map.of(
+                                "sessionId", result.sessionId(),
+                                "eventCount", result.eventCount(),
+                                "answer", result.answer(),
+                                "fileName", fileName == null ? "" : fileName,
+                                "fileType", fileType == null ? "" : fileType,
+                                "extractedTextLength", extractedLen
+                        )));
+                emitter.complete();
+            } catch (Exception e) {
+                try {
+                    emitter.send(SseEmitter.event().name("error").data(e.getMessage()));
+                } catch (Exception ignored) {
+                }
+                emitter.completeWithError(e);
+            }
+        });
+
+        return emitter;
     }
 
     @Override
