@@ -346,7 +346,7 @@
         /* 动画容器 */
         .animation-container {
             width: 100%;
-            height: 450px;
+            height: 50vh;
             background-color: #f9f9f9;
             border-radius: 8px;
             margin-bottom: 20px;
@@ -801,111 +801,8 @@
             </div>
             <div class="animation-container">
                 <svg class="animation-svg" id="animation1" viewBox="0 0 800 600">
-                    <!-- 场景：办公室 -->
-                    <rect x="0" y="0" width="800" height="600" fill="#F5F5F5"/>
-                    <rect x="50" y="200" width="700" height="200" fill="#E0E0E0" rx="10"/>
-                    <rect x="100" y="250" width="200" height="100" fill="#FFFFFF" rx="5"/>
-                    <rect x="450" y="250" width="200" height="100" fill="#FFFFFF" rx="5"/>
-                    <rect x="150" y="300" width="100" height="50" fill="#F0F0F0"/>
-                    <rect x="500" y="300" width="100" height="50" fill="#F0F0F0"/>
-                    
-                    <!-- 背景细节 -->
-                    <rect x="300" y="150" width="200" height="40" fill="#D0D0D0" rx="5"/>
-                    <rect x="320" y="160" width="160" height="20" fill="#A0A0A0"/>
-                    <rect x="120" y="180" width="80" height="20" fill="#D0D0D0" rx="3"/>
-                    <rect x="600" y="180" width="80" height="20" fill="#D0D0D0" rx="3"/>
-                    
-                    <!-- 人物1：求职者 -->
-                    <g id="jobseeker1">
-                        <!-- 头部 -->
-                        <circle cx="200" cy="180" r="30" fill="#FFD7B5"/>
-                        <!-- 头部阴影 -->
-                        <circle cx="210" cy="190" r="30" fill="#E8C0A0" opacity="0.5"/>
-                        <!-- 头发 -->
-                        <path d="M170,160 Q170,140 200,140 Q230,140 230,160 L230,170 Q220,160 200,160 Q180,160 170,170 Z" fill="#333333"/>
-                        <!-- 头发高光 -->
-                        <path d="M180,155 Q185,145 200,145 Q215,145 220,155 L220,160 Q210,155 200,155 Q190,155 180,160 Z" fill="#555555"/>
-                        <!-- 眉毛 -->
-                        <path d="M185,170 Q190,168 195,170" stroke="#333333" stroke-width="2" fill="none"/>
-                        <path d="M205,170 Q210,168 215,170" stroke="#333333" stroke-width="2" fill="none"/>
-                        <!-- 眼睛 -->
-                        <circle cx="190" cy="175" r="3" fill="#000000"/>
-                        <circle cx="210" cy="175" r="3" fill="#000000"/>
-                        <!-- 眼睛高光 -->
-                        <circle cx="191" cy="174" r="1" fill="#FFFFFF"/>
-                        <circle cx="211" cy="174" r="1" fill="#FFFFFF"/>
-                        <!-- 鼻子 -->
-                        <path d="M200,180 L200,185" stroke="#333333" stroke-width="1" fill="none"/>
-                        <!-- 嘴巴 -->
-                        <path d="M190,190 Q200,195 210,190" stroke="#000000" stroke-width="2" fill="none"/>
-                        <!-- 身体 -->
-                        <path d="M180,210 Q190,205 200,210 Q210,205 220,210 L220,250 Q210,245 200,250 Q190,245 180,250 Z" fill="#4285F4"/>
-                        <!-- 身体阴影 -->
-                        <path d="M190,210 Q200,205 210,210 L210,245 Q200,240 190,245 Z" fill="#3367C7"/>
-                        <!-- 衣领 -->
-                        <path d="M195,210 Q200,208 205,210 L205,215 Q200,213 195,215 Z" fill="#FFFFFF"/>
-                        <!-- 裤子 -->
-                        <path d="M170,250 Q180,245 200,250 Q220,245 230,250 L230,310 Q220,305 200,310 Q180,305 170,310 Z" fill="#34A853"/>
-                        <!-- 裤子阴影 -->
-                        <path d="M180,250 Q190,245 200,250 Q210,245 220,250 L220,305 Q210,300 200,305 Q190,300 180,305 Z" fill="#2A8542"/>
-                        <!-- 手臂 -->
-                        <path d="M180,230 Q170,240 160,270" stroke="#FFD7B5" stroke-width="6" fill="none"/>
-                        <path d="M220,230 Q230,240 240,270" stroke="#FFD7B5" stroke-width="6" fill="none"/>
-                        <!-- 手臂阴影 -->
-                        <path d="M180,230 Q175,240 165,270" stroke="#E8C0A0" stroke-width="4" fill="none"/>
-                        <path d="M220,230 Q225,240 235,270" stroke="#E8C0A0" stroke-width="4" fill="none"/>
-                    </g>
-                    
-                    <!-- 人物2：招聘专员 -->
-                    <g id="recruiter1">
-                        <!-- 头部 -->
-                        <circle cx="600" cy="180" r="30" fill="#FFD7B5"/>
-                        <!-- 头部阴影 -->
-                        <circle cx="610" cy="190" r="30" fill="#E8C0A0" opacity="0.5"/>
-                        <!-- 头发 -->
-                        <path d="M570,160 Q570,140 600,140 Q630,140 630,160 L630,170 Q620,160 600,160 Q580,160 570,170 Z" fill="#555555"/>
-                        <!-- 头发高光 -->
-                        <path d="M580,155 Q585,145 600,145 Q615,145 620,155 L620,160 Q610,155 600,155 Q590,155 580,160 Z" fill="#777777"/>
-                        <!-- 眉毛 -->
-                        <path d="M585,170 Q590,168 595,170" stroke="#555555" stroke-width="2" fill="none"/>
-                        <path d="M605,170 Q610,168 615,170" stroke="#555555" stroke-width="2" fill="none"/>
-                        <!-- 眼睛 -->
-                        <circle cx="590" cy="175" r="3" fill="#000000"/>
-                        <circle cx="610" cy="175" r="3" fill="#000000"/>
-                        <!-- 眼睛高光 -->
-                        <circle cx="591" cy="174" r="1" fill="#FFFFFF"/>
-                        <circle cx="611" cy="174" r="1" fill="#FFFFFF"/>
-                        <!-- 鼻子 -->
-                        <path d="M600,180 L600,185" stroke="#555555" stroke-width="1" fill="none"/>
-                        <!-- 嘴巴 -->
-                        <path d="M590,190 Q600,190 610,190" stroke="#000000" stroke-width="2" fill="none"/>
-                        <!-- 身体 -->
-                        <path d="M580,210 Q590,205 600,210 Q610,205 620,210 L620,250 Q610,245 600,250 Q590,245 580,250 Z" fill="#DB4437"/>
-                        <!-- 身体阴影 -->
-                        <path d="M590,210 Q600,205 610,210 L610,245 Q600,240 590,245 Z" fill="#B53529"/>
-                        <!-- 衣领 -->
-                        <path d="M595,210 Q600,208 605,210 L605,215 Q600,213 595,215 Z" fill="#FFFFFF"/>
-                        <!-- 领带 -->
-                        <path d="M600,215 L595,230 L605,230 Z" fill="#FFFFFF"/>
-                        <!-- 裤子 -->
-                        <path d="M570,250 Q580,245 600,250 Q620,245 630,250 L630,310 Q620,305 600,310 Q580,305 570,310 Z" fill="#F4B400"/>
-                        <!-- 裤子阴影 -->
-                        <path d="M580,250 Q590,245 600,250 Q610,245 620,250 L620,305 Q610,300 600,305 Q590,300 580,305 Z" fill="#D89E00"/>
-                        <!-- 手臂 -->
-                        <path d="M580,230 Q570,240 560,270" stroke="#FFD7B5" stroke-width="6" fill="none"/>
-                        <path d="M620,230 Q630,240 640,270" stroke="#FFD7B5" stroke-width="6" fill="none"/>
-                        <!-- 手臂阴影 -->
-                        <path d="M580,230 Q575,240 565,270" stroke="#E8C0A0" stroke-width="4" fill="none"/>
-                        <path d="M620,230 Q625,240 635,270" stroke="#E8C0A0" stroke-width="4" fill="none"/>
-                    </g>
-                    
-                    <!-- 对话框 -->
-                    <foreignObject x="120" y="60" width="200" height="80">
-                        <div xmlns="http://www.w3.org/1999/xhtml" class="dialog-bubble">您好，请问是来面试的吗？</div>
-                    </foreignObject>
                 </svg>
             </div>
-            <div class="chat-container"></div>
             <div class="options-container"></div>
         </div>
     </div>
@@ -2115,112 +2012,112 @@
                 ]
             },
             dialog5: {
-                title: '扣押证件骗局',
+                title: '抵押骗局',
                 dialogs: [
                     {
                         type: 'recruiter',
-                        text: '你好，恭喜你通过面试，现在需要办理入职手续。请将身份证和学历证书原件交给我们，用于办理社保、公积金和档案转移。',
+                        text: '你好，我们公司正在招聘财务助理，月薪8000元。不过，由于岗位涉及财务，需要你提供房产证明作为担保，或者用身份证办理抵押。',
                         options: [
                             {
-                                text: 'A. 拒绝提供原件，只提供复印件',
-                                userText: '需要扣押原件吗？我可以提供复印件。我听说公司不应该扣押员工的证件原件。我拒绝提供原件，只提供复印件。',
-                                feedback: '正确！任何单位无权扣押个人证件，可提供复印件，但原件应妥善保管。',
+                                text: 'A. 拒绝提供抵押，转身离开',
+                                userText: '为什么需要房产证明或身份证抵押？我拒绝提供抵押，这看起来像是骗局。',
+                                feedback: '正确！正规公司不会要求求职者提供房产证明或身份证抵押，这是典型的抵押骗局。',
                                 next: -1
                             },
                             {
-                                text: 'B. 提供原件，相信公司会归还',
-                                userText: '需要扣押原件吗？我可以提供复印件。我听说公司不应该扣押员工的证件原件。好吧，我提供原件，相信公司会归还。',
-                                feedback: '错误！扣押证件可能会被用于非法用途，或被公司要挟。',
+                                text: 'B. 询问抵押的具体用途',
+                                userText: '为什么需要房产证明或身份证抵押？能说说具体用途吗？',
+                                feedback: '',
                                 next: 1
                             },
                             {
-                                text: 'C. 要求公司写收条后提供原件',
-                                userText: '需要扣押原件吗？我可以提供复印件。我听说公司不应该扣押员工的证件原件。如果我提供原件，公司能写个收条吗？',
-                                feedback: '错误！即使写收条，也不能保证证件安全，应直接拒绝提供原件。',
+                                text: 'C. 考虑提供抵押',
+                                userText: '为什么需要房产证明或身份证抵押？我考虑提供抵押。',
+                                feedback: '错误！提供抵押后可能会被用于非法用途，或被公司要挟。',
                                 next: 1
                             },
                             {
-                                text: 'D. 先回家咨询家人再决定',
-                                userText: '需要扣押原件吗？我可以提供复印件。我听说公司不应该扣押员工的证件原件。我先回家咨询家人再决定。',
-                                feedback: '错误！咨询家人可能会耽误时间，应直接拒绝这种不合理要求。',
-                                next: 1
+                                text: 'D. 回家咨询家人',
+                                userText: '为什么需要房产证明或身份证抵押？我回家咨询家人再决定。',
+                                feedback: '正确！应该咨询他人，避免陷入抵押骗局。',
+                                next: -1
                             }
                         ]
                     },
                     {
                         type: 'recruiter',
-                        text: '这是公司的规定，所有新员工都需要提交证件原件。我们需要用原件去相关部门办理手续，复印件是不行的。',
+                        text: '这是公司的规定，因为财务岗位涉及大量资金，需要一定的担保。我们只是做个形式，入职后就会解除抵押，不会有任何影响。',
                         options: [
                             {
-                                text: 'A. 拒绝提供原件，只提供复印件',
-                                userText: '可是我担心证件安全，万一丢失了怎么办？我拒绝提供原件，只提供复印件。',
-                                feedback: '正确！任何单位无权扣押个人证件，可提供复印件，但原件应妥善保管。',
+                                text: 'A. 拒绝提供抵押，离开公司',
+                                userText: '可是我没有房产，也不想用身份证抵押。我拒绝提供抵押，这看起来像是骗局。',
+                                feedback: '正确！正规公司不会要求求职者提供房产证明或身份证抵押，这是典型的抵押骗局。',
                                 next: -1
                             },
                             {
-                                text: 'B. 提供原件',
-                                userText: '可是我担心证件安全，万一丢失了怎么办？好吧，我提供原件。',
-                                feedback: '错误！扣押证件可能会被用于非法用途，或被公司要挟。',
+                                text: 'B. 同意提供抵押',
+                                userText: '可是我没有房产，也不想用身份证抵押。好吧，我同意提供抵押。',
+                                feedback: '错误！提供抵押后可能会被用于非法用途，或被公司要挟。',
                                 next: 2
                             },
                             {
-                                text: 'C. 要求公司写收条',
-                                userText: '可是我担心证件安全，万一丢失了怎么办？如果我提供原件，公司能写个收条吗？',
-                                feedback: '错误！即使写收条，也不能保证证件安全，应直接拒绝提供原件。',
+                                text: 'C. 询问是否有其他方式',
+                                userText: '可是我没有房产，也不想用身份证抵押。有其他方式吗？',
+                                feedback: '错误！即使有其他方式，这仍然是抵押骗局。',
                                 next: 2
                             },
                             {
                                 text: 'D. 再考虑一下',
-                                userText: '可是我担心证件安全，万一丢失了怎么办？我再考虑一下。',
-                                feedback: '错误！犹豫只会让公司有更多机会说服你，应直接拒绝。',
-                                next: 2
+                                userText: '可是我没有房产，也不想用身份证抵押。我再考虑一下。',
+                                feedback: '正确！应该仔细考虑，避免陷入抵押骗局。',
+                                next: -1
                             }
                         ]
                     },
                     {
                         type: 'recruiter',
-                        text: '你放心，我们会妥善保管你的证件，入职一个月后就会归还。我们是正规公司，不会拿你的证件做任何违法的事情。',
+                        text: '如果你没有房产，我们可以用你的身份证办理小额贷款作为担保，贷款金额只有5000元，入职后公司会帮你偿还，不会有任何费用。',
                         options: [
                             {
-                                text: 'A. 拒绝提供原件，只提供复印件',
-                                userText: '我还是觉得不太放心，能不能只提供复印件？我拒绝提供原件，只提供复印件。',
-                                feedback: '正确！任何单位无权扣押个人证件，可提供复印件，但原件应妥善保管。',
+                                text: 'A. 拒绝贷款，离开公司',
+                                userText: '用身份证办理贷款？这听起来像是骗局，我拒绝贷款。',
+                                feedback: '正确！正规公司不会要求求职者办理贷款作为担保，这是典型的抵押骗局。',
                                 next: -1
                             },
                             {
-                                text: 'B. 提供原件',
-                                userText: '我还是觉得不太放心，能不能只提供复印件？好吧，我提供原件。',
-                                feedback: '错误！扣押证件可能会被用于非法用途，或被公司要挟。',
+                                text: 'B. 同意办理贷款',
+                                userText: '用身份证办理贷款？好吧，我同意办理贷款。',
+                                feedback: '错误！办理贷款后你可能面临高额利息和无法就业的风险。',
                                 next: -1
                             },
                             {
-                                text: 'C. 询问法律依据',
-                                userText: '我还是觉得不太放心，能不能只提供复印件？公司这样做有法律依据吗？',
-                                feedback: '错误！即使有法律依据，扣押证件仍然是不合理的。',
+                                text: 'C. 询问贷款详情',
+                                userText: '用身份证办理贷款？能详细说说贷款的情况吗？',
+                                feedback: '错误！即使了解贷款详情，这仍然是抵押骗局。',
                                 next: 3
                             },
                             {
                                 text: 'D. 再考虑一下',
-                                userText: '我还是觉得不太放心，能不能只提供复印件？我再考虑一下。',
-                                feedback: '错误！犹豫只会让公司有更多机会说服你，应直接拒绝。',
+                                userText: '用身份证办理贷款？我再考虑一下。',
+                                feedback: '正确！应该仔细考虑，避免陷入抵押骗局。',
                                 next: -1
                             }
                         ]
                     },
                     {
                         type: 'recruiter',
-                        text: '我们这样做是符合法律规定的，你可以去查相关法律法规。我们只是暂时保管你的证件，入职一个月后就会归还，不会有任何问题。',
+                        text: '贷款手续很简单，只需要你的身份证和手机号码，我们会帮你办理，利息很低，入职后公司会全额偿还。这只是一个形式，不会影响你的信用记录。',
                         options: [
                             {
-                                text: 'A. 拒绝提供原件，只提供复印件',
-                                userText: '我还是觉得有风险，拒绝提供原件，只提供复印件。',
-                                feedback: '正确！任何单位无权扣押个人证件，可提供复印件，但原件应妥善保管。',
+                                text: 'A. 拒绝贷款，离开公司',
+                                userText: '我还是觉得有风险，拒绝贷款，这看起来像是抵押骗局。',
+                                feedback: '正确！正规公司不会要求求职者办理贷款作为担保，这是典型的抵押骗局。',
                                 next: -1
                             },
                             {
-                                text: 'B. 提供原件',
-                                userText: '听起来合理，我提供原件。',
-                                feedback: '错误！扣押证件可能会被用于非法用途，或被公司要挟。',
+                                text: 'B. 同意办理贷款',
+                                userText: '听起来不错，我同意办理贷款。',
+                                feedback: '错误！办理贷款后你可能面临高额利息和无法就业的风险。',
                                 next: -1
                             }
                         ]
@@ -2413,10 +2310,6 @@
             const svg = document.getElementById(animationId);
             if (!svg) return;
             
-            // 清空现有的对话框
-            const foreignObjects = svg.querySelectorAll('foreignObject');
-            foreignObjects.forEach(fo => fo.remove());
-            
             // 获取当前对话数据
             const data = dialogData[dialogId];
             const currentDialog = data.dialogs[step];
@@ -2434,41 +2327,21 @@
                     user: userAnimation,
                     camera: '中景，同时拍摄两个人物'
                 };
-                displayText = userAnimation.text || currentDialog.text;
+                displayText = userAnimation.userText || userAnimation.text || currentDialog.text;
                 speakerType = 'user';
             }
-            
-            // 创建新的对话框
-            const foreignObject = document.createElementNS('http://www.w3.org/2000/svg', 'foreignObject');
-            const dialogBubble = document.createElementNS('http://www.w3.org/1999/xhtml', 'div');
-            dialogBubble.className = 'dialog-bubble';
-            dialogBubble.textContent = displayText;
-            
-            // 根据说话人设置对话框位置
-            if (speakerType === 'recruiter') {
-                foreignObject.setAttribute('x', '520');
-                foreignObject.setAttribute('y', '60');
-            } else {
-                foreignObject.setAttribute('x', '120');
-                foreignObject.setAttribute('y', '60');
-            }
-            
-            foreignObject.setAttribute('width', '200');
-            foreignObject.setAttribute('height', '80');
-            foreignObject.appendChild(dialogBubble);
-            svg.appendChild(foreignObject);
             
             // 设置图片映射
             const imageMap = {
                 'dialog1': {
-                    bg: '面试收费骗局.3.jpg',
-                    user: '面试收费骗局.2.jpg',
-                    recruiter: '面试收费骗局.4.jpg'
+                    bg: '面试收费骗局.3.png',
+                    user: '面试收费骗局.2.png',
+                    recruiter: '面试收费骗局.4.png'
                 },
                 'dialog2': {
-                    bg: '培训贷骗局.3.jpg',
-                    user: '培训贷骗局.2.jpg',
-                    recruiter: '培训贷骗局.4.jpg'
+                    bg: '培训贷骗局.3.png',
+                    user: '培训贷骗局.2.png',
+                    recruiter: '培训贷骗局.4.png'
                 },
                 'dialog3': {
                     bg: '刷单兼职骗局.3.jpg',
@@ -2494,48 +2367,22 @@
             
             const currentImages = imageMap[dialogId] || imageMap['dialog1'];
             
-            // 替换SVG背景为用户提供的图片
-            const backgroundRect = svg.querySelector('rect[fill="#F5F5F5"]');
-            if (backgroundRect) {
-                backgroundRect.setAttribute('fill', 'none');
-                // 添加背景图片
-                const defs = svg.querySelector('defs');
-                if (!defs) {
-                    const newDefs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
-                    svg.insertBefore(newDefs, svg.firstChild);
-                    defs = newDefs;
-                }
-                
-                // 检查是否已有背景图片模式
-                let pattern = svg.querySelector(`#bgPattern${dialogId}`);
-                if (!pattern) {
-                    pattern = document.createElementNS('http://www.w3.org/2000/svg', 'pattern');
-                    pattern.setAttribute('id', `bgPattern${dialogId}`);
-                    pattern.setAttribute('x', '0');
-                    pattern.setAttribute('y', '0');
-                    pattern.setAttribute('width', '800');
-                    pattern.setAttribute('height', '600');
-                    pattern.setAttribute('patternUnits', 'userSpaceOnUse');
-                    
-                    const image = document.createElementNS('http://www.w3.org/2000/svg', 'image');
-                    image.setAttribute('x', '0');
-                    image.setAttribute('y', '0');
-                    image.setAttribute('width', '800');
-                    image.setAttribute('height', '450');
-                    image.setAttribute('preserveAspectRatio', 'xMidYMid meet');
-                    image.setAttribute('href', `../image/${currentImages.bg}`);
-                    
-                    pattern.appendChild(image);
-                    defs.appendChild(pattern);
-                }
-                
-                // 更新背景矩形的填充为图片模式
-                backgroundRect.setAttribute('fill', `url(#bgPattern${dialogId})`);
-            }
+            // 清空SVG内容
+            svg.innerHTML = '';
             
-            // 移除现有的SVG人物
-            const existingImages = svg.querySelectorAll('image[href*="../image/"]');
-            existingImages.forEach(img => img.remove());
+            // 添加背景图片
+            const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+            svg.appendChild(defs);
+            
+            // 直接添加背景图片，不使用pattern
+            const bgImage = document.createElementNS('http://www.w3.org/2000/svg', 'image');
+            bgImage.setAttribute('x', '0');
+            bgImage.setAttribute('y', '0');
+            bgImage.setAttribute('width', '100%');
+            bgImage.setAttribute('height', '100%');
+            bgImage.setAttribute('preserveAspectRatio', 'xMidYMid slice');
+            bgImage.setAttribute('href', `../image/${currentImages.bg}`);
+            svg.appendChild(bgImage);
             
             // 添加用户图片
             const userImage = document.createElementNS('http://www.w3.org/2000/svg', 'image');
@@ -2554,6 +2401,26 @@
             recruiterImage.setAttribute('height', '200');
             recruiterImage.setAttribute('href', `../image/${currentImages.recruiter}`);
             svg.appendChild(recruiterImage);
+            
+            // 创建新的对话框
+            const foreignObject = document.createElementNS('http://www.w3.org/2000/svg', 'foreignObject');
+            const dialogBubble = document.createElementNS('http://www.w3.org/1999/xhtml', 'div');
+            dialogBubble.className = 'dialog-bubble';
+            dialogBubble.textContent = displayText;
+            
+            // 根据说话人设置对话框位置
+            if (speakerType === 'recruiter') {
+                foreignObject.setAttribute('x', '520');
+                foreignObject.setAttribute('y', '60');
+            } else {
+                foreignObject.setAttribute('x', '120');
+                foreignObject.setAttribute('y', '60');
+            }
+            
+            foreignObject.setAttribute('width', '200');
+            foreignObject.setAttribute('height', '80');
+            foreignObject.appendChild(dialogBubble);
+            svg.appendChild(foreignObject);
         }
         
         // 渲染对话
