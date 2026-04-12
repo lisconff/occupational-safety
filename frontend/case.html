@@ -494,6 +494,95 @@
             text-decoration: underline;
         }
         
+        /* 游戏界面样式 */
+        .game-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .game-overlay.show {
+            display: flex;
+        }
+        
+        .game-container {
+            position: relative;
+            width: 60%;
+            max-width: 800px;
+            height: 0;
+            padding-bottom: 45%;
+            max-height: 600px;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .game-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+        
+        .exit-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 35px;
+            height: 35px;
+            background-color: #D30121;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .exit-btn:hover {
+            background-color: #B0001C;
+            transform: scale(1.1);
+        }
+        
+        .start-game-btn {
+            position: absolute;
+            bottom: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 25px 50px;
+            font-size: 28px;
+            font-weight: bold;
+            background-color: #D30121;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            z-index: 5;
+        }
+        
+        .start-game-btn:hover {
+            background-color: #B0001C;
+            transform: translateX(-50%) translateY(-8px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+        }
+        
         /* 响应式设计 */
         @media (max-width: 768px) {
             .nav-container {
@@ -624,7 +713,7 @@
                 <h2 class="section-title">场景模拟</h2>
                 <div class="scenario-buttons">
                     <!-- 场景1 -->
-                    <div class="scenario-btn" onclick="openDialog('dialog1')">
+                    <div class="scenario-btn" onclick="showGameInterface('dialog1')">
                         <div class="scenario-header">
                             <img src="D:\职\occupational-safety\image\1.jpg" alt="面试收费骗局" class="scenario-img">
                             <div class="scenario-title-container">
@@ -635,7 +724,7 @@
                     </div>
                     
                     <!-- 场景2 -->
-                    <div class="scenario-btn" onclick="openDialog('dialog2')">
+                    <div class="scenario-btn" onclick="showGameInterface('dialog2')">
                         <div class="scenario-header">
                             <img src="D:\职\occupational-safety\image\2.jpg" alt="培训贷骗局" class="scenario-img">
                             <div class="scenario-title-container">
@@ -646,7 +735,7 @@
                     </div>
                     
                     <!-- 场景3 -->
-                    <div class="scenario-btn" onclick="openDialog('dialog3')">
+                    <div class="scenario-btn" onclick="showGameInterface('dialog3')">
                         <div class="scenario-header">
                             <img src="D:\职\occupational-safety\image\3.jpg" alt="刷单兼职骗局" class="scenario-img">
                             <div class="scenario-title-container">
@@ -657,7 +746,7 @@
                     </div>
                     
                     <!-- 场景4 -->
-                    <div class="scenario-btn" onclick="openDialog('dialog4')">
+                    <div class="scenario-btn" onclick="showGameInterface('dialog4')">
                         <div class="scenario-header">
                             <img src="D:\职\occupational-safety\image\4.jpg" alt="虚假高薪岗位" class="scenario-img">
                             <div class="scenario-title-container">
@@ -668,18 +757,18 @@
                     </div>
                     
                     <!-- 场景5 -->
-                    <div class="scenario-btn" onclick="openDialog('dialog5')">
+                    <div class="scenario-btn" onclick="showGameInterface('dialog5')">
                         <div class="scenario-header">
-                            <img src="D:\职\occupational-safety\image\5.jpg" alt="扣押证件骗局" class="scenario-img">
+                            <img src="D:\职\occupational-safety\image\5.jpg" alt="抵押骗局" class="scenario-img">
                             <div class="scenario-title-container">
-                                <h3>扣押证件骗局</h3>
-                                <p>模拟遇到扣押证件要求的场景</p>
+                                <h3>抵押骗局</h3>
+                                <p>模拟遇到抵押要求的场景</p>
                             </div>
                         </div>
                     </div>
                     
                     <!-- 场景6 -->
-                    <div class="scenario-btn" onclick="openDialog('dialog6')">
+                    <div class="scenario-btn" onclick="showGameInterface('dialog6')">
                         <div class="scenario-header">
                             <img src="D:\职\occupational-safety\image\6.jpg" alt="虚假offer骗局" class="scenario-img">
                             <div class="scenario-title-container">
@@ -694,7 +783,16 @@
     </div>
     
     <!-- 场景对话弹窗 -->
-    <!-- 对话1：面试收费 -->
+    <!-- 游戏界面 -->
+    <div class="game-overlay" id="gameOverlay">
+        <div class="game-container">
+            <button class="exit-btn" onclick="closeGameInterface()">×</button>
+            <div class="game-background" id="gameBackground"></div>
+            <button class="start-game-btn" id="startGameBtn" onclick="startGame()">开始游戏</button>
+        </div>
+    </div>
+    
+    <!-- 对话弹窗 -->
     <div id="dialog1" class="dialog-modal">
         <div class="dialog-content">
             <div class="dialog-header">
@@ -702,9 +800,9 @@
                 <button class="close-btn" onclick="closeDialog('dialog1')">&times;</button>
             </div>
             <div class="animation-container">
-                <svg class="animation-svg" id="animation1" viewBox="0 0 800 450">
+                <svg class="animation-svg" id="animation1" viewBox="0 0 800 600">
                     <!-- 场景：办公室 -->
-                    <rect x="0" y="0" width="800" height="450" fill="#F5F5F5"/>
+                    <rect x="0" y="0" width="800" height="600" fill="#F5F5F5"/>
                     <rect x="50" y="200" width="700" height="200" fill="#E0E0E0" rx="10"/>
                     <rect x="100" y="250" width="200" height="100" fill="#FFFFFF" rx="5"/>
                     <rect x="450" y="250" width="200" height="100" fill="#FFFFFF" rx="5"/>
@@ -820,9 +918,9 @@
                 <button class="close-btn" onclick="closeDialog('dialog2')">&times;</button>
             </div>
             <div class="animation-container">
-                <svg class="animation-svg" id="animation2" viewBox="0 0 800 450">
+                <svg class="animation-svg" id="animation2" viewBox="0 0 800 600">
                     <!-- 场景：办公室 -->
-                    <rect x="0" y="0" width="800" height="450" fill="#F5F5F5"/>
+                    <rect x="0" y="0" width="800" height="600" fill="#F5F5F5"/>
                     <rect x="50" y="200" width="700" height="200" fill="#E0E0E0" rx="10"/>
                     <rect x="100" y="250" width="200" height="100" fill="#FFFFFF" rx="5"/>
                     <rect x="450" y="250" width="200" height="100" fill="#FFFFFF" rx="5"/>
@@ -894,9 +992,9 @@
                 <button class="close-btn" onclick="closeDialog('dialog3')">&times;</button>
             </div>
             <div class="animation-container">
-                <svg class="animation-svg" id="animation3" viewBox="0 0 800 450">
+                <svg class="animation-svg" id="animation3" viewBox="0 0 800 600">
                     <!-- 场景：家庭环境 -->
-                    <rect x="0" y="0" width="800" height="450" fill="#F5F5F5"/>
+                    <rect x="0" y="0" width="800" height="600" fill="#F5F5F5"/>
                     <rect x="50" y="200" width="700" height="200" fill="#E0E0E0" rx="10"/>
                     <rect x="100" y="250" width="300" height="150" fill="#FFFFFF" rx="5"/>
                     
@@ -945,9 +1043,9 @@
                 <button class="close-btn" onclick="closeDialog('dialog4')">&times;</button>
             </div>
             <div class="animation-container">
-                <svg class="animation-svg" id="animation4" viewBox="0 0 800 450">
+                <svg class="animation-svg" id="animation4" viewBox="0 0 800 600">
                     <!-- 场景：办公室 -->
-                    <rect x="0" y="0" width="800" height="450" fill="#F5F5F5"/>
+                    <rect x="0" y="0" width="800" height="600" fill="#F5F5F5"/>
                     <rect x="50" y="200" width="700" height="200" fill="#E0E0E0" rx="10"/>
                     <rect x="100" y="250" width="200" height="100" fill="#FFFFFF" rx="5"/>
                     <rect x="450" y="250" width="200" height="100" fill="#FFFFFF" rx="5"/>
@@ -1019,9 +1117,9 @@
                 <button class="close-btn" onclick="closeDialog('dialog5')">&times;</button>
             </div>
             <div class="animation-container">
-                <svg class="animation-svg" id="animation5" viewBox="0 0 800 450">
+                <svg class="animation-svg" id="animation5" viewBox="0 0 800 600">
                     <!-- 场景：办公室 -->
-                    <rect x="0" y="0" width="800" height="450" fill="#F5F5F5"/>
+                    <rect x="0" y="0" width="800" height="600" fill="#F5F5F5"/>
                     <rect x="50" y="200" width="700" height="200" fill="#E0E0E0" rx="10"/>
                     <rect x="100" y="250" width="200" height="100" fill="#FFFFFF" rx="5"/>
                     <rect x="450" y="250" width="200" height="100" fill="#FFFFFF" rx="5"/>
@@ -1093,9 +1191,9 @@
                 <button class="close-btn" onclick="closeDialog('dialog6')">&times;</button>
             </div>
             <div class="animation-container">
-                <svg class="animation-svg" id="animation6" viewBox="0 0 800 450">
+                <svg class="animation-svg" id="animation6" viewBox="0 0 800 600">
                     <!-- 场景：办公室 -->
-                    <rect x="0" y="0" width="800" height="450" fill="#F5F5F5"/>
+                    <rect x="0" y="0" width="800" height="600" fill="#F5F5F5"/>
                     <rect x="50" y="200" width="700" height="200" fill="#E0E0E0" rx="10"/>
                     <rect x="100" y="250" width="200" height="100" fill="#FFFFFF" rx="5"/>
                     <rect x="450" y="250" width="200" height="100" fill="#FFFFFF" rx="5"/>
@@ -2247,6 +2345,46 @@
         // 当前对话状态
         const dialogState = {};
         
+        // 存储当前对话ID
+        let currentDialogId = '';
+        
+        // 显示游戏界面
+        function showGameInterface(dialogId) {
+            currentDialogId = dialogId;
+            const gameOverlay = document.getElementById('gameOverlay');
+            const gameBackground = document.getElementById('gameBackground');
+            
+            // 设置游戏背景图（使用用户提供的具体图片路径）
+            const imageMap = {
+                'dialog1': '面试收费骗局.1.jpg',
+                'dialog2': '培训贷骗局.1.jpg',
+                'dialog3': '刷单兼职骗局.1.jpg',
+                'dialog4': '虚假高薪岗位.1.jpg',
+                'dialog5': '抵押骗局.1.jpg',
+                'dialog6': '虚假offer骗局.1.jpg'
+            };
+            
+            const imageName = imageMap[dialogId] || '面试收费骗局.1.jpg';
+            gameBackground.style.backgroundImage = `url('../image/${imageName}')`;
+            
+            gameOverlay.classList.add('show');
+        }
+        
+        // 开始游戏
+        function startGame() {
+            const gameOverlay = document.getElementById('gameOverlay');
+            gameOverlay.classList.remove('show');
+            
+            // 打开对应的对话
+            openDialog(currentDialogId);
+        }
+        
+        // 关闭游戏界面
+        function closeGameInterface() {
+            const gameOverlay = document.getElementById('gameOverlay');
+            gameOverlay.classList.remove('show');
+        }
+        
         // 打开对话弹窗
         function openDialog(dialogId) {
             // 初始化对话状态
@@ -2320,94 +2458,102 @@
             foreignObject.appendChild(dialogBubble);
             svg.appendChild(foreignObject);
             
-            // 更新人物动画
-            if (animationData) {
-                // 更新用户表情和动作
-                if (animationData.user) {
-                    const jobseeker = svg.querySelector(`#jobseeker${dialogId.replace('dialog', '')}`);
-                    if (jobseeker) {
-                        // 更新用户嘴巴形状（根据表情）
-                        const userMouth = jobseeker.querySelector('path[stroke="#000000"][fill="none"]');
-                        if (userMouth) {
-                            switch (animationData.user.expression) {
-                                case '微笑':
-                                    userMouth.setAttribute('d', 'M190,190 Q200,195 210,190');
-                                    break;
-                                case '惊讶':
-                                    userMouth.setAttribute('d', 'M190,190 Q200,200 210,190');
-                                    break;
-                                case '疑惑':
-                                    userMouth.setAttribute('d', 'M190,190 Q200,192 210,190');
-                                    break;
-                                case '坚定':
-                                    userMouth.setAttribute('d', 'M190,190 Q200,190 210,190');
-                                    break;
-                                case '为难':
-                                    userMouth.setAttribute('d', 'M190,190 Q200,193 210,190');
-                                    break;
-                                case '期待':
-                                    userMouth.setAttribute('d', 'M190,190 Q200,195 210,190');
-                                    break;
-                                case '质疑':
-                                    userMouth.setAttribute('d', 'M190,190 Q200,192 210,190');
-                                    break;
-                                case '思考':
-                                    userMouth.setAttribute('d', 'M190,190 Q200,192 210,190');
-                                    break;
-                                case '犹豫':
-                                    userMouth.setAttribute('d', 'M190,190 Q200,193 210,190');
-                                    break;
-                                case '不满':
-                                    userMouth.setAttribute('d', 'M190,190 Q200,185 210,190');
-                                    break;
-                                case '放松':
-                                    userMouth.setAttribute('d', 'M190,190 Q200,195 210,190');
-                                    break;
-                                case '无奈':
-                                    userMouth.setAttribute('d', 'M190,190 Q200,192 210,190');
-                                    break;
-                                case '谨慎':
-                                    userMouth.setAttribute('d', 'M190,190 Q200,190 210,190');
-                                    break;
-                            }
-                        }
-                        
-                        // 更新用户动作（这里可以根据需要添加更复杂的动作）
-                        console.log('User action:', animationData.user.action);
-                    }
+            // 设置图片映射
+            const imageMap = {
+                'dialog1': {
+                    bg: '面试收费骗局.3.jpg',
+                    user: '面试收费骗局.2.jpg',
+                    recruiter: '面试收费骗局.4.jpg'
+                },
+                'dialog2': {
+                    bg: '培训贷骗局.3.jpg',
+                    user: '培训贷骗局.2.jpg',
+                    recruiter: '培训贷骗局.4.jpg'
+                },
+                'dialog3': {
+                    bg: '刷单兼职骗局.3.jpg',
+                    user: '刷单兼职骗局.2.jpg',
+                    recruiter: '刷单兼职骗局.4.jpg'
+                },
+                'dialog4': {
+                    bg: '虚假高薪岗位.3.jpg',
+                    user: '虚假高薪岗位.2.jpg',
+                    recruiter: '虚假高薪岗位.4.jpg'
+                },
+                'dialog5': {
+                    bg: '抵押骗局.3.jpg',
+                    user: '抵押骗局.2.jpg',
+                    recruiter: '抵押骗局.4.jpg'
+                },
+                'dialog6': {
+                    bg: '虚假offer骗局.3.jpg',
+                    user: '虚假offer骗局.2.jpg',
+                    recruiter: '虚假offer骗局.4.jpg'
+                }
+            };
+            
+            const currentImages = imageMap[dialogId] || imageMap['dialog1'];
+            
+            // 替换SVG背景为用户提供的图片
+            const backgroundRect = svg.querySelector('rect[fill="#F5F5F5"]');
+            if (backgroundRect) {
+                backgroundRect.setAttribute('fill', 'none');
+                // 添加背景图片
+                const defs = svg.querySelector('defs');
+                if (!defs) {
+                    const newDefs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+                    svg.insertBefore(newDefs, svg.firstChild);
+                    defs = newDefs;
                 }
                 
-                // 更新招聘者表情和动作
-                if (animationData.recruiter) {
-                    const recruiter = svg.querySelector(`#recruiter${dialogId.replace('dialog', '')}`);
-                    if (recruiter) {
-                        // 更新招聘者嘴巴形状（根据表情）
-                        const recruiterMouth = recruiter.querySelector('path[stroke="#000000"][fill="none"]');
-                        if (recruiterMouth) {
-                            switch (animationData.recruiter.expression) {
-                                case '微笑':
-                                    recruiterMouth.setAttribute('d', 'M590,190 Q600,195 610,190');
-                                    break;
-                                case '严肃':
-                                    recruiterMouth.setAttribute('d', 'M590,190 Q600,190 610,190');
-                                    break;
-                                case '耐心':
-                                    recruiterMouth.setAttribute('d', 'M590,190 Q600,193 610,190');
-                                    break;
-                                case '傲慢':
-                                    recruiterMouth.setAttribute('d', 'M590,190 Q600,188 610,190');
-                                    break;
-                                case '热情':
-                                    recruiterMouth.setAttribute('d', 'M590,190 Q600,195 610,190');
-                                    break;
-                            }
-                        }
-                        
-                        // 更新招聘者动作（这里可以根据需要添加更复杂的动作）
-                        console.log('Recruiter action:', animationData.recruiter.action);
-                    }
+                // 检查是否已有背景图片模式
+                let pattern = svg.querySelector(`#bgPattern${dialogId}`);
+                if (!pattern) {
+                    pattern = document.createElementNS('http://www.w3.org/2000/svg', 'pattern');
+                    pattern.setAttribute('id', `bgPattern${dialogId}`);
+                    pattern.setAttribute('x', '0');
+                    pattern.setAttribute('y', '0');
+                    pattern.setAttribute('width', '800');
+                    pattern.setAttribute('height', '600');
+                    pattern.setAttribute('patternUnits', 'userSpaceOnUse');
+                    
+                    const image = document.createElementNS('http://www.w3.org/2000/svg', 'image');
+                    image.setAttribute('x', '0');
+                    image.setAttribute('y', '0');
+                    image.setAttribute('width', '800');
+                    image.setAttribute('height', '450');
+                    image.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+                    image.setAttribute('href', `../image/${currentImages.bg}`);
+                    
+                    pattern.appendChild(image);
+                    defs.appendChild(pattern);
                 }
+                
+                // 更新背景矩形的填充为图片模式
+                backgroundRect.setAttribute('fill', `url(#bgPattern${dialogId})`);
             }
+            
+            // 移除现有的SVG人物
+            const existingImages = svg.querySelectorAll('image[href*="../image/"]');
+            existingImages.forEach(img => img.remove());
+            
+            // 添加用户图片
+            const userImage = document.createElementNS('http://www.w3.org/2000/svg', 'image');
+            userImage.setAttribute('x', '150');
+            userImage.setAttribute('y', '120');
+            userImage.setAttribute('width', '120');
+            userImage.setAttribute('height', '200');
+            userImage.setAttribute('href', `../image/${currentImages.user}`);
+            svg.appendChild(userImage);
+            
+            // 添加招聘者图片
+            const recruiterImage = document.createElementNS('http://www.w3.org/2000/svg', 'image');
+            recruiterImage.setAttribute('x', '530');
+            recruiterImage.setAttribute('y', '120');
+            recruiterImage.setAttribute('width', '120');
+            recruiterImage.setAttribute('height', '200');
+            recruiterImage.setAttribute('href', `../image/${currentImages.recruiter}`);
+            svg.appendChild(recruiterImage);
         }
         
         // 渲染对话
