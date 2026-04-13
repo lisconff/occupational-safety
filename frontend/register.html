@@ -91,24 +91,85 @@
 <body>
     <div class="register-box">
         <h2 class="register-title">职途安 - 注册</h2>
-        <div class="input-group">
-            <label class="input-label">用户名</label>
-            <input type="text" class="register-input" placeholder="请输入用户名">
-        </div>
-        <div class="input-group">
-            <label class="input-label">手机号</label>
-            <input type="text" class="register-input" placeholder="请输入手机号">
-        </div>
-        <div class="input-group">
-            <label class="input-label">设置密码</label>
-            <input type="password" class="register-input" placeholder="请输入6-16位密码">
-        </div>
-        <div class="input-group">
-            <label class="input-label">确认密码</label>
-            <input type="password" class="register-input" placeholder="请再次输入密码">
-        </div>
-        <button class="register-btn">注册</button>
+        <form id="registerForm">
+            <div class="input-group">
+                <label class="input-label" for="registerUsername">用户名</label>
+                <input id="registerUsername" type="text" class="register-input" placeholder="请输入用户名" required>
+            </div>
+            <div class="input-group">
+                <label class="input-label" for="registerPhone">手机号</label>
+                <input id="registerPhone" type="text" class="register-input" placeholder="请输入手机号（仅展示，不提交后端）">
+            </div>
+            <div class="input-group">
+                <label class="input-label" for="registerPassword">设置密码</label>
+                <input id="registerPassword" type="password" class="register-input" placeholder="请输入6-16位密码" required>
+            </div>
+            <div class="input-group">
+                <label class="input-label" for="registerConfirmPassword">确认密码</label>
+                <input id="registerConfirmPassword" type="password" class="register-input" placeholder="请再次输入密码" required>
+            </div>
+            <div id="registerError" style="display:none;color:#B91C1C;font-size:14px;margin-top:-8px;margin-bottom:12px;"></div>
+            <button class="register-btn" type="submit">注册</button>
+        </form>
         <div class="link-tip">已有账号？<a href="login.html">立即登录</a></div>
     </div>
+
+    <script>
+        const API_BASE = "http://localhost:8090";
+        const registerForm = document.getElementById("registerForm");
+        const registerError = document.getElementById("registerError");
+        const usernameInput = document.getElementById("registerUsername");
+        const passwordInput = document.getElementById("registerPassword");
+        const confirmPasswordInput = document.getElementById("registerConfirmPassword");
+
+        function setError(message) {
+            registerError.textContent = message;
+            registerError.style.display = "block";
+        }
+
+        registerForm.addEventListener("submit", async function (event) {
+            event.preventDefault();
+            registerError.style.display = "none";
+
+            const username = usernameInput.value.trim();
+            const password = passwordInput.value;
+            const confirmPassword = confirmPasswordInput.value;
+
+            if (username.length < 3 || username.length > 16) {
+                setError("用户名长度需为3-16位");
+                return;
+            }
+
+            if (password.length < 6 || password.length > 16) {
+                setError("密码长度需为6-16位");
+                return;
+            }
+
+            if (password !== confirmPassword) {
+                setError("两次输入的密码不一致");
+                return;
+            }
+
+            try {
+                const response = await fetch(API_BASE + "/api/auth/register", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ username: username, password: password })
+                });
+
+                const data = await response.json();
+                if (data && data.code === 200 && data.data && data.data.token) {
+                    localStorage.setItem("token", data.data.token);
+                    localStorage.setItem("username", data.data.username || username);
+                    window.location.href = "home.html";
+                    return;
+                }
+
+                setError((data && data.message) ? data.message : "注册失败，请稍后重试");
+            } catch (error) {
+                setError("网络错误，请确认后端服务已启动");
+            }
+        });
+    </script>
 </body>
 </html>
