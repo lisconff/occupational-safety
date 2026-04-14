@@ -338,9 +338,50 @@
             border-radius: 8px;
             padding: 30px;
             width: 90%;
-            max-width: 600px;
+            max-width: 800px;
             max-height: 80vh;
             overflow-y: auto;
+        }
+        
+        /* 动画容器 */
+        .animation-container {
+            width: 100%;
+            height: 50vh;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* SVG动画样式 */
+        .animation-svg {
+            width: 100%;
+            height: 100%;
+        }
+        
+        /* 对话框样式 */
+        .dialog-bubble {
+            position: absolute;
+            background-color: white;
+            border-radius: 16px;
+            padding: 10px 15px;
+            max-width: 200px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            font-size: 14px;
+            line-height: 1.4;
+        }
+        
+        .dialog-bubble::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 20px;
+            width: 0;
+            height: 0;
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-top: 8px solid white;
         }
         
         .dialog-header {
@@ -365,6 +406,11 @@
         
         .chat-container {
             margin-bottom: 20px;
+            display: none;
+        }
+        
+        .chat-container.show {
+            display: block;
         }
         
         .chat-message {
@@ -446,6 +492,95 @@
         
         .footer-links a:hover {
             text-decoration: underline;
+        }
+        
+        /* 游戏界面样式 */
+        .game-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .game-overlay.show {
+            display: flex;
+        }
+        
+        .game-container {
+            position: relative;
+            width: 60%;
+            max-width: 800px;
+            height: 0;
+            padding-bottom: 45%;
+            max-height: 600px;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .game-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+        
+        .exit-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 35px;
+            height: 35px;
+            background-color: #D30121;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .exit-btn:hover {
+            background-color: #B0001C;
+            transform: scale(1.1);
+        }
+        
+        .start-game-btn {
+            position: absolute;
+            bottom: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 25px 50px;
+            font-size: 28px;
+            font-weight: bold;
+            background-color: #D30121;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            z-index: 5;
+        }
+        
+        .start-game-btn:hover {
+            background-color: #B0001C;
+            transform: translateX(-50%) translateY(-8px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
         }
         
         /* 响应式设计 */
@@ -578,7 +713,7 @@
                 <h2 class="section-title">场景模拟</h2>
                 <div class="scenario-buttons">
                     <!-- 场景1 -->
-                    <div class="scenario-btn" onclick="openDialog('dialog1')">
+                    <div class="scenario-btn" onclick="showGameInterface('dialog1')">
                         <div class="scenario-header">
                             <img src="D:\职\occupational-safety\image\1.jpg" alt="面试收费骗局" class="scenario-img">
                             <div class="scenario-title-container">
@@ -589,7 +724,7 @@
                     </div>
                     
                     <!-- 场景2 -->
-                    <div class="scenario-btn" onclick="openDialog('dialog2')">
+                    <div class="scenario-btn" onclick="showGameInterface('dialog2')">
                         <div class="scenario-header">
                             <img src="D:\职\occupational-safety\image\2.jpg" alt="培训贷骗局" class="scenario-img">
                             <div class="scenario-title-container">
@@ -600,7 +735,7 @@
                     </div>
                     
                     <!-- 场景3 -->
-                    <div class="scenario-btn" onclick="openDialog('dialog3')">
+                    <div class="scenario-btn" onclick="showGameInterface('dialog3')">
                         <div class="scenario-header">
                             <img src="D:\职\occupational-safety\image\3.jpg" alt="刷单兼职骗局" class="scenario-img">
                             <div class="scenario-title-container">
@@ -611,7 +746,7 @@
                     </div>
                     
                     <!-- 场景4 -->
-                    <div class="scenario-btn" onclick="openDialog('dialog4')">
+                    <div class="scenario-btn" onclick="showGameInterface('dialog4')">
                         <div class="scenario-header">
                             <img src="D:\职\occupational-safety\image\4.jpg" alt="虚假高薪岗位" class="scenario-img">
                             <div class="scenario-title-container">
@@ -622,18 +757,18 @@
                     </div>
                     
                     <!-- 场景5 -->
-                    <div class="scenario-btn" onclick="openDialog('dialog5')">
+                    <div class="scenario-btn" onclick="showGameInterface('dialog5')">
                         <div class="scenario-header">
-                            <img src="D:\职\occupational-safety\image\5.jpg" alt="扣押证件骗局" class="scenario-img">
+                            <img src="D:\职\occupational-safety\image\5.jpg" alt="抵押骗局" class="scenario-img">
                             <div class="scenario-title-container">
-                                <h3>扣押证件骗局</h3>
-                                <p>模拟遇到扣押证件要求的场景</p>
+                                <h3>抵押骗局</h3>
+                                <p>模拟遇到抵押要求的场景</p>
                             </div>
                         </div>
                     </div>
                     
                     <!-- 场景6 -->
-                    <div class="scenario-btn" onclick="openDialog('dialog6')">
+                    <div class="scenario-btn" onclick="showGameInterface('dialog6')">
                         <div class="scenario-header">
                             <img src="D:\职\occupational-safety\image\6.jpg" alt="虚假offer骗局" class="scenario-img">
                             <div class="scenario-title-container">
@@ -648,14 +783,26 @@
     </div>
     
     <!-- 场景对话弹窗 -->
-    <!-- 对话1：面试收费 -->
+    <!-- 游戏界面 -->
+    <div class="game-overlay" id="gameOverlay">
+        <div class="game-container">
+            <button class="exit-btn" onclick="closeGameInterface()">×</button>
+            <div class="game-background" id="gameBackground"></div>
+            <button class="start-game-btn" id="startGameBtn" onclick="startGame()">开始游戏</button>
+        </div>
+    </div>
+    
+    <!-- 对话弹窗 -->
     <div id="dialog1" class="dialog-modal">
         <div class="dialog-content">
             <div class="dialog-header">
                 <h3>面试收费骗局</h3>
                 <button class="close-btn" onclick="closeDialog('dialog1')">&times;</button>
             </div>
-            <div class="chat-container"></div>
+            <div class="animation-container">
+                <svg class="animation-svg" id="animation1" viewBox="0 0 800 600">
+                </svg>
+            </div>
             <div class="options-container"></div>
         </div>
     </div>
@@ -666,6 +813,68 @@
             <div class="dialog-header">
                 <h3>培训贷骗局</h3>
                 <button class="close-btn" onclick="closeDialog('dialog2')">&times;</button>
+            </div>
+            <div class="animation-container">
+                <svg class="animation-svg" id="animation2" viewBox="0 0 800 600">
+                    <!-- 场景：办公室 -->
+                    <rect x="0" y="0" width="800" height="600" fill="#F5F5F5"/>
+                    <rect x="50" y="200" width="700" height="200" fill="#E0E0E0" rx="10"/>
+                    <rect x="100" y="250" width="200" height="100" fill="#FFFFFF" rx="5"/>
+                    <rect x="450" y="250" width="200" height="100" fill="#FFFFFF" rx="5"/>
+                    <rect x="150" y="300" width="100" height="50" fill="#F0F0F0"/>
+                    <rect x="500" y="300" width="100" height="50" fill="#F0F0F0"/>
+                    
+                    <!-- 背景细节 -->
+                    <rect x="300" y="150" width="200" height="40" fill="#D0D0D0" rx="5"/>
+                    <rect x="320" y="160" width="160" height="20" fill="#A0A0A0"/>
+                    <rect x="120" y="180" width="80" height="20" fill="#D0D0D0" rx="3"/>
+                    <rect x="600" y="180" width="80" height="20" fill="#D0D0D0" rx="3"/>
+                    
+                    <!-- 人物1：求职者 -->
+                    <g id="jobseeker2">
+                        <!-- 头部 -->
+                        <circle cx="200" cy="180" r="30" fill="#FFD7B5"/>
+                        <!-- 头发 -->
+                        <path d="M170,160 Q170,140 200,140 Q230,140 230,160 L230,170 Q220,160 200,160 Q180,160 170,170 Z" fill="#333333"/>
+                        <!-- 眼睛 -->
+                        <circle cx="190" cy="175" r="3" fill="#000000"/>
+                        <circle cx="210" cy="175" r="3" fill="#000000"/>
+                        <!-- 嘴巴 -->
+                        <path d="M190,190 Q200,195 210,190" stroke="#000000" stroke-width="2" fill="none"/>
+                        <!-- 身体 -->
+                        <path d="M180,210 Q190,205 200,210 Q210,205 220,210 L220,250 Q210,245 200,250 Q190,245 180,250 Z" fill="#4285F4"/>
+                        <!-- 裤子 -->
+                        <path d="M170,250 Q180,245 200,250 Q220,245 230,250 L230,310 Q220,305 200,310 Q180,305 170,310 Z" fill="#34A853"/>
+                        <!-- 手臂 -->
+                        <line x1="180" y1="230" x2="160" y2="270" stroke="#FFD7B5" stroke-width="6"/>
+                        <line x1="220" y1="230" x2="240" y2="270" stroke="#FFD7B5" stroke-width="6"/>
+                    </g>
+                    
+                    <!-- 人物2：招聘专员 -->
+                    <g id="recruiter2">
+                        <!-- 头部 -->
+                        <circle cx="600" cy="180" r="30" fill="#FFD7B5"/>
+                        <!-- 头发 -->
+                        <path d="M570,160 Q570,140 600,140 Q630,140 630,160 L630,170 Q620,160 600,160 Q580,160 570,170 Z" fill="#555555"/>
+                        <!-- 眼睛 -->
+                        <circle cx="590" cy="175" r="3" fill="#000000"/>
+                        <circle cx="610" cy="175" r="3" fill="#000000"/>
+                        <!-- 嘴巴 -->
+                        <path d="M590,190 Q600,190 610,190" stroke="#000000" stroke-width="2" fill="none"/>
+                        <!-- 身体 -->
+                        <path d="M580,210 Q590,205 600,210 Q610,205 620,210 L620,250 Q610,245 600,250 Q590,245 580,250 Z" fill="#DB4437"/>
+                        <!-- 裤子 -->
+                        <path d="M570,250 Q580,245 600,250 Q620,245 630,250 L630,310 Q620,305 600,310 Q580,305 570,310 Z" fill="#F4B400"/>
+                        <!-- 手臂 -->
+                        <line x1="580" y1="230" x2="560" y2="270" stroke="#FFD7B5" stroke-width="6"/>
+                        <line x1="620" y1="230" x2="640" y2="270" stroke="#FFD7B5" stroke-width="6"/>
+                    </g>
+                    
+                    <!-- 对话框 -->
+                    <foreignObject x="520" y="60" width="200" height="80">
+                        <div xmlns="http://www.w3.org/1999/xhtml" class="dialog-bubble">我们提供免费培训，培训后包就业。</div>
+                    </foreignObject>
+                </svg>
             </div>
             <div class="chat-container"></div>
             <div class="options-container"></div>
@@ -679,6 +888,45 @@
                 <h3>刷单兼职骗局</h3>
                 <button class="close-btn" onclick="closeDialog('dialog3')">&times;</button>
             </div>
+            <div class="animation-container">
+                <svg class="animation-svg" id="animation3" viewBox="0 0 800 600">
+                    <!-- 场景：家庭环境 -->
+                    <rect x="0" y="0" width="800" height="600" fill="#F5F5F5"/>
+                    <rect x="50" y="200" width="700" height="200" fill="#E0E0E0" rx="10"/>
+                    <rect x="100" y="250" width="300" height="150" fill="#FFFFFF" rx="5"/>
+                    
+                    <!-- 背景细节 -->
+                    <rect x="300" y="150" width="200" height="40" fill="#D0D0D0" rx="5"/>
+                    <rect x="320" y="160" width="160" height="20" fill="#A0A0A0"/>
+                    <rect x="120" y="180" width="80" height="20" fill="#D0D0D0" rx="3"/>
+                    <rect x="600" y="180" width="80" height="20" fill="#D0D0D0" rx="3"/>
+                    
+                    <!-- 人物1：兼职者 -->
+                    <g id="jobseeker3">
+                        <!-- 头部 -->
+                        <circle cx="250" cy="180" r="30" fill="#FFD7B5"/>
+                        <!-- 头发 -->
+                        <path d="M220,160 Q220,140 250,140 Q280,140 280,160 L280,170 Q270,160 250,160 Q230,160 220,170 Z" fill="#333333"/>
+                        <!-- 眼睛 -->
+                        <circle cx="240" cy="175" r="3" fill="#000000"/>
+                        <circle cx="260" cy="175" r="3" fill="#000000"/>
+                        <!-- 嘴巴 -->
+                        <path d="M240,190 Q250,195 260,190" stroke="#000000" stroke-width="2" fill="none"/>
+                        <!-- 身体 -->
+                        <path d="M230,210 Q240,205 250,210 Q260,205 270,210 L270,250 Q260,245 250,250 Q240,245 230,250 Z" fill="#4285F4"/>
+                        <!-- 裤子 -->
+                        <path d="M220,250 Q230,245 250,250 Q270,245 280,250 L280,310 Q270,305 250,310 Q230,305 220,310 Z" fill="#34A853"/>
+                        <!-- 手臂 -->
+                        <line x1="230" y1="230" x2="210" y2="270" stroke="#FFD7B5" stroke-width="6"/>
+                        <line x1="270" y1="230" x2="290" y2="270" stroke="#FFD7B5" stroke-width="6"/>
+                    </g>
+                    
+                    <!-- 对话框 -->
+                    <foreignObject x="170" y="60" width="200" height="80">
+                        <div xmlns="http://www.w3.org/1999/xhtml" class="dialog-bubble">刷单兼职，日赚百元，轻松简单！</div>
+                    </foreignObject>
+                </svg>
+            </div>
             <div class="chat-container"></div>
             <div class="options-container"></div>
         </div>
@@ -690,6 +938,68 @@
             <div class="dialog-header">
                 <h3>虚假高薪岗位</h3>
                 <button class="close-btn" onclick="closeDialog('dialog4')">&times;</button>
+            </div>
+            <div class="animation-container">
+                <svg class="animation-svg" id="animation4" viewBox="0 0 800 600">
+                    <!-- 场景：办公室 -->
+                    <rect x="0" y="0" width="800" height="600" fill="#F5F5F5"/>
+                    <rect x="50" y="200" width="700" height="200" fill="#E0E0E0" rx="10"/>
+                    <rect x="100" y="250" width="200" height="100" fill="#FFFFFF" rx="5"/>
+                    <rect x="450" y="250" width="200" height="100" fill="#FFFFFF" rx="5"/>
+                    <rect x="150" y="300" width="100" height="50" fill="#F0F0F0"/>
+                    <rect x="500" y="300" width="100" height="50" fill="#F0F0F0"/>
+                    
+                    <!-- 背景细节 -->
+                    <rect x="300" y="150" width="200" height="40" fill="#D0D0D0" rx="5"/>
+                    <rect x="320" y="160" width="160" height="20" fill="#A0A0A0"/>
+                    <rect x="120" y="180" width="80" height="20" fill="#D0D0D0" rx="3"/>
+                    <rect x="600" y="180" width="80" height="20" fill="#D0D0D0" rx="3"/>
+                    
+                    <!-- 人物1：求职者 -->
+                    <g id="jobseeker4">
+                        <!-- 头部 -->
+                        <circle cx="200" cy="180" r="30" fill="#FFD7B5"/>
+                        <!-- 头发 -->
+                        <path d="M170,160 Q170,140 200,140 Q230,140 230,160 L230,170 Q220,160 200,160 Q180,160 170,170 Z" fill="#333333"/>
+                        <!-- 眼睛 -->
+                        <circle cx="190" cy="175" r="3" fill="#000000"/>
+                        <circle cx="210" cy="175" r="3" fill="#000000"/>
+                        <!-- 嘴巴 -->
+                        <path d="M190,190 Q200,195 210,190" stroke="#000000" stroke-width="2" fill="none"/>
+                        <!-- 身体 -->
+                        <path d="M180,210 Q190,205 200,210 Q210,205 220,210 L220,250 Q210,245 200,250 Q190,245 180,250 Z" fill="#4285F4"/>
+                        <!-- 裤子 -->
+                        <path d="M170,250 Q180,245 200,250 Q220,245 230,250 L230,310 Q220,305 200,310 Q180,305 170,310 Z" fill="#34A853"/>
+                        <!-- 手臂 -->
+                        <line x1="180" y1="230" x2="160" y2="270" stroke="#FFD7B5" stroke-width="6"/>
+                        <line x1="220" y1="230" x2="240" y2="270" stroke="#FFD7B5" stroke-width="6"/>
+                    </g>
+                    
+                    <!-- 人物2：招聘专员 -->
+                    <g id="recruiter4">
+                        <!-- 头部 -->
+                        <circle cx="600" cy="180" r="30" fill="#FFD7B5"/>
+                        <!-- 头发 -->
+                        <path d="M570,160 Q570,140 600,140 Q630,140 630,160 L630,170 Q620,160 600,160 Q580,160 570,170 Z" fill="#555555"/>
+                        <!-- 眼睛 -->
+                        <circle cx="590" cy="175" r="3" fill="#000000"/>
+                        <circle cx="610" cy="175" r="3" fill="#000000"/>
+                        <!-- 嘴巴 -->
+                        <path d="M590,190 Q600,190 610,190" stroke="#000000" stroke-width="2" fill="none"/>
+                        <!-- 身体 -->
+                        <path d="M580,210 Q590,205 600,210 Q610,205 620,210 L620,250 Q610,245 600,250 Q590,245 580,250 Z" fill="#DB4437"/>
+                        <!-- 裤子 -->
+                        <path d="M570,250 Q580,245 600,250 Q620,245 630,250 L630,310 Q620,305 600,310 Q580,305 570,310 Z" fill="#F4B400"/>
+                        <!-- 手臂 -->
+                        <line x1="580" y1="230" x2="560" y2="270" stroke="#FFD7B5" stroke-width="6"/>
+                        <line x1="620" y1="230" x2="640" y2="270" stroke="#FFD7B5" stroke-width="6"/>
+                    </g>
+                    
+                    <!-- 对话框 -->
+                    <foreignObject x="520" y="60" width="200" height="80">
+                        <div xmlns="http://www.w3.org/1999/xhtml" class="dialog-bubble">我们提供月薪15000的行政助理岗位。</div>
+                    </foreignObject>
+                </svg>
             </div>
             <div class="chat-container"></div>
             <div class="options-container"></div>
@@ -703,6 +1013,68 @@
                 <h3>扣押证件骗局</h3>
                 <button class="close-btn" onclick="closeDialog('dialog5')">&times;</button>
             </div>
+            <div class="animation-container">
+                <svg class="animation-svg" id="animation5" viewBox="0 0 800 600">
+                    <!-- 场景：办公室 -->
+                    <rect x="0" y="0" width="800" height="600" fill="#F5F5F5"/>
+                    <rect x="50" y="200" width="700" height="200" fill="#E0E0E0" rx="10"/>
+                    <rect x="100" y="250" width="200" height="100" fill="#FFFFFF" rx="5"/>
+                    <rect x="450" y="250" width="200" height="100" fill="#FFFFFF" rx="5"/>
+                    <rect x="150" y="300" width="100" height="50" fill="#F0F0F0"/>
+                    <rect x="500" y="300" width="100" height="50" fill="#F0F0F0"/>
+                    
+                    <!-- 背景细节 -->
+                    <rect x="300" y="150" width="200" height="40" fill="#D0D0D0" rx="5"/>
+                    <rect x="320" y="160" width="160" height="20" fill="#A0A0A0"/>
+                    <rect x="120" y="180" width="80" height="20" fill="#D0D0D0" rx="3"/>
+                    <rect x="600" y="180" width="80" height="20" fill="#D0D0D0" rx="3"/>
+                    
+                    <!-- 人物1：求职者 -->
+                    <g id="jobseeker5">
+                        <!-- 头部 -->
+                        <circle cx="200" cy="180" r="30" fill="#FFD7B5"/>
+                        <!-- 头发 -->
+                        <path d="M170,160 Q170,140 200,140 Q230,140 230,160 L230,170 Q220,160 200,160 Q180,160 170,170 Z" fill="#333333"/>
+                        <!-- 眼睛 -->
+                        <circle cx="190" cy="175" r="3" fill="#000000"/>
+                        <circle cx="210" cy="175" r="3" fill="#000000"/>
+                        <!-- 嘴巴 -->
+                        <path d="M190,190 Q200,195 210,190" stroke="#000000" stroke-width="2" fill="none"/>
+                        <!-- 身体 -->
+                        <path d="M180,210 Q190,205 200,210 Q210,205 220,210 L220,250 Q210,245 200,250 Q190,245 180,250 Z" fill="#4285F4"/>
+                        <!-- 裤子 -->
+                        <path d="M170,250 Q180,245 200,250 Q220,245 230,250 L230,310 Q220,305 200,310 Q180,305 170,310 Z" fill="#34A853"/>
+                        <!-- 手臂 -->
+                        <line x1="180" y1="230" x2="160" y2="270" stroke="#FFD7B5" stroke-width="6"/>
+                        <line x1="220" y1="230" x2="240" y2="270" stroke="#FFD7B5" stroke-width="6"/>
+                    </g>
+                    
+                    <!-- 人物2：招聘专员 -->
+                    <g id="recruiter5">
+                        <!-- 头部 -->
+                        <circle cx="600" cy="180" r="30" fill="#FFD7B5"/>
+                        <!-- 头发 -->
+                        <path d="M570,160 Q570,140 600,140 Q630,140 630,160 L630,170 Q620,160 600,160 Q580,160 570,170 Z" fill="#555555"/>
+                        <!-- 眼睛 -->
+                        <circle cx="590" cy="175" r="3" fill="#000000"/>
+                        <circle cx="610" cy="175" r="3" fill="#000000"/>
+                        <!-- 嘴巴 -->
+                        <path d="M590,190 Q600,190 610,190" stroke="#000000" stroke-width="2" fill="none"/>
+                        <!-- 身体 -->
+                        <path d="M580,210 Q590,205 600,210 Q610,205 620,210 L620,250 Q610,245 600,250 Q590,245 580,250 Z" fill="#DB4437"/>
+                        <!-- 裤子 -->
+                        <path d="M570,250 Q580,245 600,250 Q620,245 630,250 L630,310 Q620,305 600,310 Q580,305 570,310 Z" fill="#F4B400"/>
+                        <!-- 手臂 -->
+                        <line x1="580" y1="230" x2="560" y2="270" stroke="#FFD7B5" stroke-width="6"/>
+                        <line x1="620" y1="230" x2="640" y2="270" stroke="#FFD7B5" stroke-width="6"/>
+                    </g>
+                    
+                    <!-- 对话框 -->
+                    <foreignObject x="520" y="60" width="200" height="80">
+                        <div xmlns="http://www.w3.org/1999/xhtml" class="dialog-bubble">请把您的身份证和学历证书原件给我们。</div>
+                    </foreignObject>
+                </svg>
+            </div>
             <div class="chat-container"></div>
             <div class="options-container"></div>
         </div>
@@ -714,6 +1086,68 @@
             <div class="dialog-header">
                 <h3>虚假offer骗局</h3>
                 <button class="close-btn" onclick="closeDialog('dialog6')">&times;</button>
+            </div>
+            <div class="animation-container">
+                <svg class="animation-svg" id="animation6" viewBox="0 0 800 600">
+                    <!-- 场景：办公室 -->
+                    <rect x="0" y="0" width="800" height="600" fill="#F5F5F5"/>
+                    <rect x="50" y="200" width="700" height="200" fill="#E0E0E0" rx="10"/>
+                    <rect x="100" y="250" width="200" height="100" fill="#FFFFFF" rx="5"/>
+                    <rect x="450" y="250" width="200" height="100" fill="#FFFFFF" rx="5"/>
+                    <rect x="150" y="300" width="100" height="50" fill="#F0F0F0"/>
+                    <rect x="500" y="300" width="100" height="50" fill="#F0F0F0"/>
+                    
+                    <!-- 背景细节 -->
+                    <rect x="300" y="150" width="200" height="40" fill="#D0D0D0" rx="5"/>
+                    <rect x="320" y="160" width="160" height="20" fill="#A0A0A0"/>
+                    <rect x="120" y="180" width="80" height="20" fill="#D0D0D0" rx="3"/>
+                    <rect x="600" y="180" width="80" height="20" fill="#D0D0D0" rx="3"/>
+                    
+                    <!-- 人物1：求职者 -->
+                    <g id="jobseeker6">
+                        <!-- 头部 -->
+                        <circle cx="200" cy="180" r="30" fill="#FFD7B5"/>
+                        <!-- 头发 -->
+                        <path d="M170,160 Q170,140 200,140 Q230,140 230,160 L230,170 Q220,160 200,160 Q180,160 170,170 Z" fill="#333333"/>
+                        <!-- 眼睛 -->
+                        <circle cx="190" cy="175" r="3" fill="#000000"/>
+                        <circle cx="210" cy="175" r="3" fill="#000000"/>
+                        <!-- 嘴巴 -->
+                        <path d="M190,190 Q200,195 210,190" stroke="#000000" stroke-width="2" fill="none"/>
+                        <!-- 身体 -->
+                        <path d="M180,210 Q190,205 200,210 Q210,205 220,210 L220,250 Q210,245 200,250 Q190,245 180,250 Z" fill="#4285F4"/>
+                        <!-- 裤子 -->
+                        <path d="M170,250 Q180,245 200,250 Q220,245 230,250 L230,310 Q220,305 200,310 Q180,305 170,310 Z" fill="#34A853"/>
+                        <!-- 手臂 -->
+                        <line x1="180" y1="230" x2="160" y2="270" stroke="#FFD7B5" stroke-width="6"/>
+                        <line x1="220" y1="230" x2="240" y2="270" stroke="#FFD7B5" stroke-width="6"/>
+                    </g>
+                    
+                    <!-- 人物2：招聘专员 -->
+                    <g id="recruiter6">
+                        <!-- 头部 -->
+                        <circle cx="600" cy="180" r="30" fill="#FFD7B5"/>
+                        <!-- 头发 -->
+                        <path d="M570,160 Q570,140 600,140 Q630,140 630,160 L630,170 Q620,160 600,160 Q580,160 570,170 Z" fill="#555555"/>
+                        <!-- 眼睛 -->
+                        <circle cx="590" cy="175" r="3" fill="#000000"/>
+                        <circle cx="610" cy="175" r="3" fill="#000000"/>
+                        <!-- 嘴巴 -->
+                        <path d="M590,190 Q600,190 610,190" stroke="#000000" stroke-width="2" fill="none"/>
+                        <!-- 身体 -->
+                        <path d="M580,210 Q590,205 600,210 Q610,205 620,210 L620,250 Q610,245 600,250 Q590,245 580,250 Z" fill="#DB4437"/>
+                        <!-- 裤子 -->
+                        <path d="M570,250 Q580,245 600,250 Q620,245 630,250 L630,310 Q620,305 600,310 Q580,305 570,310 Z" fill="#F4B400"/>
+                        <!-- 手臂 -->
+                        <line x1="580" y1="230" x2="560" y2="270" stroke="#FFD7B5" stroke-width="6"/>
+                        <line x1="620" y1="230" x2="640" y2="270" stroke="#FFD7B5" stroke-width="6"/>
+                    </g>
+                    
+                    <!-- 对话框 -->
+                    <foreignObject x="520" y="60" width="200" height="80">
+                        <div xmlns="http://www.w3.org/1999/xhtml" class="dialog-bubble">恭喜您被录用了，请缴纳5000元保证金。</div>
+                    </foreignObject>
+                </svg>
             </div>
             <div class="chat-container"></div>
             <div class="options-container"></div>
@@ -747,28 +1181,61 @@
                     {
                         type: 'recruiter',
                         text: '你好，欢迎来面试我们公司的销售经理职位。首先，我们需要收取200元的面试费用，用于安排后续的培训和体检。',
+                        animation: {
+                            recruiter: {
+                                expression: '微笑',
+                                action: '双手交叉放在桌子上',
+                                position: '坐在椅子上，身体微微前倾'
+                            },
+                            user: {
+                                expression: '惊讶',
+                                action: '微微皱眉',
+                                position: '坐在椅子上，身体挺直'
+                            },
+                            camera: '中景，同时拍摄两个人物'
+                        },
                         options: [
                             {
                                 text: 'A. 拒绝缴费，转身离开',
                                 userText: '我拒绝缴费，这是不合理的要求。',
+                                userAnimation: {
+                                    expression: '坚定',
+                                    action: '站起来准备离开',
+                                    position: '从椅子上起身'
+                                },
                                 feedback: '正确！正规公司不会向求职者收取任何费用，遇到这种情况应立即拒绝并离开。',
                                 next: -1 // 结束对话
                             },
                             {
                                 text: 'B. 为什么要收费？其他公司都不收费',
                                 userText: '为什么要收费？其他公司都不收费。',
+                                userAnimation: {
+                                    expression: '疑惑',
+                                    action: '歪头',
+                                    position: '坐在椅子上，身体微微前倾'
+                                },
                                 feedback: '',
                                 next: 1
                             },
                             {
                                 text: 'C. 这个费用是做什么用的？',
                                 userText: '这个费用是做什么用的？',
+                                userAnimation: {
+                                    expression: '好奇',
+                                    action: '双手放在桌子上',
+                                    position: '坐在椅子上，身体微微前倾'
+                                },
                                 feedback: '',
                                 next: 2
                             },
                             {
                                 text: 'D. 我没带钱，能不能下次再交？',
                                 userText: '我没带钱，能不能下次再交？',
+                                userAnimation: {
+                                    expression: '为难',
+                                    action: '摸口袋',
+                                    position: '坐在椅子上，身体向后靠'
+                                },
                                 feedback: '',
                                 next: 3
                             }
@@ -777,28 +1244,61 @@
                     {
                         type: 'recruiter',
                         text: '这是我们公司的规定，所有求职者都需要缴纳。其他公司不收费是因为他们规模小，没有我们这样的培训体系。',
+                        animation: {
+                            recruiter: {
+                                expression: '严肃',
+                                action: '双手交叉放在桌子上',
+                                position: '坐在椅子上，身体挺直'
+                            },
+                            user: {
+                                expression: '疑惑',
+                                action: '皱眉',
+                                position: '坐在椅子上，身体微微前倾'
+                            },
+                            camera: '中景，同时拍摄两个人物'
+                        },
                         options: [
                             {
                                 text: 'A. 坚持拒绝，离开公司',
                                 userText: '我坚持拒绝，这是不合理的要求。',
+                                userAnimation: {
+                                    expression: '坚定',
+                                    action: '站起来准备离开',
+                                    position: '从椅子上起身'
+                                },
                                 feedback: '正确！正规公司不会向求职者收取任何费用，遇到这种情况应立即拒绝并离开。',
                                 next: -1
                             },
                             {
                                 text: 'B. 那为什么其他大公司也不收费？',
                                 userText: '那为什么其他大公司也不收费？',
+                                userAnimation: {
+                                    expression: '质疑',
+                                    action: '双手摊开',
+                                    position: '坐在椅子上，身体微微前倾'
+                                },
                                 feedback: '',
                                 next: 4
                             },
                             {
                                 text: 'C. 这个费用入职后会退还吗？',
                                 userText: '这个费用入职后会退还吗？',
+                                userAnimation: {
+                                    expression: '期待',
+                                    action: '双手放在桌子上',
+                                    position: '坐在椅子上，身体微微前倾'
+                                },
                                 feedback: '',
                                 next: 5
                             },
                             {
                                 text: 'D. 我可以只交一部分吗？',
                                 userText: '我可以只交一部分吗？',
+                                userAnimation: {
+                                    expression: '为难',
+                                    action: '搓手',
+                                    position: '坐在椅子上，身体向后靠'
+                                },
                                 feedback: '',
                                 next: 6
                             }
@@ -1512,112 +2012,112 @@
                 ]
             },
             dialog5: {
-                title: '扣押证件骗局',
+                title: '抵押骗局',
                 dialogs: [
                     {
                         type: 'recruiter',
-                        text: '你好，恭喜你通过面试，现在需要办理入职手续。请将身份证和学历证书原件交给我们，用于办理社保、公积金和档案转移。',
+                        text: '你好，我们公司正在招聘财务助理，月薪8000元。不过，由于岗位涉及财务，需要你提供房产证明作为担保，或者用身份证办理抵押。',
                         options: [
                             {
-                                text: 'A. 拒绝提供原件，只提供复印件',
-                                userText: '需要扣押原件吗？我可以提供复印件。我听说公司不应该扣押员工的证件原件。我拒绝提供原件，只提供复印件。',
-                                feedback: '正确！任何单位无权扣押个人证件，可提供复印件，但原件应妥善保管。',
+                                text: 'A. 拒绝提供抵押，转身离开',
+                                userText: '为什么需要房产证明或身份证抵押？我拒绝提供抵押，这看起来像是骗局。',
+                                feedback: '正确！正规公司不会要求求职者提供房产证明或身份证抵押，这是典型的抵押骗局。',
                                 next: -1
                             },
                             {
-                                text: 'B. 提供原件，相信公司会归还',
-                                userText: '需要扣押原件吗？我可以提供复印件。我听说公司不应该扣押员工的证件原件。好吧，我提供原件，相信公司会归还。',
-                                feedback: '错误！扣押证件可能会被用于非法用途，或被公司要挟。',
+                                text: 'B. 询问抵押的具体用途',
+                                userText: '为什么需要房产证明或身份证抵押？能说说具体用途吗？',
+                                feedback: '',
                                 next: 1
                             },
                             {
-                                text: 'C. 要求公司写收条后提供原件',
-                                userText: '需要扣押原件吗？我可以提供复印件。我听说公司不应该扣押员工的证件原件。如果我提供原件，公司能写个收条吗？',
-                                feedback: '错误！即使写收条，也不能保证证件安全，应直接拒绝提供原件。',
+                                text: 'C. 考虑提供抵押',
+                                userText: '为什么需要房产证明或身份证抵押？我考虑提供抵押。',
+                                feedback: '错误！提供抵押后可能会被用于非法用途，或被公司要挟。',
                                 next: 1
                             },
                             {
-                                text: 'D. 先回家咨询家人再决定',
-                                userText: '需要扣押原件吗？我可以提供复印件。我听说公司不应该扣押员工的证件原件。我先回家咨询家人再决定。',
-                                feedback: '错误！咨询家人可能会耽误时间，应直接拒绝这种不合理要求。',
-                                next: 1
+                                text: 'D. 回家咨询家人',
+                                userText: '为什么需要房产证明或身份证抵押？我回家咨询家人再决定。',
+                                feedback: '正确！应该咨询他人，避免陷入抵押骗局。',
+                                next: -1
                             }
                         ]
                     },
                     {
                         type: 'recruiter',
-                        text: '这是公司的规定，所有新员工都需要提交证件原件。我们需要用原件去相关部门办理手续，复印件是不行的。',
+                        text: '这是公司的规定，因为财务岗位涉及大量资金，需要一定的担保。我们只是做个形式，入职后就会解除抵押，不会有任何影响。',
                         options: [
                             {
-                                text: 'A. 拒绝提供原件，只提供复印件',
-                                userText: '可是我担心证件安全，万一丢失了怎么办？我拒绝提供原件，只提供复印件。',
-                                feedback: '正确！任何单位无权扣押个人证件，可提供复印件，但原件应妥善保管。',
+                                text: 'A. 拒绝提供抵押，离开公司',
+                                userText: '可是我没有房产，也不想用身份证抵押。我拒绝提供抵押，这看起来像是骗局。',
+                                feedback: '正确！正规公司不会要求求职者提供房产证明或身份证抵押，这是典型的抵押骗局。',
                                 next: -1
                             },
                             {
-                                text: 'B. 提供原件',
-                                userText: '可是我担心证件安全，万一丢失了怎么办？好吧，我提供原件。',
-                                feedback: '错误！扣押证件可能会被用于非法用途，或被公司要挟。',
+                                text: 'B. 同意提供抵押',
+                                userText: '可是我没有房产，也不想用身份证抵押。好吧，我同意提供抵押。',
+                                feedback: '错误！提供抵押后可能会被用于非法用途，或被公司要挟。',
                                 next: 2
                             },
                             {
-                                text: 'C. 要求公司写收条',
-                                userText: '可是我担心证件安全，万一丢失了怎么办？如果我提供原件，公司能写个收条吗？',
-                                feedback: '错误！即使写收条，也不能保证证件安全，应直接拒绝提供原件。',
+                                text: 'C. 询问是否有其他方式',
+                                userText: '可是我没有房产，也不想用身份证抵押。有其他方式吗？',
+                                feedback: '错误！即使有其他方式，这仍然是抵押骗局。',
                                 next: 2
                             },
                             {
                                 text: 'D. 再考虑一下',
-                                userText: '可是我担心证件安全，万一丢失了怎么办？我再考虑一下。',
-                                feedback: '错误！犹豫只会让公司有更多机会说服你，应直接拒绝。',
-                                next: 2
+                                userText: '可是我没有房产，也不想用身份证抵押。我再考虑一下。',
+                                feedback: '正确！应该仔细考虑，避免陷入抵押骗局。',
+                                next: -1
                             }
                         ]
                     },
                     {
                         type: 'recruiter',
-                        text: '你放心，我们会妥善保管你的证件，入职一个月后就会归还。我们是正规公司，不会拿你的证件做任何违法的事情。',
+                        text: '如果你没有房产，我们可以用你的身份证办理小额贷款作为担保，贷款金额只有5000元，入职后公司会帮你偿还，不会有任何费用。',
                         options: [
                             {
-                                text: 'A. 拒绝提供原件，只提供复印件',
-                                userText: '我还是觉得不太放心，能不能只提供复印件？我拒绝提供原件，只提供复印件。',
-                                feedback: '正确！任何单位无权扣押个人证件，可提供复印件，但原件应妥善保管。',
+                                text: 'A. 拒绝贷款，离开公司',
+                                userText: '用身份证办理贷款？这听起来像是骗局，我拒绝贷款。',
+                                feedback: '正确！正规公司不会要求求职者办理贷款作为担保，这是典型的抵押骗局。',
                                 next: -1
                             },
                             {
-                                text: 'B. 提供原件',
-                                userText: '我还是觉得不太放心，能不能只提供复印件？好吧，我提供原件。',
-                                feedback: '错误！扣押证件可能会被用于非法用途，或被公司要挟。',
+                                text: 'B. 同意办理贷款',
+                                userText: '用身份证办理贷款？好吧，我同意办理贷款。',
+                                feedback: '错误！办理贷款后你可能面临高额利息和无法就业的风险。',
                                 next: -1
                             },
                             {
-                                text: 'C. 询问法律依据',
-                                userText: '我还是觉得不太放心，能不能只提供复印件？公司这样做有法律依据吗？',
-                                feedback: '错误！即使有法律依据，扣押证件仍然是不合理的。',
+                                text: 'C. 询问贷款详情',
+                                userText: '用身份证办理贷款？能详细说说贷款的情况吗？',
+                                feedback: '错误！即使了解贷款详情，这仍然是抵押骗局。',
                                 next: 3
                             },
                             {
                                 text: 'D. 再考虑一下',
-                                userText: '我还是觉得不太放心，能不能只提供复印件？我再考虑一下。',
-                                feedback: '错误！犹豫只会让公司有更多机会说服你，应直接拒绝。',
+                                userText: '用身份证办理贷款？我再考虑一下。',
+                                feedback: '正确！应该仔细考虑，避免陷入抵押骗局。',
                                 next: -1
                             }
                         ]
                     },
                     {
                         type: 'recruiter',
-                        text: '我们这样做是符合法律规定的，你可以去查相关法律法规。我们只是暂时保管你的证件，入职一个月后就会归还，不会有任何问题。',
+                        text: '贷款手续很简单，只需要你的身份证和手机号码，我们会帮你办理，利息很低，入职后公司会全额偿还。这只是一个形式，不会影响你的信用记录。',
                         options: [
                             {
-                                text: 'A. 拒绝提供原件，只提供复印件',
-                                userText: '我还是觉得有风险，拒绝提供原件，只提供复印件。',
-                                feedback: '正确！任何单位无权扣押个人证件，可提供复印件，但原件应妥善保管。',
+                                text: 'A. 拒绝贷款，离开公司',
+                                userText: '我还是觉得有风险，拒绝贷款，这看起来像是抵押骗局。',
+                                feedback: '正确！正规公司不会要求求职者办理贷款作为担保，这是典型的抵押骗局。',
                                 next: -1
                             },
                             {
-                                text: 'B. 提供原件',
-                                userText: '听起来合理，我提供原件。',
-                                feedback: '错误！扣押证件可能会被用于非法用途，或被公司要挟。',
+                                text: 'B. 同意办理贷款',
+                                userText: '听起来不错，我同意办理贷款。',
+                                feedback: '错误！办理贷款后你可能面临高额利息和无法就业的风险。',
                                 next: -1
                             }
                         ]
@@ -1742,6 +2242,46 @@
         // 当前对话状态
         const dialogState = {};
         
+        // 存储当前对话ID
+        let currentDialogId = '';
+        
+        // 显示游戏界面
+        function showGameInterface(dialogId) {
+            currentDialogId = dialogId;
+            const gameOverlay = document.getElementById('gameOverlay');
+            const gameBackground = document.getElementById('gameBackground');
+            
+            // 设置游戏背景图（使用用户提供的具体图片路径）
+            const imageMap = {
+                'dialog1': '面试收费骗局.1.jpg',
+                'dialog2': '培训贷骗局.1.jpg',
+                'dialog3': '刷单兼职骗局.1.jpg',
+                'dialog4': '虚假高薪岗位.1.jpg',
+                'dialog5': '抵押骗局.1.jpg',
+                'dialog6': '虚假offer骗局.1.jpg'
+            };
+            
+            const imageName = imageMap[dialogId] || '面试收费骗局.1.jpg';
+            gameBackground.style.backgroundImage = `url('../image/${imageName}')`;
+            
+            gameOverlay.classList.add('show');
+        }
+        
+        // 开始游戏
+        function startGame() {
+            const gameOverlay = document.getElementById('gameOverlay');
+            gameOverlay.classList.remove('show');
+            
+            // 打开对应的对话
+            openDialog(currentDialogId);
+        }
+        
+        // 关闭游戏界面
+        function closeGameInterface() {
+            const gameOverlay = document.getElementById('gameOverlay');
+            gameOverlay.classList.remove('show');
+        }
+        
         // 打开对话弹窗
         function openDialog(dialogId) {
             // 初始化对话状态
@@ -1764,6 +2304,125 @@
             // 不标记为已完成，只有通过completeScenario函数才会标记
         }
         
+        // 更新动画
+        function updateAnimation(dialogId, step, isUser = false, userAnimation = null) {
+            const animationId = `animation${dialogId.replace('dialog', '')}`;
+            const svg = document.getElementById(animationId);
+            if (!svg) return;
+            
+            // 获取当前对话数据
+            const data = dialogData[dialogId];
+            const currentDialog = data.dialogs[step];
+            if (!currentDialog) return;
+            
+            // 获取动画数据
+            let animationData = currentDialog.animation;
+            let displayText = currentDialog.text;
+            let speakerType = currentDialog.type;
+            
+            // 如果是用户回答，使用用户动画数据
+            if (isUser && userAnimation) {
+                animationData = {
+                    recruiter: { expression: '', action: '', position: '' },
+                    user: userAnimation,
+                    camera: '中景，同时拍摄两个人物'
+                };
+                displayText = userAnimation.userText || userAnimation.text || currentDialog.text;
+                speakerType = 'user';
+            }
+            
+            // 设置图片映射
+            const imageMap = {
+                'dialog1': {
+                    bg: '面试收费骗局.3.png',
+                    user: '面试收费骗局.2.png',
+                    recruiter: '面试收费骗局.4.png'
+                },
+                'dialog2': {
+                    bg: '培训贷骗局.3.png',
+                    user: '培训贷骗局.2.png',
+                    recruiter: '培训贷骗局.4.png'
+                },
+                'dialog3': {
+                    bg: '刷单兼职骗局.3.jpg',
+                    user: '刷单兼职骗局.2.jpg',
+                    recruiter: '刷单兼职骗局.4.jpg'
+                },
+                'dialog4': {
+                    bg: '虚假高薪岗位.3.jpg',
+                    user: '虚假高薪岗位.2.jpg',
+                    recruiter: '虚假高薪岗位.4.jpg'
+                },
+                'dialog5': {
+                    bg: '抵押骗局.3.jpg',
+                    user: '抵押骗局.2.jpg',
+                    recruiter: '抵押骗局.4.jpg'
+                },
+                'dialog6': {
+                    bg: '虚假offer骗局.3.jpg',
+                    user: '虚假offer骗局.2.jpg',
+                    recruiter: '虚假offer骗局.4.jpg'
+                }
+            };
+            
+            const currentImages = imageMap[dialogId] || imageMap['dialog1'];
+            
+            // 清空SVG内容
+            svg.innerHTML = '';
+            
+            // 添加背景图片
+            const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+            svg.appendChild(defs);
+            
+            // 直接添加背景图片，不使用pattern
+            const bgImage = document.createElementNS('http://www.w3.org/2000/svg', 'image');
+            bgImage.setAttribute('x', '0');
+            bgImage.setAttribute('y', '0');
+            bgImage.setAttribute('width', '100%');
+            bgImage.setAttribute('height', '100%');
+            bgImage.setAttribute('preserveAspectRatio', 'xMidYMid slice');
+            bgImage.setAttribute('href', `../image/${currentImages.bg}`);
+            svg.appendChild(bgImage);
+            
+            // 添加用户图片
+            const userImage = document.createElementNS('http://www.w3.org/2000/svg', 'image');
+            userImage.setAttribute('x', '150');
+            userImage.setAttribute('y', '120');
+            userImage.setAttribute('width', '120');
+            userImage.setAttribute('height', '200');
+            userImage.setAttribute('href', `../image/${currentImages.user}`);
+            svg.appendChild(userImage);
+            
+            // 添加招聘者图片
+            const recruiterImage = document.createElementNS('http://www.w3.org/2000/svg', 'image');
+            recruiterImage.setAttribute('x', '530');
+            recruiterImage.setAttribute('y', '120');
+            recruiterImage.setAttribute('width', '120');
+            recruiterImage.setAttribute('height', '200');
+            recruiterImage.setAttribute('href', `../image/${currentImages.recruiter}`);
+            svg.appendChild(recruiterImage);
+            
+            // 创建新的对话框
+            const foreignObject = document.createElementNS('http://www.w3.org/2000/svg', 'foreignObject');
+            const dialogBubble = document.createElementNS('http://www.w3.org/1999/xhtml', 'div');
+            dialogBubble.className = 'dialog-bubble';
+            dialogBubble.textContent = displayText;
+            
+            // 根据说话人设置对话框位置
+            if (speakerType === 'recruiter') {
+                foreignObject.setAttribute('x', '520');
+                foreignObject.setAttribute('y', '60');
+            } else {
+                foreignObject.setAttribute('x', '120');
+                foreignObject.setAttribute('y', '60');
+            }
+            
+            foreignObject.setAttribute('width', '200');
+            foreignObject.setAttribute('height', '80');
+            foreignObject.appendChild(dialogBubble);
+            svg.appendChild(foreignObject);
+        }
+        
         // 渲染对话
         function renderDialog(dialogId) {
             const dialog = document.getElementById(dialogId);
@@ -1777,6 +2436,9 @@
             // 获取对话数据
             const data = dialogData[dialogId];
             const state = dialogState[dialogId];
+            
+            // 更新动画
+            updateAnimation(dialogId, state.currentStep);
             
             // 渲染对话历史
             if (state.history) {
@@ -1851,14 +2513,28 @@
                     userText: selectedOption.userText
                 });
                 
+                // 先显示用户的回答
+                const userAnimationData = selectedOption.userAnimation || {
+                    expression: '中性',
+                    action: '说话',
+                    position: '坐在椅子上',
+                    text: selectedOption.userText
+                };
+                // 调用updateAnimation函数显示用户回答
+                updateAnimation(dialogId, state.currentStep, true, userAnimationData);
+                
                 // 检查是否结束对话
                 if (selectedOption.next === -1) {
                     // 显示反馈
-                    showFeedback(dialogId, selectedOption.feedback);
+                    setTimeout(() => {
+                        showFeedback(dialogId, selectedOption.feedback);
+                    }, 1000);
                 } else {
                     // 继续对话
-                    state.currentStep = selectedOption.next;
-                    renderDialog(dialogId);
+                    setTimeout(() => {
+                        state.currentStep = selectedOption.next;
+                        renderDialog(dialogId);
+                    }, 1000);
                 }
             }
         }
@@ -1867,12 +2543,39 @@
         function showFeedback(dialogId, feedback) {
             const dialog = document.getElementById(dialogId);
             const optionsContainer = dialog.querySelector('.options-container');
+            const chatContainer = dialog.querySelector('.chat-container');
+            
+            // 重新渲染聊天容器，确保显示完整的对话历史
+            const data = dialogData[dialogId];
+            const state = dialogState[dialogId];
+            chatContainer.innerHTML = '';
+            
+            // 渲染对话历史
+            if (state.history) {
+                state.history.forEach(item => {
+                    // 渲染招聘者消息
+                    const recruiterDiv = document.createElement('div');
+                    recruiterDiv.className = 'chat-message recruiter-message';
+                    recruiterDiv.innerHTML = `<p>${item.recruiterText}</p>`;
+                    chatContainer.appendChild(recruiterDiv);
+                    
+                    // 渲染用户消息
+                    if (item.userText) {
+                        const userDiv = document.createElement('div');
+                        userDiv.className = 'chat-message user-message';
+                        userDiv.innerHTML = `<p>${item.userText}</p>`;
+                        chatContainer.appendChild(userDiv);
+                    }
+                });
+            }
+            
             optionsContainer.innerHTML = `
                 <h4>反馈</h4>
                 <p style="background-color: #BFDEFF; padding: 15px; border-radius: 8px;">${feedback}</p>
-                <div style="display: flex; gap: 10px; margin-top: 15px;">
+                <div style="display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap;">
                     <button class="option-btn" onclick="completeScenario('${dialogId}')">关闭</button>
                     <button class="option-btn" onclick="openDialog('${dialogId}')">再来一次</button>
+                    <button class="option-btn" onclick="document.querySelector('#${dialogId} .chat-container').classList.toggle('show')">查看全部对话</button>
                 </div>
             `;
         }

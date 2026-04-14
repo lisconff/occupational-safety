@@ -32,6 +32,8 @@ public class SecurityConfig {
                         .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
                         // 登录与注册接口公开
                         .requestMatchers("/api/auth/login", "/api/auth/register").permitAll()
+                        // 放行 AI 助手 Coze 查询接口，便于前端测试页直接联调
+                        .requestMatchers("/api/ai/coze/query", "/api/ai/coze/query-stream", "/api/ai/coze/query-with-file", "/api/ai/coze/query-with-file-stream").permitAll()
                         // 其他健康检查等也公开
                         .requestMatchers("/api/health", "/", "/h2-console/**").permitAll()
                         // 其余全部需要拦截认证

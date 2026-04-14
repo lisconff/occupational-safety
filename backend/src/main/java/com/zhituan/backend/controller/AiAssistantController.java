@@ -7,6 +7,7 @@ import jakarta.validation.Valid;
 import org.springframework.http.MediaType;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.util.List;
 
@@ -38,6 +39,20 @@ public class AiAssistantController {
     @PostMapping("/coze/query")
     public ApiResponse<AiDtos.CozeQueryResponse> queryCozeAgent(@Valid @RequestBody AiDtos.CozeQueryRequest request) {
         return ApiResponse.ok(aiAssistantService.queryCozeAgent(request));
+    }
+
+    @PostMapping(value = "/coze/query-stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public SseEmitter queryCozeAgentStream(@Valid @RequestBody AiDtos.CozeQueryRequest request) {
+        return aiAssistantService.queryCozeAgentStream(request);
+    }
+
+    @PostMapping(value = "/coze/query-with-file-stream", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public SseEmitter queryCozeAgentWithFileStream(
+            @RequestPart(value = "file", required = false) MultipartFile file,
+            @RequestParam(value = "prompt", required = false) String prompt,
+            @RequestParam(value = "sessionId", required = false) String sessionId
+    ) {
+        return aiAssistantService.queryCozeAgentWithFileStream(prompt, sessionId, file);
     }
 
     @PostMapping(value = "/coze/query-with-file", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
