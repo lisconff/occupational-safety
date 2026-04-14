@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>发布帖子 - 职途安论坛</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Segoe UI", "Microsoft YaHei", sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(150deg, #eef6ff 0%, #dbeafe 48%, #eff6ff 100%);
+            color: #0f172a;
+            padding: 92px 18px 18px;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 40px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(255,255,255,0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid #dbeafe;
+            box-shadow: 0 6px 18px rgba(30,64,175,0.08);
+            z-index: 1000;
+        }
+
+        .logo {
+            font-weight: bold;
+            font-size: 20px;
+            color: #111827;
+        }
+
+        .nav-center {
+            display: flex;
+            gap: 30px;
+        }
+
+        .nav-center a {
+            text-decoration: none;
+            color: #334155;
+            font-size: 14px;
+            position: relative;
+        }
+
+        .nav-center a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #1677ff;
+            transition: 0.3s;
+        }
+
+        .nav-center a:hover::after {
+            width: 100%;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-btn {
+            padding: 6px 14px;
+            border-radius: 20px;
+            background: #eef2ff;
+            text-decoration: none;
+            color: #1e3a8a;
+            font-size: 13px;
+            border: 1px solid #c7d2fe;
+            cursor: pointer;
+        }
+
+        .nav-btn.primary {
+            background: #1d4ed8;
+            color: #fff;
+            border-color: #1d4ed8;
+        }
+
+        #guest-nav,
+        #user-nav {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        #user-nav {
+            display: none;
+        }
+
+        .avatar-wrapper {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            overflow: hidden;
+            background: #1d4ed8;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .avatar-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .container {
+            max-width: 920px;
+            margin: 0 auto;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid #dbeafe;
+            border-radius: 16px;
+            padding: 14px 16px;
+            margin-bottom: 12px;
+            box-shadow: 0 10px 24px rgba(30, 64, 175, 0.08);
+        }
+
+        .topbar h1 {
+            font-size: 22px;
+            color: #1e3a8a;
+        }
+
+        .btn {
+            border-radius: 999px;
+            padding: 8px 16px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            border: 1px solid #93c5fd;
+            color: #1e40af;
+            background: #fff;
+        }
+
+        .btn.primary {
+            border: none;
+            color: #fff;
+            background: linear-gradient(90deg, #1e3a8a, #2563eb);
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid #dbeafe;
+            border-radius: 16px;
+            padding: 16px;
+            box-shadow: 0 10px 24px rgba(30, 64, 175, 0.06);
+        }
+
+        .form-group {
+            margin-bottom: 12px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 14px;
+            color: #334155;
+            font-weight: 600;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            border: 1px solid #cbd5e1;
+            border-radius: 10px;
+            padding: 10px;
+            font-size: 14px;
+        }
+
+        .form-group textarea {
+            min-height: 260px;
+            resize: vertical;
+            line-height: 1.6;
+        }
+
+        .error {
+            display: none;
+            color: #b91c1c;
+            font-size: 13px;
+            margin-top: 4px;
+        }
+
+        .hint {
+            color: #64748b;
+            font-size: 12px;
+            margin-top: 6px;
+        }
+
+        .actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+            margin-top: 6px;
+        }
+    </style>
+</head>
+<body>
+<header class="header">
+    <div class="logo">职途安</div>
+    <nav class="nav-center">
+        <a href="ai-chat-test.html" data-auth-required="true">AI助手</a>
+        <a href="case.html">案例模拟</a>
+        <a href="forum.html">交流论坛</a>
+    </nav>
+    <div class="nav-right">
+        <div id="guest-nav">
+            <a href="login.html?redirect=post.html" class="nav-btn">登录</a>
+            <a href="register.html?redirect=post.html" class="nav-btn primary">注册</a>
+        </div>
+        <div id="user-nav">
+            <div class="avatar-wrapper" id="topAvatarWrap">
+                <img id="topAvatarImage" alt="头像" style="display:none;">
+                <span id="topAvatarLetter">游</span>
+            </div>
+            <span id="topUserName" style="font-size:13px;color:#1e3a8a;">用户</span>
+            <button id="logoutBtn" class="nav-btn">退出</button>
+        </div>
+    </div>
+</header>
+
+<div class="container">
+    <div class="topbar">
+        <h1>发布帖子</h1>
+        <div>
+            <button class="btn" id="backBtn">返回论坛</button>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="form-group">
+            <label for="title">标题</label>
+            <input id="title" maxlength="80" placeholder="例如：面试时遇到的套路和避坑建议">
+            <div id="titleError" class="error">标题不能为空</div>
+        </div>
+
+        <div class="form-group">
+            <label for="content">正文</label>
+            <textarea id="content" placeholder="请描述详细经过，帮助更多人避坑。"></textarea>
+            <div id="contentError" class="error">内容不能为空</div>
+            <div class="hint">提示：正文支持换行，发布后会按原文展示。</div>
+        </div>
+
+        <div class="actions">
+            <button class="btn" id="resetBtn">清空</button>
+            <button class="btn primary" id="publishBtn">发布</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const API_BASE = "http://localhost:8090";
+
+    function getToken() {
+        return localStorage.getItem("token") || sessionStorage.getItem("token") || "";
+    }
+
+    function getUsername() {
+        return localStorage.getItem("username") || sessionStorage.getItem("username") || "";
+    }
+
+    function getAvatarDataUrl() {
+        return localStorage.getItem("userAvatar") || "";
+    }
+
+    function renderTopRightUser() {
+        const guestNav = document.getElementById("guest-nav");
+        const userNav = document.getElementById("user-nav");
+        const nameEl = document.getElementById("topUserName");
+        const avatarImg = document.getElementById("topAvatarImage");
+        const avatarLetter = document.getElementById("topAvatarLetter");
+
+        const token = getToken();
+        const username = getUsername();
+        const avatarUrl = getAvatarDataUrl();
+
+        if (token) {
+            guestNav.style.display = "none";
+            userNav.style.display = "flex";
+            nameEl.textContent = username || "用户";
+            if (avatarUrl) {
+                avatarImg.src = avatarUrl;
+                avatarImg.style.display = "block";
+                avatarLetter.style.display = "none";
+            } else {
+                avatarImg.style.display = "none";
+                avatarLetter.style.display = "inline";
+                avatarLetter.textContent = (username || "游").charAt(0).toUpperCase();
+            }
+        } else {
+            guestNav.style.display = "flex";
+            userNav.style.display = "none";
+        }
+    }
+
+    function requireLogin(actionName = "发布帖子", redirectTarget = "post.html") {
+        if (getToken()) return true;
+        if (window.confirm(actionName + "需要登录，是否前往登录页？")) {
+            window.location.href = "login.html?redirect=" + encodeURIComponent(redirectTarget) + "&action=" + encodeURIComponent(actionName);
+        }
+        return false;
+    }
+
+    async function publishPost() {
+        if (!requireLogin()) return;
+
+        const titleEl = document.getElementById("title");
+        const contentEl = document.getElementById("content");
+        const titleError = document.getElementById("titleError");
+        const contentError = document.getElementById("contentError");
+
+        titleError.style.display = "none";
+        contentError.style.display = "none";
+
+        const title = titleEl.value.trim();
+        const content = contentEl.value.trim();
+        if (!title) {
+            titleError.style.display = "block";
+            return;
+        }
+        if (!content) {
+            contentError.style.display = "block";
+            return;
+        }
+
+        try {
+            const response = await fetch(API_BASE + "/api/forum/posts", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + getToken()
+                },
+                body: JSON.stringify({
+                    userId: getUsername(),
+                    title,
+                    content
+                })
+            });
+            const data = await response.json();
+            if (data && data.code === 200 && data.data && data.data.postId) {
+                window.location.href = "post-detail.html?id=" + encodeURIComponent(data.data.postId);
+                return;
+            }
+            window.alert(data && data.message ? data.message : "发布失败");
+        } catch (err) {
+            window.alert("网络错误，发布失败");
+        }
+    }
+
+    document.getElementById("publishBtn").addEventListener("click", publishPost);
+    document.getElementById("resetBtn").addEventListener("click", () => {
+        document.getElementById("title").value = "";
+        document.getElementById("content").value = "";
+    });
+    document.getElementById("backBtn").addEventListener("click", () => {
+        window.location.href = "forum.html";
+    });
+
+    document.getElementById("topAvatarWrap").addEventListener("click", () => {
+        window.location.href = "profile.html";
+    });
+
+    document.getElementById("logoutBtn").addEventListener("click", () => {
+        localStorage.removeItem("token");
+        localStorage.removeItem("username");
+        sessionStorage.removeItem("token");
+        sessionStorage.removeItem("username");
+        location.reload();
+    });
+
+    document.querySelectorAll('[data-auth-required="true"]').forEach((el) => {
+        el.addEventListener("click", (event) => {
+            event.preventDefault();
+            const target = el.getAttribute("href") || "ai-chat-test.html";
+            if (requireLogin(el.textContent.trim(), target)) {
+                window.location.href = target;
+            }
+        });
+    });
+
+    renderTopRightUser();
+
+    if (!getToken()) {
+        requireLogin();
+    }
+</script>
+</body>
+</html>

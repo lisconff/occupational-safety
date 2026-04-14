@@ -9,145 +9,260 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+            font-family: "Segoe UI", "Microsoft YaHei", sans-serif;
         }
+
         body {
-            background: linear-gradient(135deg, #F0F9FF 0%, #E6F7FF 100%);
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            background: linear-gradient(145deg, #eef6ff 0%, #dbeafe 55%, #eff6ff 100%);
             min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             padding: 20px;
         }
-        .login-box {
-            width: 450px;
-            backdrop-filter: blur(12px);
-            background: rgba(255, 255, 255, 0.15);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            border-radius: 25px;
-            padding: 60px 50px;
-            box-shadow: 0 10px 35px rgba(0, 0, 0, 0.08);
+
+        .login-container {
+            width: 100%;
+            max-width: 430px;
+            background: rgba(255, 255, 255, 0.88);
+            border: 1px solid #dbeafe;
+            border-radius: 18px;
+            box-shadow: 0 12px 40px rgba(30, 64, 175, 0.12);
+            padding: 34px 30px;
+            backdrop-filter: blur(8px);
         }
-        .login-title {
+
+        .login-header {
             text-align: center;
-            font-size: 28px;
-            font-weight: 700;
-            color: #1D4ED8;
-            margin-bottom: 40px;
+            margin-bottom: 22px;
         }
-        .input-group {
-            margin-bottom: 25px;
+
+        .login-header h2 {
+            font-size: 26px;
+            color: #1e3a8a;
+            margin-bottom: 6px;
         }
-        .input-label {
-            display: block;
-            font-size: 15px;
+
+        .login-header p {
+            font-size: 14px;
+            color: #64748b;
+        }
+
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-label {
+            font-size: 14px;
             color: #334155;
-            margin-bottom: 10px;
-            font-weight: 500;
+            font-weight: 600;
         }
-        .login-input {
+
+        .form-input {
             width: 100%;
-            padding: 16px 20px;
-            border-radius: 15px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            background: rgba(255, 255, 255, 0.2);
-            font-size: 16px;
+            border: 1px solid #cbd5e1;
+            border-radius: 10px;
+            padding: 12px 14px;
+            font-size: 14px;
+            transition: all 0.2s;
+            background: #fff;
+        }
+
+        .form-input:focus {
             outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.14);
         }
-        .login-input:focus {
-            border-color: #1D4ED8;
-            background: rgba(255, 255, 255, 0.3);
+
+        .password-wrapper {
+            position: relative;
         }
-        .login-btn {
-            width: 100%;
-            padding: 18px;
-            background: #1D4ED8;
-            color: #fff;
-            border: none;
-            border-radius: 15px;
+
+        .toggle-password {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            user-select: none;
             font-size: 17px;
+        }
+
+        .remember-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #64748b;
+            font-size: 13px;
+            margin-top: 2px;
+        }
+
+        .login-btn {
+            margin-top: 6px;
+            width: 100%;
+            border: none;
+            border-radius: 10px;
+            padding: 12px;
+            background: linear-gradient(90deg, #1e3a8a, #2563eb);
+            color: #fff;
+            font-size: 16px;
             font-weight: 600;
             cursor: pointer;
-            transition: 0.3s;
-            margin-top: 10px;
+            transition: opacity 0.2s;
         }
+
         .login-btn:hover {
-            transform: scale(1.03);
-            background: #1E40AF;
+            opacity: 0.92;
         }
-        .link-tip {
+
+        .login-btn.loading {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        .error-message {
+            display: none;
+            color: #b91c1c;
+            font-size: 13px;
+            margin-top: -2px;
+        }
+
+        .signup-link {
             text-align: center;
-            margin-top: 30px;
-            font-size: 15px;
-            color: #64748B;
+            font-size: 14px;
+            color: #64748b;
+            margin-top: 18px;
         }
-        .link-tip a {
-            color: #1D4ED8;
+
+        .signup-link a {
+            color: #1d4ed8;
             text-decoration: none;
-            font-weight: 500;
+            font-weight: 600;
         }
     </style>
 </head>
 <body>
-    <div class="login-box">
-        <h2 class="login-title">职途安 - 登录</h2>
-        <form id="loginForm">
-            <div class="input-group">
-                <label class="input-label" for="loginUsername">账号</label>
-                <input id="loginUsername" type="text" class="login-input" placeholder="请输入手机号/用户名" required>
+    <div class="login-container">
+        <div class="login-header">
+            <h2>欢迎来到职途安</h2>
+            <p>请输入账号和密码完成登录</p>
+        </div>
+
+        <form class="login-form" id="loginForm">
+            <div class="form-group">
+                <label class="form-label" for="username">账号</label>
+                <input type="text" id="username" class="form-input" placeholder="请输入用户名" required>
             </div>
-            <div class="input-group">
-                <label class="input-label" for="loginPassword">密码</label>
-                <input id="loginPassword" type="password" class="login-input" placeholder="请输入密码" required>
+
+            <div class="form-group">
+                <label class="form-label" for="password">密码</label>
+                <div class="password-wrapper">
+                    <input type="password" id="password" class="form-input" placeholder="请输入密码" required>
+                    <span class="toggle-password" id="togglePassword">👁️</span>
+                </div>
             </div>
-            <div id="loginError" style="display:none;color:#B91C1C;font-size:14px;margin-top:-8px;margin-bottom:12px;"></div>
-            <button class="login-btn" type="submit">登录</button>
+
+            <label class="remember-row">
+                <input type="checkbox" id="rememberMe" checked>
+                <span>记住我</span>
+            </label>
+
+            <div id="loginError" class="error-message"></div>
+            <button type="submit" class="login-btn" id="loginBtn">登录</button>
         </form>
-        <div class="link-tip">没有账号？<a href="register.html">立即注册</a></div>
+
+        <div class="signup-link">
+            没有账号? <a id="toRegisterLink" href="register.html">点击注册</a>
+        </div>
     </div>
 
     <script>
         const API_BASE = "http://localhost:8090";
-        const loginForm = document.getElementById("loginForm");
-        const loginError = document.getElementById("loginError");
-        const usernameInput = document.getElementById("loginUsername");
-        const passwordInput = document.getElementById("loginPassword");
+        const query = new URLSearchParams(window.location.search);
+        const redirectUrl = query.get("redirect") || "home.html";
+        const actionName = query.get("action") || "";
 
-        function setError(message) {
-            loginError.textContent = message;
-            loginError.style.display = "block";
+        const loginForm = document.getElementById("loginForm");
+        const loginBtn = document.getElementById("loginBtn");
+        const loginError = document.getElementById("loginError");
+        const usernameInput = document.getElementById("username");
+        const passwordInput = document.getElementById("password");
+        const rememberMe = document.getElementById("rememberMe");
+        const togglePassword = document.getElementById("togglePassword");
+        const toRegisterLink = document.getElementById("toRegisterLink");
+
+        if (redirectUrl) {
+            toRegisterLink.href = "register.html?redirect=" + encodeURIComponent(redirectUrl);
         }
 
-        loginForm.addEventListener("submit", async function (event) {
-            event.preventDefault();
+        if (actionName) {
+            loginError.style.display = "block";
+            loginError.style.color = "#1e40af";
+            loginError.textContent = actionName + "需要登录后使用";
+        }
+
+        function setError(msg) {
+            loginError.style.display = "block";
+            loginError.style.color = "#b91c1c";
+            loginError.textContent = msg;
+        }
+
+        function setLoading(loading) {
+            loginBtn.disabled = loading;
+            loginBtn.classList.toggle("loading", loading);
+            loginBtn.textContent = loading ? "登录中..." : "登录";
+        }
+
+        togglePassword.addEventListener("click", () => {
+            const nextType = passwordInput.type === "password" ? "text" : "password";
+            passwordInput.type = nextType;
+            togglePassword.textContent = nextType === "password" ? "👁️" : "🙈";
+        });
+
+        loginForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
             loginError.style.display = "none";
 
             const username = usernameInput.value.trim();
             const password = passwordInput.value;
-
             if (!username || !password) {
                 setError("请填写账号和密码");
                 return;
             }
 
+            setLoading(true);
             try {
                 const response = await fetch(API_BASE + "/api/auth/login", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ username: username, password: password })
+                    body: JSON.stringify({ username, password })
                 });
-
                 const data = await response.json();
+
                 if (data && data.code === 200 && data.data && data.data.token) {
-                    localStorage.setItem("token", data.data.token);
-                    localStorage.setItem("username", data.data.username || username);
-                    window.location.href = "home.html";
+                    const store = rememberMe.checked ? localStorage : sessionStorage;
+                    const clearStore = rememberMe.checked ? sessionStorage : localStorage;
+                    clearStore.removeItem("token");
+                    clearStore.removeItem("username");
+                    store.setItem("token", data.data.token);
+                    store.setItem("username", data.data.username || username);
+                    window.location.href = redirectUrl;
                     return;
                 }
 
-                setError((data && data.message) ? data.message : "用户名或密码错误");
-            } catch (error) {
+                setError(data && data.message ? data.message : "用户名或密码错误");
+            } catch (err) {
                 setError("网络错误，请确认后端服务已启动");
+            } finally {
+                setLoading(false);
             }
         });
     </script>

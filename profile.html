@@ -14,15 +14,22 @@
         body {
             font-family: 'Microsoft YaHei', Arial, sans-serif;
             line-height: 1.6;
-            color: #333;
-            background-color: #F0F9F8;
+            color: #1e293b;
+            background: linear-gradient(145deg, #eef6ff 0%, #dbeafe 55%, #eff6ff 100%);
         }
         
-        /* 导航栏 */
+        /* 顶部导航（与首页统一） */
         .navbar {
-            background-color: #BFDEFF;
-            padding: 15px 0;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            background: rgba(255,255,255,0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid #dbeafe;
+            box-shadow: 0 6px 18px rgba(30,64,175,0.08);
+            padding: 14px 0;
         }
         
         .nav-container {
@@ -33,44 +40,109 @@
             justify-content: space-between;
             padding: 0 20px;
         }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-btn {
+            padding: 6px 14px;
+            border-radius: 20px;
+            background: #eef2ff;
+            text-decoration: none;
+            color: #1e3a8a;
+            font-size: 13px;
+            border: 1px solid #c7d2fe;
+            cursor: pointer;
+        }
+
+        .nav-btn.primary {
+            background: #1d4ed8;
+            color: #fff;
+            border-color: #1d4ed8;
+        }
+
+        #guest-nav,
+        #user-nav {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        #user-nav {
+            display: none;
+        }
+
+        .avatar-wrapper {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            overflow: hidden;
+            background: #1d4ed8;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .avatar-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
         
         .logo {
             display: flex;
             align-items: center;
+            font-weight: bold;
+            font-size: 20px;
+            color: #111827;
         }
-        
-        .logo img {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            margin-right: 15px;
-        }
-        
+
         .logo h1 {
-            font-size: 24px;
-            color: #333;
+            font-size: 20px;
+            color: #111827;
         }
-        
-        .nav-links {
+
+        .nav-center {
             display: flex;
-            gap: 20px;
+            gap: 30px;
         }
-        
-        .nav-links a {
-            color: #333;
+
+        .nav-center a {
+            color: #334155;
             text-decoration: none;
-            font-size: 16px;
-            transition: color 0.3s ease;
+            font-size: 14px;
+            position: relative;
         }
-        
-        .nav-links a:hover {
-            color: #D30121;
+
+        .nav-center a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #1677ff;
+            transition: 0.3s;
+        }
+
+        .nav-center a:hover::after {
+            width: 100%;
+        }
+
+        .nav-center a:hover {
+            color: #1d4ed8;
         }
         
         /* 主要内容区 */
         .main-content {
             max-width: 1200px;
-            margin: 40px auto;
+            margin: 110px auto 40px;
             padding: 0 20px;
         }
         
@@ -79,7 +151,8 @@
             background-color: white;
             border-radius: 8px;
             padding: 30px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            box-shadow: 0 10px 24px rgba(30,64,175,0.08);
+            border: 1px solid #dbeafe;
             margin-bottom: 30px;
             display: flex;
             align-items: center;
@@ -93,6 +166,24 @@
             margin-right: 30px;
             object-fit: cover;
         }
+
+        .profile-avatar-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-right: 30px;
+            gap: 10px;
+        }
+
+        .avatar-upload-btn {
+            font-size: 12px;
+            color: #1d4ed8;
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            border-radius: 999px;
+            padding: 5px 12px;
+            cursor: pointer;
+        }
         
         .profile-info {
             flex: 1;
@@ -101,7 +192,7 @@
         
         .profile-info h2 {
             font-size: 24px;
-            color: #D30121;
+            color: #1e3a8a;
             margin-bottom: 10px;
         }
         
@@ -121,7 +212,7 @@
         
         .skill-progress {
             height: 100%;
-            background-color: #D30121;
+            background: linear-gradient(90deg, #1e3a8a, #2563eb);
             border-radius: 10px;
             transition: width 1s ease;
         }
@@ -149,15 +240,16 @@
             background-color: white;
             border-radius: 8px;
             padding: 20px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            box-shadow: 0 8px 20px rgba(30,64,175,0.08);
+            border: 1px solid #dbeafe;
             margin-bottom: 20px;
         }
         
         .menu-card h3 {
             font-size: 18px;
-            color: #D30121;
+            color: #1e3a8a;
             margin-bottom: 15px;
-            border-bottom: 2px solid #FBEC8E;
+            border-bottom: 2px solid #93c5fd;
             padding-bottom: 10px;
         }
         
@@ -173,16 +265,16 @@
         }
         
         .menu-item:hover {
-            background-color: #F0F9F8;
-            color: #D30121;
-            border-left-color: #D30121;
+            background-color: #eff6ff;
+            color: #1d4ed8;
+            border-left-color: #1d4ed8;
         }
         
         .menu-item.active {
-            background-color: #F0F9F8;
+            background-color: #eff6ff;
             font-weight: bold;
-            color: #D30121;
-            border-left-color: #D30121;
+            color: #1d4ed8;
+            border-left-color: #1d4ed8;
         }
         
         /* 右侧内容展示区 */
@@ -195,16 +287,17 @@
             background-color: white;
             border-radius: 8px;
             padding: 20px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            box-shadow: 0 8px 20px rgba(30,64,175,0.08);
+            border: 1px solid #dbeafe;
             margin-bottom: 20px;
-            border-left: 4px solid #BFDEFF;
+            border-left: 4px solid #93c5fd;
         }
         
         .content-card h3 {
             font-size: 18px;
-            color: #D30121;
+            color: #1e3a8a;
             margin-bottom: 15px;
-            border-bottom: 2px solid #FBEC8E;
+            border-bottom: 2px solid #93c5fd;
             padding-bottom: 10px;
         }
         
@@ -218,7 +311,7 @@
         }
         
         .record-item:hover {
-            background-color: #F0F9F8;
+            background-color: #eff6ff;
             transform: translateX(5px);
         }
         
@@ -229,19 +322,19 @@
         .record-icon {
             width: 50px;
             height: 50px;
-            background-color: #BFDEFF;
+            background-color: #dbeafe;
             border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
             margin-right: 15px;
             font-size: 24px;
-            color: #D30121;
+            color: #1e3a8a;
             transition: all 0.3s ease;
         }
         
         .record-item:hover .record-icon {
-            background-color: #D30121;
+            background-color: #1d4ed8;
             color: white;
         }
         
@@ -251,7 +344,7 @@
         
         .record-info h4 {
             font-size: 16px;
-            color: #D30121;
+            color: #1e3a8a;
             margin-bottom: 5px;
         }
         
@@ -289,7 +382,7 @@
         }
         
         .footer-links a {
-            color: #BFDEFF;
+            color: #93c5fd;
             text-decoration: none;
             margin: 0 10px;
         }
@@ -301,14 +394,11 @@
         /* 响应式设计 */
         @media (max-width: 768px) {
             .nav-container {
-                flex-direction: column;
-                text-align: center;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 10px;
             }
-            
-            .logo {
-                margin-bottom: 10px;
-            }
-            
+
             .nav-links {
                 justify-content: center;
             }
@@ -338,14 +428,26 @@
     <nav class="navbar">
         <div class="nav-container">
             <div class="logo">
-                <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=university%20students%20employment%20safety%20logo%2C%20blue%20color%2C%20simple%20and%20modern&image_size=square" alt="平台Logo">
-                <h1>大学生就业防坑服务平台</h1>
+                <h1>职途安</h1>
             </div>
-            <div class="nav-links">
-                <a href="index.html">首页</a>
-                <a href="profile.html" class="active">个人主页</a>
-                <a href="#">防坑指南</a>
-                <a href="#">关于我们</a>
+            <nav class="nav-center">
+                <a href="ai-chat-test.html" data-auth-required="true">AI助手</a>
+                <a href="case.html">案例模拟</a>
+                <a href="forum.html">交流论坛</a>
+            </nav>
+            <div class="nav-right">
+                <div id="guest-nav">
+                    <a href="login.html" class="nav-btn">登录</a>
+                    <a href="register.html" class="nav-btn primary">注册</a>
+                </div>
+                <div id="user-nav">
+                    <div class="avatar-wrapper" id="topAvatarWrap">
+                        <img id="topAvatarImage" alt="头像" style="display:none;">
+                        <span id="topAvatarLetter">游</span>
+                    </div>
+                    <span id="topUserName" style="font-size:13px;color:#1e3a8a;">用户</span>
+                    <button id="logoutBtn" class="nav-btn">退出</button>
+                </div>
             </div>
         </div>
     </nav>
@@ -354,7 +456,11 @@
     <div class="main-content">
         <!-- 个人信息面板 -->
         <div class="profile-header">
-            <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=college%20student%20avatar%2C%20friendly%20face%2C%20simple%20style&image_size=square" alt="用户头像" class="profile-avatar">
+            <div class="profile-avatar-box">
+                <img id="profileAvatar" src="assets/images/scenarios/1.jpg" alt="用户头像" class="profile-avatar">
+                <label for="avatarUpload" class="avatar-upload-btn">上传头像</label>
+                <input id="avatarUpload" type="file" accept="image/*" style="display:none;">
+            </div>
             <div class="profile-info">
                 <h2>张三</h2>
                 <p>北京大学 · 计算机科学与技术专业</p>
@@ -382,7 +488,7 @@
                 </div>
                 <div class="menu-card">
                     <h3>快捷功能</h3>
-                    <a href="index.html" class="menu-item">浏览案例</a>
+                    <a href="case.html" class="menu-item">浏览案例</a>
                     <a href="#" class="menu-item">模拟测试</a>
                     <a href="#" class="menu-item">在线咨询</a>
                 </div>
@@ -457,9 +563,82 @@
     </footer>
     
     <script>
+        function isLoggedIn() {
+            return Boolean(localStorage.getItem('token'));
+        }
+
+        function requireLogin(actionName) {
+            if (isLoggedIn()) {
+                return true;
+            }
+            const goLogin = window.confirm(actionName + '需要登录后使用，是否前往登录页？');
+            if (goLogin) {
+                const redirect = encodeURIComponent('profile.html');
+                const action = encodeURIComponent(actionName);
+                window.location.href = 'login.html?redirect=' + redirect + '&action=' + action;
+            }
+            return false;
+        }
+
+        function getToken() {
+            return localStorage.getItem('token') || sessionStorage.getItem('token') || '';
+        }
+
+        function getUsername() {
+            return localStorage.getItem('username') || sessionStorage.getItem('username') || '游客';
+        }
+
+        function getAvatarDataUrl() {
+            return localStorage.getItem('userAvatar') || '';
+        }
+
+        function setAvatarDataUrl(url) {
+            localStorage.setItem('userAvatar', url);
+        }
+
+        function renderTopRightUser() {
+            const guestNav = document.getElementById('guest-nav');
+            const userNav = document.getElementById('user-nav');
+            const nameEl = document.getElementById('topUserName');
+            const avatarImg = document.getElementById('topAvatarImage');
+            const avatarLetter = document.getElementById('topAvatarLetter');
+
+            const username = getUsername();
+            const token = getToken();
+            const avatarUrl = getAvatarDataUrl();
+
+            if (token) {
+                guestNav.style.display = 'none';
+                userNav.style.display = 'flex';
+                nameEl.textContent = username;
+                if (avatarUrl) {
+                    avatarImg.src = avatarUrl;
+                    avatarImg.style.display = 'block';
+                    avatarLetter.style.display = 'none';
+                } else {
+                    avatarImg.style.display = 'none';
+                    avatarLetter.style.display = 'inline';
+                    avatarLetter.textContent = (username || '游').charAt(0).toUpperCase();
+                }
+            } else {
+                guestNav.style.display = 'flex';
+                userNav.style.display = 'none';
+            }
+        }
+
+        function renderProfileAvatar() {
+            const avatar = document.getElementById('profileAvatar');
+            const avatarUrl = getAvatarDataUrl();
+            if (avatarUrl) {
+                avatar.src = avatarUrl;
+            } else {
+                avatar.src = 'assets/images/scenarios/1.jpg';
+            }
+        }
+
         // 用户数据存储
         let userProfile = {
-            name: '张三',
+            name: localStorage.getItem('username') || '游客',
             school: '北京大学',
             major: '计算机科学与技术',
             email: 'zhangsan@example.com'
@@ -483,6 +662,51 @@
         
         // 页面加载时的动画效果
         window.onload = function() {
+            renderTopRightUser();
+            renderProfileAvatar();
+
+            document.querySelectorAll('[data-auth-required="true"]').forEach(function (el) {
+                el.addEventListener('click', function (event) {
+                    event.preventDefault();
+                    const target = el.getAttribute('href') || 'ai-chat-test.html';
+                    if (requireLogin(el.textContent.trim() || '该功能')) {
+                        window.location.href = target;
+                    }
+                });
+            });
+
+            document.getElementById('topAvatarWrap').addEventListener('click', function () {
+                window.location.href = 'profile.html';
+            });
+
+            document.getElementById('logoutBtn').addEventListener('click', function () {
+                localStorage.removeItem('token');
+                localStorage.removeItem('username');
+                sessionStorage.removeItem('token');
+                sessionStorage.removeItem('username');
+                location.reload();
+            });
+
+            document.getElementById('avatarUpload').addEventListener('change', function (event) {
+                const file = event.target.files && event.target.files[0];
+                if (!file) {
+                    return;
+                }
+                if (!file.type.startsWith('image/')) {
+                    alert('请上传图片文件');
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const dataUrl = e.target.result;
+                    setAvatarDataUrl(dataUrl);
+                    renderProfileAvatar();
+                    renderTopRightUser();
+                };
+                reader.readAsDataURL(file);
+            });
+
             // 技能条动画
             const skillProgress = document.querySelector('.skill-progress');
             skillProgress.style.width = '0';
@@ -506,6 +730,11 @@
                     
                     // 根据菜单项文本内容更新右侧内容
                     const menuText = this.textContent.trim();
+
+                    if (menuText !== '浏览案例' && !requireLogin(menuText)) {
+                        return;
+                    }
+
                     updateContent(menuText);
                 });
             });
@@ -653,10 +882,10 @@
                     });
                     break;
                 case '浏览案例':
-                    window.location.href = 'index.html';
+                    window.location.href = 'case.html';
                     break;
                 case '模拟测试':
-                    window.location.href = 'index.html#scenarios';
+                    window.location.href = 'case.html#scenarios';
                     break;
                 case '我的发帖记录':
                     contentArea.innerHTML = `

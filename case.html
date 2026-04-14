@@ -14,15 +14,22 @@
         body {
             font-family: 'Microsoft YaHei', Arial, sans-serif;
             line-height: 1.6;
-            color: #333;
-            background-color: #F0F9F8;
+            color: #1e293b;
+            background: linear-gradient(145deg, #eef6ff 0%, #dbeafe 55%, #eff6ff 100%);
         }
         
-        /* 导航栏 */
+        /* 导航栏（与首页统一） */
         .navbar {
-            background-color: #BFDEFF;
-            padding: 15px 0;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid #dbeafe;
+            box-shadow: 0 6px 18px rgba(30, 64, 175, 0.08);
+            padding: 14px 0;
         }
         
         .nav-container {
@@ -35,25 +42,95 @@
         }
         
         .logo {
+            font-weight: bold;
+            font-size: 20px;
+            color: #111827;
+        }
+
+        .nav-right {
             display: flex;
             align-items: center;
+            gap: 10px;
         }
-        
-        .logo img {
-            width: 60px;
-            height: 60px;
+
+        .nav-btn {
+            padding: 6px 14px;
+            border-radius: 20px;
+            background: #eef2ff;
+            text-decoration: none;
+            color: #1e3a8a;
+            font-size: 13px;
+            border: 1px solid #c7d2fe;
+            cursor: pointer;
+        }
+
+        .nav-btn.primary {
+            background: #1d4ed8;
+            color: #fff;
+            border-color: #1d4ed8;
+        }
+
+        #guest-nav,
+        #user-nav {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        #user-nav {
+            display: none;
+        }
+
+        .avatar-wrapper {
+            width: 34px;
+            height: 34px;
             border-radius: 50%;
-            margin-right: 15px;
+            overflow: hidden;
+            background: #1d4ed8;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .avatar-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
         
-        .logo h1 {
-            font-size: 24px;
-            color: #333;
+        .nav-center {
+            display: flex;
+            gap: 30px;
+        }
+
+        .nav-center a {
+            text-decoration: none;
+            color: #334155;
+            font-size: 14px;
+            position: relative;
+        }
+
+        .nav-center a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #1677ff;
+            transition: 0.3s;
+        }
+
+        .nav-center a:hover::after {
+            width: 100%;
         }
         
         /* Banner区 */
         .banner {
-            background-color: #BFDEFF;
+            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
             padding: 80px 0;
             text-align: center;
             position: relative;
@@ -67,7 +144,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(211, 1, 33, 0.05);
+            background-color: rgba(29, 78, 216, 0.10);
             z-index: 1;
         }
         
@@ -78,7 +155,7 @@
         
         .banner h2 {
             font-size: 36px;
-            color: #D30121;
+            color: #1e3a8a;
             margin-bottom: 15px;
             text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
         }
@@ -91,7 +168,7 @@
         
         .banner-btn {
             display: inline-block;
-            background-color: #D30121;
+            background: linear-gradient(90deg, #1e3a8a, #2563eb);
             color: white;
             padding: 12px 24px;
             border-radius: 25px;
@@ -103,21 +180,21 @@
         }
         
         .banner-btn:hover {
-            background-color: #BF001F;
+            background: #1e40af;
             transform: translateY(-3px);
-            box-shadow: 0 4px 12px rgba(211, 1, 33, 0.3);
+            box-shadow: 0 4px 12px rgba(30, 64, 175, 0.30);
         }
         
         /* 主要内容区 */
         .main-content {
             max-width: 1200px;
-            margin: 40px auto;
+            margin: 110px auto 40px;
             padding: 0 20px;
         }
         
         .section-title {
             font-size: 28px;
-            color: #D30121;
+            color: #1e3a8a;
             margin-bottom: 30px;
             text-align: center;
             position: relative;
@@ -131,7 +208,7 @@
             transform: translateX(-50%);
             width: 80px;
             height: 3px;
-            background-color: #FBEC8E;
+            background-color: #60a5fa;
             border-radius: 2px;
         }
         
@@ -168,7 +245,7 @@
             padding: 20px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
             transition: all 0.3s ease;
-            border-left: 4px solid #BFDEFF;
+            border-left: 4px solid #93c5fd;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -177,19 +254,19 @@
         .case-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            border-left-color: #D30121;
+            border-left-color: #1d4ed8;
         }
         
         .case-card h3 {
             font-size: 28px;
-            color: #D30121;
+            color: #1e3a8a;
             margin-bottom: 5px;
         }
         
         .case-type {
             display: inline-block;
-            background-color: #FBEC8E;
-            color: #333;
+            background-color: #dbeafe;
+            color: #1e3a8a;
             padding: 4px 12px;
             border-radius: 12px;
             font-size: 16px;
@@ -236,7 +313,7 @@
             cursor: pointer;
             transition: all 0.3s ease;
             position: relative;
-            border-left: 4px solid #BFDEFF;
+            border-left: 4px solid #93c5fd;
             min-height: 186px;
             display: flex;
             align-items: center;
@@ -244,9 +321,9 @@
         }
         
         .scenario-btn:hover {
-            background-color: #F0F9F8;
+            background-color: #eff6ff;
             transform: translateX(5px);
-            border-left-color: #D30121;
+            border-left-color: #1d4ed8;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
         
@@ -270,7 +347,7 @@
         
         .scenario-btn h3 {
             font-size: 28px;
-            color: #D30121;
+            color: #1e3a8a;
             margin-bottom: 5px;
         }
         
@@ -358,6 +435,61 @@
         .animation-svg {
             width: 100%;
             height: 100%;
+            display: none;
+        }
+
+        .scene-stage {
+            position: absolute;
+            inset: 0;
+            overflow: hidden;
+        }
+
+        .scene-bg {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .scene-role {
+            position: absolute;
+            bottom: 20px;
+            width: 22%;
+            max-width: 150px;
+            min-width: 96px;
+            height: auto;
+            object-fit: contain;
+            filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.25));
+        }
+
+        .scene-role.user {
+            left: 16%;
+        }
+
+        .scene-role.recruiter {
+            right: 16%;
+        }
+
+        .dialog-floating {
+            position: absolute;
+            top: 22px;
+            max-width: 300px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 14px;
+            padding: 10px 14px;
+            color: #334155;
+            line-height: 1.5;
+            font-size: 14px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.16);
+        }
+
+        .dialog-floating.recruiter {
+            right: 12%;
+        }
+
+        .dialog-floating.user {
+            left: 12%;
         }
         
         /* 对话框样式 */
@@ -427,7 +559,7 @@
         
         .user-message {
             align-self: flex-end;
-            background-color: #BFDEFF;
+            background-color: #dbeafe;
             padding: 10px 15px;
             border-radius: 18px 18px 0 18px;
             margin-left: auto;
@@ -449,8 +581,8 @@
         }
         
         .option-btn {
-            background-color: #FBEC8E;
-            border: 1px solid #FBEC8E;
+            background-color: #dbeafe;
+            border: 1px solid #bfdbfe;
             border-radius: 8px;
             padding: 10px;
             text-align: left;
@@ -459,7 +591,7 @@
         }
         
         .option-btn:hover {
-            background-color: #F8D77E;
+            background-color: #bfdbfe;
         }
         
         /* 底部页脚 */
@@ -485,7 +617,7 @@
         }
         
         .footer-links a {
-            color: #BFDEFF;
+            color: #93c5fd;
             text-decoration: none;
             margin: 0 10px;
         }
@@ -540,7 +672,7 @@
             right: 15px;
             width: 35px;
             height: 35px;
-            background-color: #D30121;
+            background-color: #1d4ed8;
             color: white;
             border: none;
             border-radius: 50%;
@@ -555,7 +687,7 @@
         }
         
         .exit-btn:hover {
-            background-color: #B0001C;
+            background-color: #1e40af;
             transform: scale(1.1);
         }
         
@@ -567,7 +699,7 @@
             padding: 25px 50px;
             font-size: 28px;
             font-weight: bold;
-            background-color: #D30121;
+            background: linear-gradient(90deg, #1e3a8a, #2563eb);
             color: white;
             border: none;
             border-radius: 30px;
@@ -578,7 +710,7 @@
         }
         
         .start-game-btn:hover {
-            background-color: #B0001C;
+            background-color: #1e40af;
             transform: translateX(-50%) translateY(-8px);
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
         }
@@ -586,8 +718,9 @@
         /* 响应式设计 */
         @media (max-width: 768px) {
             .nav-container {
-                flex-direction: column;
-                text-align: center;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 10px;
             }
             
             .logo {
@@ -616,9 +749,25 @@
     <!-- 导航栏 -->
     <nav class="navbar">
         <div class="nav-container">
-            <div class="logo">
-                <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=university%20students%20employment%20safety%20logo%2C%20blue%20color%2C%20simple%20and%20modern&image_size=square" alt="平台Logo">
-                <h1>大学生就业防坑服务平台</h1>
+            <div class="logo">职途安</div>
+            <nav class="nav-center">
+                <a href="ai-chat-test.html" data-auth-required="true">AI助手</a>
+                <a href="case.html">案例模拟</a>
+                <a href="forum.html">交流论坛</a>
+            </nav>
+            <div class="nav-right">
+                <div id="guest-nav">
+                    <a href="login.html" class="nav-btn">登录</a>
+                    <a href="register.html" class="nav-btn primary">注册</a>
+                </div>
+                <div id="user-nav">
+                    <div class="avatar-wrapper" id="topAvatarWrap">
+                        <img id="topAvatarImage" alt="头像" style="display:none;">
+                        <span id="topAvatarLetter">游</span>
+                    </div>
+                    <span id="topUserName" style="font-size:13px;color:#1e3a8a;">用户</span>
+                    <button id="logoutBtn" class="nav-btn">退出</button>
+                </div>
             </div>
         </div>
     </nav>
@@ -715,7 +864,7 @@
                     <!-- 场景1 -->
                     <div class="scenario-btn" onclick="showGameInterface('dialog1')">
                         <div class="scenario-header">
-                            <img src="D:\职\occupational-safety\image\1.jpg" alt="面试收费骗局" class="scenario-img">
+                            <img src="assets/images/scenarios/1.jpg" alt="面试收费骗局" class="scenario-img">
                             <div class="scenario-title-container">
                                 <h3>面试收费骗局</h3>
                                 <p>模拟面试中遇到收费要求的场景</p>
@@ -726,7 +875,7 @@
                     <!-- 场景2 -->
                     <div class="scenario-btn" onclick="showGameInterface('dialog2')">
                         <div class="scenario-header">
-                            <img src="D:\职\occupational-safety\image\2.jpg" alt="培训贷骗局" class="scenario-img">
+                            <img src="assets/images/scenarios/2.jpg" alt="培训贷骗局" class="scenario-img">
                             <div class="scenario-title-container">
                                 <h3>培训贷骗局</h3>
                                 <p>模拟遇到培训贷款的场景</p>
@@ -737,7 +886,7 @@
                     <!-- 场景3 -->
                     <div class="scenario-btn" onclick="showGameInterface('dialog3')">
                         <div class="scenario-header">
-                            <img src="D:\职\occupational-safety\image\3.jpg" alt="刷单兼职骗局" class="scenario-img">
+                            <img src="assets/images/scenarios/3.jpg" alt="刷单兼职骗局" class="scenario-img">
                             <div class="scenario-title-container">
                                 <h3>刷单兼职骗局</h3>
                                 <p>模拟遇到刷单兼职的场景</p>
@@ -748,7 +897,7 @@
                     <!-- 场景4 -->
                     <div class="scenario-btn" onclick="showGameInterface('dialog4')">
                         <div class="scenario-header">
-                            <img src="D:\职\occupational-safety\image\4.jpg" alt="虚假高薪岗位" class="scenario-img">
+                            <img src="assets/images/scenarios/4.jpg" alt="虚假高薪岗位" class="scenario-img">
                             <div class="scenario-title-container">
                                 <h3>虚假高薪岗位</h3>
                                 <p>模拟遇到虚假高薪岗位的场景</p>
@@ -759,7 +908,7 @@
                     <!-- 场景5 -->
                     <div class="scenario-btn" onclick="showGameInterface('dialog5')">
                         <div class="scenario-header">
-                            <img src="D:\职\occupational-safety\image\5.jpg" alt="抵押骗局" class="scenario-img">
+                            <img src="assets/images/scenarios/5.jpg" alt="抵押骗局" class="scenario-img">
                             <div class="scenario-title-container">
                                 <h3>抵押骗局</h3>
                                 <p>模拟遇到抵押要求的场景</p>
@@ -770,7 +919,7 @@
                     <!-- 场景6 -->
                     <div class="scenario-btn" onclick="showGameInterface('dialog6')">
                         <div class="scenario-header">
-                            <img src="D:\职\occupational-safety\image\6.jpg" alt="虚假offer骗局" class="scenario-img">
+                            <img src="assets/images/scenarios/6.jpg" alt="虚假offer骗局" class="scenario-img">
                             <div class="scenario-title-container">
                                 <h3>虚假offer骗局</h3>
                                 <p>模拟收到虚假offer的场景</p>
@@ -803,6 +952,7 @@
                 <svg class="animation-svg" id="animation1" viewBox="0 0 800 600">
                 </svg>
             </div>
+            <div class="chat-container"></div>
             <div class="options-container"></div>
         </div>
     </div>
@@ -1168,6 +1318,79 @@
     </footer>
     
     <script>
+        function isLoggedIn() {
+            return Boolean(localStorage.getItem('token'));
+        }
+
+        function requireLogin(actionName) {
+            if (isLoggedIn()) {
+                return true;
+            }
+            const goLogin = window.confirm(actionName + '需要登录后使用，是否前往登录页？');
+            if (goLogin) {
+                const redirect = encodeURIComponent('case.html#scenarios');
+                const action = encodeURIComponent(actionName);
+                window.location.href = 'login.html?redirect=' + redirect + '&action=' + action;
+            }
+            return false;
+        }
+
+        function getToken() {
+            return localStorage.getItem('token') || sessionStorage.getItem('token') || '';
+        }
+
+        function getUsername() {
+            return localStorage.getItem('username') || sessionStorage.getItem('username') || '游客';
+        }
+
+        function getAvatarDataUrl() {
+            return localStorage.getItem('userAvatar') || '';
+        }
+
+        function renderTopRightUser() {
+            const guestNav = document.getElementById('guest-nav');
+            const userNav = document.getElementById('user-nav');
+            const nameEl = document.getElementById('topUserName');
+            const avatarImg = document.getElementById('topAvatarImage');
+            const avatarLetter = document.getElementById('topAvatarLetter');
+            const avatarWrap = document.getElementById('topAvatarWrap');
+
+            const username = getUsername();
+            const token = getToken();
+            const avatarUrl = getAvatarDataUrl();
+
+            if (token) {
+                guestNav.style.display = 'none';
+                userNav.style.display = 'flex';
+                nameEl.textContent = username;
+
+                if (avatarUrl) {
+                    avatarImg.src = avatarUrl;
+                    avatarImg.style.display = 'block';
+                    avatarLetter.style.display = 'none';
+                } else {
+                    avatarImg.style.display = 'none';
+                    avatarLetter.style.display = 'inline';
+                    avatarLetter.textContent = (username || '游').charAt(0).toUpperCase();
+                }
+            } else {
+                guestNav.style.display = 'flex';
+                userNav.style.display = 'none';
+            }
+
+            avatarWrap.addEventListener('click', () => {
+                window.location.href = 'profile.html';
+            });
+
+            document.getElementById('logoutBtn').addEventListener('click', () => {
+                localStorage.removeItem('token');
+                localStorage.removeItem('username');
+                sessionStorage.removeItem('token');
+                sessionStorage.removeItem('username');
+                location.reload();
+            });
+        }
+
         // 切换案例详细内容的显示/隐藏
         function toggleCaseDetails(element) {
             element.classList.toggle('expanded');
@@ -2247,13 +2470,16 @@
         
         // 显示游戏界面
         function showGameInterface(dialogId) {
+            if (!requireLogin('场景模拟')) {
+                return;
+            }
             currentDialogId = dialogId;
             const gameOverlay = document.getElementById('gameOverlay');
             const gameBackground = document.getElementById('gameBackground');
             
             // 设置游戏背景图（使用用户提供的具体图片路径）
             const imageMap = {
-                'dialog1': '面试收费骗局.1.jpg',
+                'dialog1': 'interview-scam-cover.jpg',
                 'dialog2': '培训贷骗局.1.jpg',
                 'dialog3': '刷单兼职骗局.1.jpg',
                 'dialog4': '虚假高薪岗位.1.jpg',
@@ -2261,14 +2487,17 @@
                 'dialog6': '虚假offer骗局.1.jpg'
             };
             
-            const imageName = imageMap[dialogId] || '面试收费骗局.1.jpg';
-            gameBackground.style.backgroundImage = `url('../image/${imageName}')`;
+            const imageName = imageMap[dialogId] || 'interview-scam-cover.jpg';
+            gameBackground.style.backgroundImage = `url('${encodeURI('assets/images/scenarios/' + imageName)}')`;
             
             gameOverlay.classList.add('show');
         }
         
         // 开始游戏
         function startGame() {
+            if (!requireLogin('场景模拟')) {
+                return;
+            }
             const gameOverlay = document.getElementById('gameOverlay');
             gameOverlay.classList.remove('show');
             
@@ -2306,9 +2535,10 @@
         
         // 更新动画
         function updateAnimation(dialogId, step, isUser = false, userAnimation = null) {
-            const animationId = `animation${dialogId.replace('dialog', '')}`;
-            const svg = document.getElementById(animationId);
-            if (!svg) return;
+            const dialog = document.getElementById(dialogId);
+            if (!dialog) return;
+            const container = dialog.querySelector('.animation-container');
+            if (!container) return;
             
             // 获取当前对话数据
             const data = dialogData[dialogId];
@@ -2334,9 +2564,9 @@
             // 设置图片映射
             const imageMap = {
                 'dialog1': {
-                    bg: '面试收费骗局.3.png',
-                    user: '面试收费骗局.2.png',
-                    recruiter: '面试收费骗局.4.png'
+                    bg: 'interview-scam-bg.png',
+                    user: 'interview-scam-user.png',
+                    recruiter: 'interview-scam-user.png'
                 },
                 'dialog2': {
                     bg: '培训贷骗局.3.png',
@@ -2344,83 +2574,46 @@
                     recruiter: '培训贷骗局.4.png'
                 },
                 'dialog3': {
-                    bg: '刷单兼职骗局.3.jpg',
-                    user: '刷单兼职骗局.2.jpg',
-                    recruiter: '刷单兼职骗局.4.jpg'
+                    bg: '刷单兼职骗局.3.png',
+                    user: '刷单兼职骗局.2.png',
+                    recruiter: '刷单兼职骗局.2.png'
                 },
                 'dialog4': {
                     bg: '虚假高薪岗位.3.jpg',
-                    user: '虚假高薪岗位.2.jpg',
-                    recruiter: '虚假高薪岗位.4.jpg'
+                    user: '虚假高薪岗位.2.png',
+                    recruiter: '虚假高薪岗位.2.png'
                 },
                 'dialog5': {
                     bg: '抵押骗局.3.jpg',
-                    user: '抵押骗局.2.jpg',
-                    recruiter: '抵押骗局.4.jpg'
+                    user: '抵押骗局.2.png',
+                    recruiter: '抵押骗局.2.png'
                 },
                 'dialog6': {
                     bg: '虚假offer骗局.3.jpg',
-                    user: '虚假offer骗局.2.jpg',
-                    recruiter: '虚假offer骗局.4.jpg'
+                    user: '虚假offer骗局.2.png',
+                    recruiter: '虚假offer骗局.2.png'
                 }
             };
             
             const currentImages = imageMap[dialogId] || imageMap['dialog1'];
-            
-            // 清空SVG内容
-            svg.innerHTML = '';
-            
-            // 添加背景图片
-            const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
-            svg.appendChild(defs);
-            
-            // 直接添加背景图片，不使用pattern
-            const bgImage = document.createElementNS('http://www.w3.org/2000/svg', 'image');
-            bgImage.setAttribute('x', '0');
-            bgImage.setAttribute('y', '0');
-            bgImage.setAttribute('width', '100%');
-            bgImage.setAttribute('height', '100%');
-            bgImage.setAttribute('preserveAspectRatio', 'xMidYMid slice');
-            bgImage.setAttribute('href', `../image/${currentImages.bg}`);
-            svg.appendChild(bgImage);
-            
-            // 添加用户图片
-            const userImage = document.createElementNS('http://www.w3.org/2000/svg', 'image');
-            userImage.setAttribute('x', '150');
-            userImage.setAttribute('y', '120');
-            userImage.setAttribute('width', '120');
-            userImage.setAttribute('height', '200');
-            userImage.setAttribute('href', `../image/${currentImages.user}`);
-            svg.appendChild(userImage);
-            
-            // 添加招聘者图片
-            const recruiterImage = document.createElementNS('http://www.w3.org/2000/svg', 'image');
-            recruiterImage.setAttribute('x', '530');
-            recruiterImage.setAttribute('y', '120');
-            recruiterImage.setAttribute('width', '120');
-            recruiterImage.setAttribute('height', '200');
-            recruiterImage.setAttribute('href', `../image/${currentImages.recruiter}`);
-            svg.appendChild(recruiterImage);
-            
-            // 创建新的对话框
-            const foreignObject = document.createElementNS('http://www.w3.org/2000/svg', 'foreignObject');
-            const dialogBubble = document.createElementNS('http://www.w3.org/1999/xhtml', 'div');
-            dialogBubble.className = 'dialog-bubble';
-            dialogBubble.textContent = displayText;
-            
-            // 根据说话人设置对话框位置
-            if (speakerType === 'recruiter') {
-                foreignObject.setAttribute('x', '520');
-                foreignObject.setAttribute('y', '60');
-            } else {
-                foreignObject.setAttribute('x', '120');
-                foreignObject.setAttribute('y', '60');
-            }
-            
-            foreignObject.setAttribute('width', '200');
-            foreignObject.setAttribute('height', '80');
-            foreignObject.appendChild(dialogBubble);
-            svg.appendChild(foreignObject);
+            const getScenarioImageUrl = (fileName, fallbackFileName) => {
+                const base = 'assets/images/scenarios/';
+                const chosen = fileName || fallbackFileName || '1.jpg';
+                return encodeURI(base + chosen);
+            };
+
+            const bgUrl = getScenarioImageUrl(currentImages.bg, '1.jpg');
+            const userUrl = getScenarioImageUrl(currentImages.user, currentImages.bg);
+            const recruiterUrl = getScenarioImageUrl(currentImages.recruiter, currentImages.user);
+
+            container.innerHTML = `
+                <div class="scene-stage">
+                    <img class="scene-bg" src="${bgUrl}" onerror="this.src='assets/images/scenarios/1.jpg'" alt="场景背景">
+                    <img class="scene-role user" src="${userUrl}" onerror="this.src='assets/images/scenarios/2.jpg'" alt="用户">
+                    <img class="scene-role recruiter" src="${recruiterUrl}" onerror="this.src='assets/images/scenarios/3.jpg'" alt="招聘者">
+                    <div class="dialog-floating ${speakerType === 'recruiter' ? 'recruiter' : 'user'}">${displayText}</div>
+                </div>
+            `;
         }
         
         // 渲染对话
@@ -2428,9 +2621,12 @@
             const dialog = document.getElementById(dialogId);
             const chatContainer = dialog.querySelector('.chat-container');
             const optionsContainer = dialog.querySelector('.options-container');
+            if (!optionsContainer) return;
             
             // 清空容器
-            chatContainer.innerHTML = '';
+            if (chatContainer) {
+                chatContainer.innerHTML = '';
+            }
             optionsContainer.innerHTML = '';
             
             // 获取对话数据
@@ -2447,14 +2643,18 @@
                     const recruiterDiv = document.createElement('div');
                     recruiterDiv.className = 'chat-message recruiter-message';
                     recruiterDiv.innerHTML = `<p>${item.recruiterText}</p>`;
-                    chatContainer.appendChild(recruiterDiv);
+                    if (chatContainer) {
+                        chatContainer.appendChild(recruiterDiv);
+                    }
                     
                     // 渲染用户消息
                     if (item.userText) {
                         const userDiv = document.createElement('div');
                         userDiv.className = 'chat-message user-message';
                         userDiv.innerHTML = `<p>${item.userText}</p>`;
-                        chatContainer.appendChild(userDiv);
+                        if (chatContainer) {
+                            chatContainer.appendChild(userDiv);
+                        }
                     }
                 });
             }
@@ -2466,7 +2666,9 @@
                 const messageDiv = document.createElement('div');
                 messageDiv.className = `chat-message ${currentDialog.type}-message`;
                 messageDiv.innerHTML = `<p>${currentDialog.text}</p>`;
-                chatContainer.appendChild(messageDiv);
+                if (chatContainer) {
+                    chatContainer.appendChild(messageDiv);
+                }
             }
             
             // 检查是否需要显示选项
@@ -2503,6 +2705,12 @@
             
             if (currentDialog && currentDialog.type === 'recruiter' && currentDialog.options) {
                 const selectedOption = currentDialog.options[optionIndex];
+
+                // 防止快速重复点击导致多次跳转。
+                if (state.isTransitioning) {
+                    return;
+                }
+                state.isTransitioning = true;
                 
                 // 保存对话历史
                 if (!state.history) {
@@ -2524,15 +2732,26 @@
                 updateAnimation(dialogId, state.currentStep, true, userAnimationData);
                 
                 // 检查是否结束对话
-                if (selectedOption.next === -1) {
+                const nextStep = Number(selectedOption.next);
+                if (nextStep === -1) {
                     // 显示反馈
                     setTimeout(() => {
-                        showFeedback(dialogId, selectedOption.feedback);
+                        const feedback = selectedOption.feedback || '本轮对话已结束，请根据提示复盘关键风险点。';
+                        showFeedback(dialogId, feedback);
+                        state.isTransitioning = false;
                     }, 1000);
                 } else {
+                    if (!data.dialogs[nextStep]) {
+                        setTimeout(() => {
+                            showFeedback(dialogId, '该分支暂未配置完整，已为你结束本轮。建议重新尝试其他选项。');
+                            state.isTransitioning = false;
+                        }, 1000);
+                        return;
+                    }
                     // 继续对话
                     setTimeout(() => {
-                        state.currentStep = selectedOption.next;
+                        state.currentStep = nextStep;
+                        state.isTransitioning = false;
                         renderDialog(dialogId);
                     }, 1000);
                 }
@@ -2548,7 +2767,9 @@
             // 重新渲染聊天容器，确保显示完整的对话历史
             const data = dialogData[dialogId];
             const state = dialogState[dialogId];
-            chatContainer.innerHTML = '';
+            if (chatContainer) {
+                chatContainer.innerHTML = '';
+            }
             
             // 渲染对话历史
             if (state.history) {
@@ -2557,14 +2778,18 @@
                     const recruiterDiv = document.createElement('div');
                     recruiterDiv.className = 'chat-message recruiter-message';
                     recruiterDiv.innerHTML = `<p>${item.recruiterText}</p>`;
-                    chatContainer.appendChild(recruiterDiv);
+                    if (chatContainer) {
+                        chatContainer.appendChild(recruiterDiv);
+                    }
                     
                     // 渲染用户消息
                     if (item.userText) {
                         const userDiv = document.createElement('div');
                         userDiv.className = 'chat-message user-message';
                         userDiv.innerHTML = `<p>${item.userText}</p>`;
-                        chatContainer.appendChild(userDiv);
+                        if (chatContainer) {
+                            chatContainer.appendChild(userDiv);
+                        }
                     }
                 });
             }
@@ -2612,6 +2837,18 @@
                 }
             }
         }
+
+        renderTopRightUser();
+
+        document.querySelectorAll('[data-auth-required="true"]').forEach(function (el) {
+            el.addEventListener('click', function (event) {
+                event.preventDefault();
+                const target = el.getAttribute('href') || 'ai-chat-test.html';
+                if (requireLogin(el.textContent.trim() || '该功能')) {
+                    window.location.href = target;
+                }
+            });
+        });
     </script>
 </body>
 </html>
