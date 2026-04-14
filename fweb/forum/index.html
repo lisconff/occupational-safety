@@ -1,0 +1,1323 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>职途安论坛 - 曝光互助社区</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #f5f5f7;
+            font-family: 'Inter', sans-serif;
+            color: #0d0c22;
+            line-height: 1.4;
+        }
+
+        .app-container {
+            max-width: 1440px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            box-shadow: 0 0 40px rgba(0,0,0,0.02);
+        }
+
+        /* 导航栏 */
+        .main-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 32px;
+            border-bottom: 1px solid #e7e7e9;
+            background: white;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .logo-area {
+            font-size: 24px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            background: linear-gradient(135deg, #ea4c89, #f082ac);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            cursor: pointer;
+        }
+
+        .logo-area span {
+            color: #0d0c22;
+            background: none;
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid #e7e7e9;
+            padding: 8px 18px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn-primary {
+            background: #0d0c22;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn-primary:hover {
+            background: #ea4c89;
+        }
+
+        /* 搜索栏 */
+        .search-section {
+            padding: 24px 32px 16px 32px;
+            border-bottom: 1px solid #efefef;
+        }
+
+        .search-bar {
+            display: flex;
+            align-items: center;
+            background-color: #f5f5f7;
+            border-radius: 40px;
+            padding: 8px 20px;
+            margin-bottom: 24px;
+            border: 1px solid #eaeef2;
+        }
+
+        .search-icon {
+            color: #8e8e9a;
+            margin-right: 12px;
+        }
+
+        .search-bar input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            font-size: 16px;
+            outline: none;
+        }
+
+        .tag-filter-row {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        .tags-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .tag-btn {
+            background: white;
+            border: 1px solid #e1e1e5;
+            padding: 6px 16px;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: #3d3d4e;
+        }
+
+        .tag-btn.active {
+            background: #0d0c22;
+            color: white;
+            border-color: #0d0c22;
+        }
+
+        /* 主内容双栏 */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 32px;
+            padding: 32px;
+        }
+
+        .posts-feed {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .post-card {
+            background: white;
+            border: 1px solid #efeff1;
+            border-radius: 20px;
+            padding: 20px;
+            transition: box-shadow 0.2s, transform 0.1s;
+            cursor: pointer;
+        }
+
+        .post-card:hover {
+            box-shadow: 0 12px 20px rgba(0,0,0,0.08);
+            border-color: #ea4c89;
+            transform: translateY(-2px);
+        }
+
+        .post-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .avatar-placeholder {
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg, #ea4c89, #f5a3c0);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+
+        .user-name {
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        .post-stats {
+            display: flex;
+            gap: 16px;
+            color: #6e6d7a;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .post-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin: 12px 0 8px 0;
+        }
+
+        .post-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 12px 0 8px;
+        }
+
+        .small-tag {
+            background: #f0f0f4;
+            padding: 4px 10px;
+            border-radius: 16px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .post-excerpt {
+            color: #5b6e8c;
+            font-size: 14px;
+            line-height: 1.5;
+            margin-top: 8px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 28px;
+        }
+
+        .widget {
+            background: #ffffff;
+            border: 1px solid #efeff1;
+            border-radius: 24px;
+            padding: 20px;
+        }
+
+        .widget-title {
+            font-weight: 700;
+            font-size: 18px;
+            margin-bottom: 16px;
+            border-left: 4px solid #ea4c89;
+            padding-left: 12px;
+        }
+
+        .btn-post-widget {
+            background: #ea4c89;
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 12px;
+            border-radius: 40px;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .btn-post-widget:hover {
+            background: #d43d7a;
+        }
+
+        /* 我的帖子列表样式 */
+        .my-posts-list {
+            list-style: none;
+        }
+
+        .my-post-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #f0f0f4;
+            transition: all 0.2s;
+            border-radius: 12px;
+        }
+
+        .my-post-item:hover {
+            background-color: #f8f8fa;
+        }
+
+        .my-post-title {
+            font-size: 14px;
+            font-weight: 500;
+            flex: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-right: 12px;
+            cursor: pointer;
+        }
+
+        .my-post-stats {
+            font-size: 12px;
+            color: #8e8e9a;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .delete-post-btn {
+            background: none;
+            border: none;
+            color: #dc2626;
+            cursor: pointer;
+            font-size: 14px;
+            padding: 4px 8px;
+            border-radius: 20px;
+            transition: all 0.2s;
+        }
+
+        .delete-post-btn:hover {
+            background-color: #fee2e2;
+            transform: scale(1.05);
+        }
+
+        .empty-my-posts {
+            text-align: center;
+            padding: 30px 16px;
+            color: #aaa;
+            font-size: 14px;
+        }
+
+        .history-item {
+            padding: 10px 0;
+            border-bottom: 1px solid #efeff1;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-radius: 12px;
+        }
+
+        .history-item:hover {
+            background-color: #f8f8fa;
+            padding-left: 8px;
+            padding-right: 8px;
+        }
+
+        .footer-links {
+            font-size: 12px;
+            color: #6e6d7a;
+            text-align: center;
+            border-top: 1px solid #efeff1;
+            padding: 24px 32px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        /* 模态框样式 */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            visibility: hidden;
+            opacity: 0;
+            transition: 0.2s;
+        }
+
+        .modal-overlay.active {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .modal-container {
+            background: white;
+            border-radius: 32px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+
+        .modal-header {
+            padding: 20px 28px;
+            border-bottom: 1px solid #efeff1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            background: white;
+            z-index: 10;
+        }
+
+        .modal-header h2 {
+            font-size: 1.6rem;
+            font-weight: 700;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 28px;
+            cursor: pointer;
+            color: #888;
+        }
+
+        .modal-body {
+            padding: 28px;
+        }
+
+        .field-group {
+            margin-bottom: 24px;
+        }
+
+        .field-label {
+            font-weight: 700;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .required-star:after {
+            content: "*";
+            color: #dc2626;
+            margin-left: 4px;
+        }
+
+        .mandatory-tags-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .tag-option-mandatory {
+            background: #f1f5f9;
+            border: 1.5px solid #e2e8f0;
+            padding: 8px 20px;
+            border-radius: 60px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .tag-option-mandatory.selected {
+            background: #1e3a8a;
+            border-color: #1e3a8a;
+            color: white;
+        }
+
+        .error-text {
+            color: #dc2626;
+            font-size: 0.75rem;
+            margin-top: 6px;
+            display: none;
+        }
+
+        .rich-toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            background: #f8fafc;
+            padding: 10px 14px;
+            border-radius: 20px 20px 0 0;
+            border: 1.5px solid #e2edf2;
+            border-bottom: none;
+        }
+
+        .tool-btn {
+            background: white;
+            border: 1px solid #cbd5e1;
+            padding: 6px 14px;
+            border-radius: 40px;
+            font-size: 0.8rem;
+            cursor: pointer;
+        }
+
+        .editor-area {
+            border: 1.5px solid #e2edf2;
+            border-radius: 0 0 20px 20px;
+            min-height: 180px;
+            padding: 14px;
+            background: white;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            overflow-y: auto;
+        }
+
+        [contenteditable="true"]:focus {
+            outline: none;
+            border-color: #3b82f6;
+        }
+
+        .custom-tags-wrapper {
+            border: 1.5px solid #e2edf2;
+            border-radius: 28px;
+            padding: 12px 16px;
+        }
+
+        .tag-input-line {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .tag-list-custom {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            flex: 1;
+        }
+
+        .custom-tag-item {
+            background: #eef2ff;
+            padding: 5px 14px;
+            border-radius: 40px;
+            font-size: 0.8rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .remove-tag {
+            cursor: pointer;
+            background: none;
+            border: none;
+            font-size: 1rem;
+        }
+
+        .custom-tag-input {
+            border: 1px solid #cbd5e6;
+            border-radius: 40px;
+            padding: 6px 16px;
+            outline: none;
+            min-width: 140px;
+        }
+
+        .preset-tags-mini {
+            margin-top: 12px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .preset-tag-mini {
+            background: #f1f5f9;
+            padding: 4px 12px;
+            border-radius: 30px;
+            font-size: 0.7rem;
+            cursor: pointer;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 16px;
+            margin-top: 28px;
+        }
+
+        .btn-publish {
+            background: #ea4c89;
+            color: white;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 40px;
+            font-weight: 700;
+            cursor: pointer;
+            flex: 1;
+        }
+
+        .btn-draft {
+            background: #f1f5f9;
+            border: 1px solid #cbd5e1;
+            padding: 12px 24px;
+            border-radius: 40px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        @media (max-width: 800px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+                padding: 20px;
+            }
+        }
+
+        .empty-message {
+            text-align: center;
+            padding: 40px;
+            background: #fafafa;
+            border-radius: 32px;
+            color: #888;
+        }
+
+        .toast-msg {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1f2937;
+            color: white;
+            padding: 10px 24px;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            z-index: 2100;
+            pointer-events: none;
+            transition: 0.2s;
+        }
+    </style>
+</head>
+<body>
+<div class="app-container">
+    <header class="main-header">
+        <div class="logo-area" id="homeBtn">职途安<span>论坛</span></div>
+        <div class="auth-buttons" id="authButtons">
+            <button class="btn-outline" id="signUpBtn">注册</button>
+            <button class="btn-primary" id="loginBtn">登录</button>
+        </div>
+    </header>
+
+    <div class="search-section">
+        <div class="search-bar">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="searchInput" placeholder="搜索帖子...">
+        </div>
+        <div class="tag-filter-row">
+            <div class="tags-list" id="filterTagsContainer"></div>
+        </div>
+    </div>
+
+    <div class="main-grid">
+        <div class="posts-feed" id="postsFeed"></div>
+        <div class="sidebar">
+            <div class="widget">
+                <div class="widget-title">✍️ 分享你的想法</div>
+                <button class="btn-post-widget" id="openPostModalBtn">➕ 发布曝光/分享</button>
+            </div>
+            <div class="widget">
+                <div class="widget-title">📋 我的帖子</div>
+                <div id="myPostsList">
+                    <div class="empty-my-posts">加载中...</div>
+                </div>
+            </div>
+            <div class="widget">
+                <div class="widget-title">🕐 最近浏览</div>
+                <div class="history-list" id="viewHistoryList">
+                    <div style="color:#aaa; text-align:center; padding:16px;">加载中...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer-links">
+        <div>© 职途安论坛 · 曝光互助</div>
+        <div>抵制职场欺诈 · 共享真实信息</div>
+    </div>
+</div>
+
+<!-- 发帖模态框 -->
+<div class="modal-overlay" id="postModal">
+    <div class="modal-container">
+        <div class="modal-header">
+            <h2>📢 发布曝光 / 分享</h2>
+            <button class="close-modal" id="closeModalBtn">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="field-group">
+                <div class="field-label"><span class="required-star">必选标签（曝光类型）</span></div>
+                <div class="mandatory-tags-grid" id="mandatoryTagsModal"></div>
+                <div id="modalMandatoryError" class="error-text">请选择一个必选标签</div>
+            </div>
+
+            <div class="field-group">
+                <div class="field-label"><span class="required-star">标题</span></div>
+                <input type="text" id="modalTitle" placeholder="例如：曝光某某公司恶意欠薪..." maxlength="80" style="width:100%; padding:12px; border-radius:20px; border:1.5px solid #e2edf2;">
+                <div class="char-counter" style="text-align:right; font-size:0.7rem; margin-top:4px;"><span id="modalTitleCount">0</span>/80</div>
+                <div id="modalTitleError" class="error-text">标题不能为空</div>
+            </div>
+
+            <div class="field-group">
+                <div class="field-label"><span class="required-star">正文内容</span></div>
+                <div class="rich-toolbar">
+                    <button type="button" class="tool-btn" data-command="bold">加粗</button>
+                    <button type="button" class="tool-btn" data-command="italic">斜体</button>
+                    <button type="button" class="tool-btn" data-command="underline">下划线</button>
+                    <button type="button" class="tool-btn" id="modalInsertImage">🖼️ 图片</button>
+                    <button type="button" class="tool-btn" id="modalInsertCode">{ } 代码</button>
+                    <button type="button" class="tool-btn" id="modalInsertQuote">“ 引用</button>
+                </div>
+                <div id="modalEditor" class="editor-area" contenteditable="true"></div>
+                <div id="modalContentError" class="error-text">正文不能为空</div>
+            </div>
+
+            <div class="field-group">
+                <div class="field-label">🏷️ 自定义标签（最多3个）</div>
+                <div class="custom-tags-wrapper">
+                    <div class="tag-input-line">
+                        <div class="tag-list-custom" id="modalCustomTagList"></div>
+                        <input type="text" id="modalCustomTagInput" class="custom-tag-input" placeholder="输入标签，按回车添加">
+                    </div>
+                    <div class="preset-tags-mini" id="modalPresetTags"></div>
+                    <div id="modalCustomTagError" class="error-text"></div>
+                </div>
+            </div>
+
+            <div class="modal-actions">
+                <button class="btn-publish" id="modalPublishBtn">🚀 发布帖子</button>
+                <button class="btn-draft" id="modalDraftBtn">💾 保存草稿</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="toastMsg" class="toast-msg" style="opacity:0; visibility:hidden;"></div>
+
+<script>
+    // ==================== 全局常量与数据 ====================
+    const ALL_TAGS = ["黑公司曝光", "骗局曝光", "面试经验", "简历避雷", "薪资爆料"];
+    let selectedMandatoryTag = "";
+    let customTagsArray = [];
+    let posts = [];
+
+    // 辅助函数
+    function showToast(msg, duration=2000) {
+        const toast = document.getElementById('toastMsg');
+        toast.textContent = msg;
+        toast.style.visibility = 'visible';
+        toast.style.opacity = '1';
+        setTimeout(() => {
+            toast.style.opacity = '0';
+            setTimeout(() => toast.style.visibility = 'hidden', 300);
+        }, duration);
+    }
+
+    function escapeHtml(str) {
+        if(!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if(m === '&') return '&amp;';
+            if(m === '<') return '&lt;';
+            if(m === '>') return '&gt;';
+            return m;
+        });
+    }
+
+    function formatNumber(num) {
+        if (num >= 1000) return (num/1000).toFixed(1) + 'k';
+        return num;
+    }
+
+    // ==================== 登录状态管理 ====================
+    function isLoggedIn() {
+        return localStorage.getItem('isLoggedIn') === 'true' || sessionStorage.getItem('isLoggedIn') === 'true';
+    }
+
+    function getCurrentUser() {
+        const user = localStorage.getItem('currentUser') || sessionStorage.getItem('currentUser');
+        return user ? JSON.parse(user) : null;
+    }
+
+    function getRedirectParam() {
+        return encodeURIComponent(window.location.href);
+    }
+
+    function requireLogin() {
+        if (!isLoggedIn()) {
+            const redirectUrl = getRedirectParam();
+            showToast('请先登录后再操作', 1500);
+            setTimeout(() => {
+                if (confirm('是否跳转到登录页？')) {
+                    window.location.href = `../login/index.html?redirect=${redirectUrl}`;
+                }
+            }, 1500);
+            return false;
+        }
+        return true;
+    }
+
+    function logout() {
+        localStorage.removeItem('isLoggedIn');
+        localStorage.removeItem('currentUser');
+        localStorage.removeItem('userToken');
+        localStorage.removeItem('userName');
+        sessionStorage.removeItem('isLoggedIn');
+        sessionStorage.removeItem('currentUser');
+        sessionStorage.removeItem('userToken');
+        sessionStorage.removeItem('userName');
+        showToast('已退出登录');
+        setTimeout(() => window.location.reload(), 1000);
+    }
+
+    function renderAuthStatus() {
+        const authContainer = document.getElementById('authButtons');
+        if (!authContainer) return;
+        
+        if (isLoggedIn()) {
+            const user = getCurrentUser();
+            authContainer.innerHTML = `
+                <span style="margin-right: 16px; display: flex; align-items: center; gap: 8px;">
+                    <span>👤 ${user ? user.username : '用户'}</span>
+                    <button class="btn-outline" id="logoutBtn">退出</button>
+                </span>
+            `;
+            document.getElementById('logoutBtn')?.addEventListener('click', logout);
+        } else {
+            authContainer.innerHTML = `
+                <button class="btn-outline" id="signUpBtn">注册</button>
+                <button class="btn-primary" id="loginBtn">登录</button>
+            `;
+            const redirectParam = getRedirectParam();
+            document.getElementById('signUpBtn')?.addEventListener('click', () => {
+                window.location.href = `../register/index.html?redirect=${redirectParam}`;
+            });
+            document.getElementById('loginBtn')?.addEventListener('click', () => {
+                window.location.href = `../login/index.html?redirect=${redirectParam}`;
+            });
+        }
+    }
+
+    // ==================== 数据操作 ====================
+    function getPosts() {
+        const stored = localStorage.getItem('exposure_forum_posts');
+        if (stored && JSON.parse(stored).length > 0) {
+            return JSON.parse(stored);
+        }
+        return [
+            { id: "1", author: "打工人小张", authorAvatar: "小张", title: "曝光某科技公司试用期不交社保", content: "面试说入职即缴纳，结果三个月试用期都没有，HR还说是公司规定。大家注意避雷！", mandatoryTag: "黑公司曝光", customTags: ["社保避雷", "试用期"], likes: 23, views: 456, createdAt: "2025-01-15 14:30:00" },
+            { id: "2", author: "面试老手", authorAvatar: "面", title: "简历避雷：这家公司骗作品集", content: "面试要求发源文件，发完就没下文了，后来发现他们直接用我的设计去投标了。", mandatoryTag: "简历避雷", customTags: ["作品集诈骗"], likes: 45, views: 892, createdAt: "2025-01-16 10:20:00" },
+            { id: "3", author: "维权勇士", authorAvatar: "勇", title: "薪资爆料：某大厂PUA压榨", content: "加班不给加班费，绩效乱扣，年终奖还被克扣。已申请劳动仲裁。", mandatoryTag: "薪资爆料", customTags: ["压榨", "避雷"], likes: 67, views: 1230, createdAt: "2025-01-17 09:15:00" }
+        ];
+    }
+
+    function savePostsToStorage() {
+        localStorage.setItem('exposure_forum_posts', JSON.stringify(posts));
+    }
+
+    function getCommentsData() {
+        const stored = localStorage.getItem('post_comments');
+        return stored ? JSON.parse(stored) : {};
+    }
+
+    function getCommentCount(postId) {
+        const commentsData = getCommentsData();
+        return commentsData[postId] ? commentsData[postId].length : 0;
+    }
+
+    // ==================== 我的帖子渲染 ====================
+    function renderMyPosts() {
+        const container = document.getElementById('myPostsList');
+        if (!container) return;
+        
+        if (!isLoggedIn()) {
+            container.innerHTML = `
+                <div class="empty-my-posts">
+                    🔒 登录后可查看自己发布的帖子<br>
+                    <button class="btn-outline" style="margin-top: 12px; padding: 6px 16px;" id="loginToViewBtn">去登录</button>
+                </div>
+            `;
+            document.getElementById('loginToViewBtn')?.addEventListener('click', () => {
+                window.location.href = `../login/index.html?redirect=${getRedirectParam()}`;
+            });
+            return;
+        }
+        
+        const currentUser = getCurrentUser();
+        if (!currentUser) {
+            container.innerHTML = '<div class="empty-my-posts">暂无帖子</div>';
+            return;
+        }
+        
+        const myPosts = posts.filter(p => p.author === currentUser.username).reverse();
+        
+        if (myPosts.length === 0) {
+            container.innerHTML = '<div class="empty-my-posts">📭 还没有发布过帖子，快来发布第一篇吧~</div>';
+            return;
+        }
+        
+        container.innerHTML = `
+            <div class="my-posts-list">
+                ${myPosts.map(post => `
+                    <div class="my-post-item" data-id="${post.id}">
+                        <div class="my-post-title">${escapeHtml(post.title)}</div>
+                        <div class="my-post-stats">
+                            <span>❤️ ${post.likes || 0} | 💬 ${getCommentCount(post.id)}</span>
+                            <button class="delete-post-btn" data-id="${post.id}" title="删除帖子">🗑️</button>
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+        `;
+        
+        // 点击标题跳转详情页
+        document.querySelectorAll('.my-post-title').forEach(el => {
+            const parent = el.closest('.my-post-item');
+            const postId = parent?.getAttribute('data-id');
+            if (postId) {
+                el.addEventListener('click', () => {
+                    window.location.href = `post-detail.html?id=${postId}`;
+                });
+            }
+        });
+        
+        // 删除按钮事件
+        document.querySelectorAll('.delete-post-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const postId = btn.getAttribute('data-id');
+                const postToDelete = posts.find(p => p.id === postId);
+                
+                if (postToDelete && confirm(`确定要删除帖子《${postToDelete.title}》吗？此操作不可恢复。`)) {
+                    // 从帖子数组中移除
+                    posts = posts.filter(p => p.id !== postId);
+                    savePostsToStorage();
+                    
+                    // 同时删除该帖子的评论数据
+                    const commentsData = getCommentsData();
+                    if (commentsData[postId]) {
+                        delete commentsData[postId];
+                        localStorage.setItem('post_comments', JSON.stringify(commentsData));
+                    }
+                    
+                    // 刷新页面显示
+                    renderPosts();
+                    renderMyPosts();
+                    renderViewHistory();
+                    showToast("帖子已删除", 1500);
+                }
+            });
+        });
+    }
+
+    // ==================== 首页渲染 ====================
+    let activeFilterTag = null;
+    let searchKeyword = "";
+
+    function renderFilterTags() {
+        const container = document.getElementById("filterTagsContainer");
+        container.innerHTML = '';
+        const allBtn = document.createElement('button');
+        allBtn.className = `tag-btn ${activeFilterTag === null ? 'active' : ''}`;
+        allBtn.innerText = "全部";
+        allBtn.onclick = () => { activeFilterTag = null; renderFilterTags(); renderPosts(); };
+        container.appendChild(allBtn);
+        ALL_TAGS.forEach(tag => {
+            const btn = document.createElement('button');
+            btn.className = `tag-btn ${activeFilterTag === tag ? 'active' : ''}`;
+            btn.innerText = tag;
+            btn.onclick = () => { activeFilterTag = tag; renderFilterTags(); renderPosts(); };
+            container.appendChild(btn);
+        });
+    }
+
+    function getFilteredPosts() {
+        let filtered = [...posts];
+        if (activeFilterTag) filtered = filtered.filter(p => p.mandatoryTag === activeFilterTag);
+        if (searchKeyword.trim()) {
+            const kw = searchKeyword.toLowerCase();
+            filtered = filtered.filter(p => p.title.toLowerCase().includes(kw) || (p.content && p.content.toLowerCase().includes(kw)));
+        }
+        return filtered.reverse();
+    }
+
+    function renderPosts() {
+        const feedContainer = document.getElementById("postsFeed");
+        const filtered = getFilteredPosts();
+        if (filtered.length === 0) {
+            feedContainer.innerHTML = `<div class="empty-message">✨ 没有找到相关帖子，快来发布第一个曝光吧~</div>`;
+            return;
+        }
+        feedContainer.innerHTML = filtered.map(post => {
+            const allTags = [post.mandatoryTag, ...(post.customTags || [])];
+            const commentCount = getCommentCount(post.id);
+            
+            return `
+                <div class="post-card" data-id="${post.id}" style="cursor: pointer;">
+                    <div class="post-header">
+                        <div class="user-info">
+                            <div class="avatar-placeholder">${escapeHtml(post.authorAvatar || post.author?.substring(0,2) || '用')}</div>
+                            <div>
+                                <span class="user-name">${escapeHtml(post.author || '匿名用户')}</span>
+                            </div>
+                        </div>
+                        <div class="post-stats">
+                            <span>❤️ ${post.likes || 0}</span>
+                            <span>👁️ ${formatNumber(post.views || 0)}</span>
+                            <span>💬 ${commentCount}</span>
+                        </div>
+                    </div>
+                    <div class="post-title">${escapeHtml(post.title)}</div>
+                    <div class="post-tags">
+                        ${allTags.map(t => `<span class="small-tag">${escapeHtml(t)}</span>`).join('')}
+                    </div>
+                    <div class="post-excerpt">${escapeHtml((post.content || '').substring(0, 100))}${(post.content || '').length > 100 ? '...' : ''}</div>
+                    <div style="margin-top:12px; font-size:12px; color:#aaa; display:flex; gap:12px;">
+                        <span>💬 ${commentCount} 条评论</span>
+                        <span style="cursor:pointer;" class="like-action" data-id="${post.id}">👍 点赞 (${post.likes || 0})</span>
+                    </div>
+                </div>
+            `;
+        }).join('');
+        
+        document.querySelectorAll('.like-action').forEach(el => {
+            el.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (!requireLogin()) return;
+                const postId = el.getAttribute('data-id');
+                const targetPost = posts.find(p => p.id === postId);
+                if (targetPost) {
+                    targetPost.likes = (targetPost.likes || 0) + 1;
+                    savePostsToStorage();
+                    renderPosts();
+                    renderMyPosts();
+                    showToast("点赞成功！", 1000);
+                }
+            });
+        });
+        
+        document.querySelectorAll('.post-card').forEach(card => {
+            card.addEventListener('click', (e) => {
+                if (e.target.classList && e.target.classList.contains('like-action')) return;
+                const postId = card.getAttribute('data-id');
+                if (postId) {
+                    window.location.href = `post-detail.html?id=${postId}`;
+                }
+            });
+        });
+    }
+
+    function renderViewHistory() {
+        const container = document.getElementById('viewHistoryList');
+        if (!container) return;
+        
+        // 未登录时显示提示
+        if (!isLoggedIn()) {
+            container.innerHTML = `
+                <div style="color:#aaa; text-align:center; padding:16px;">
+                    🔒 登录后可查看浏览记录
+                </div>
+            `;
+            return;
+        }
+        
+        const history = JSON.parse(localStorage.getItem('viewHistory') || '[]');
+        if (history.length === 0) {
+            container.innerHTML = '<div style="color:#aaa; text-align:center; padding:16px;">暂无浏览记录</div>';
+            return;
+        }
+        
+        container.innerHTML = history.map(item => `
+            <div class="history-item" data-id="${item.postId}">
+                <div style="font-size: 13px; font-weight: 500; margin-bottom: 4px;">${escapeHtml(item.title)}</div>
+                <div style="font-size: 11px; color: #ea4c89;">${escapeHtml(item.mandatoryTag)}</div>
+                <div style="font-size: 10px; color: #aaa; margin-top: 4px;">${item.viewTime}</div>
+            </div>
+        `).join('');
+        
+        document.querySelectorAll('.history-item').forEach(el => {
+            el.addEventListener('click', () => {
+                const postId = el.getAttribute('data-id');
+                window.location.href = `post-detail.html?id=${postId}`;
+            });
+        });
+    }
+
+    // ==================== 模态框发帖 ====================
+    const modal = document.getElementById('postModal');
+    function openModal() { 
+        if (!requireLogin()) return;
+        modal.classList.add('active'); 
+        loadDraftToModal(); 
+    }
+    function closeModal() { saveModalDraft(); modal.classList.remove('active'); }
+
+    function renderMandatoryModal() {
+        const container = document.getElementById('mandatoryTagsModal');
+        container.innerHTML = '';
+        ALL_TAGS.forEach(tag => {
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = `tag-option-mandatory ${selectedMandatoryTag === tag ? 'selected' : ''}`;
+            btn.textContent = tag;
+            btn.onclick = () => { selectedMandatoryTag = tag; renderMandatoryModal(); document.getElementById('modalMandatoryError').style.display = 'none'; };
+            container.appendChild(btn);
+        });
+    }
+
+    function renderModalCustomTags() {
+        const container = document.getElementById('modalCustomTagList');
+        container.innerHTML = '';
+        customTagsArray.forEach((tag, idx) => {
+            const span = document.createElement('span');
+            span.className = 'custom-tag-item';
+            span.innerHTML = `${escapeHtml(tag)} <button class="remove-tag" data-idx="${idx}">✕</button>`;
+            container.appendChild(span);
+        });
+        document.querySelectorAll('#modalCustomTagList .remove-tag').forEach(btn => {
+            btn.onclick = (e) => {
+                const idx = parseInt(btn.getAttribute('data-idx'));
+                customTagsArray.splice(idx,1);
+                renderModalCustomTags();
+                validateModalCustomCount();
+                e.stopPropagation();
+            };
+        });
+    }
+
+    function validateModalCustomCount() {
+        const errDiv = document.getElementById('modalCustomTagError');
+        if(customTagsArray.length > 3) { 
+            errDiv.textContent = "最多3个自定义标签"; 
+            errDiv.style.display = 'block'; 
+            return false; 
+        }
+        else { 
+            errDiv.style.display = 'none'; 
+            return true; 
+        }
+    }
+
+    function addModalCustomTag(tag) {
+        let t = tag.trim();
+        if(!t) return false;
+        if(customTagsArray.length >= 3) { showToast("最多3个标签",1000); return false; }
+        if(customTagsArray.includes(t)) { showToast("标签已存在",1000); return false; }
+        customTagsArray.push(t);
+        renderModalCustomTags();
+        validateModalCustomCount();
+        return true;
+    }
+
+    function initModalEditor() {
+        document.querySelectorAll('#postModal .tool-btn[data-command]').forEach(btn => {
+            btn.onclick = () => { document.execCommand(btn.getAttribute('data-command'), false, null); document.getElementById('modalEditor').focus(); };
+        });
+        document.getElementById('modalInsertImage').onclick = () => {
+            const input = document.createElement('input'); input.type = 'file'; input.accept = 'image/*';
+            input.onchange = (e) => {
+                const file = e.target.files[0];
+                if(file) { const reader = new FileReader(); reader.onload = (ev) => { const img = document.createElement('img'); img.src = ev.target.result; img.style.maxWidth='100%'; document.getElementById('modalEditor').appendChild(img); }; reader.readAsDataURL(file); }
+            };
+            input.click();
+        };
+        document.getElementById('modalInsertCode').onclick = () => { const pre = document.createElement('pre'); pre.style.background='#f4f4f4'; pre.innerText='// 证据或代码'; document.getElementById('modalEditor').appendChild(pre); };
+        document.getElementById('modalInsertQuote').onclick = () => { const quote = document.createElement('blockquote'); quote.style.borderLeft='4px solid #ea4c89'; quote.innerText='引用内容'; document.getElementById('modalEditor').appendChild(quote); };
+    }
+
+    function saveModalDraft() {
+        const draft = {
+            mandatoryTag: selectedMandatoryTag,
+            title: document.getElementById('modalTitle').value,
+            contentHtml: document.getElementById('modalEditor').innerHTML,
+            customTags: [...customTagsArray],
+            savedAt: Date.now()
+        };
+        localStorage.setItem('exposure_modal_draft', JSON.stringify(draft));
+    }
+
+    function loadDraftToModal() {
+        const raw = localStorage.getItem('exposure_modal_draft');
+        if(raw) {
+            try {
+                const d = JSON.parse(raw);
+                selectedMandatoryTag = d.mandatoryTag || '';
+                document.getElementById('modalTitle').value = d.title || '';
+                document.getElementById('modalEditor').innerHTML = d.contentHtml || '';
+                customTagsArray = d.customTags || [];
+                renderMandatoryModal();
+                renderModalCustomTags();
+                validateModalCustomCount();
+                updateModalTitleCount();
+                if(d.title || d.contentHtml) showToast("已加载草稿", 1000);
+            } catch(e) {}
+        } else {
+            selectedMandatoryTag = '';
+            customTagsArray = [];
+            document.getElementById('modalTitle').value = '';
+            document.getElementById('modalEditor').innerHTML = '';
+            renderMandatoryModal();
+            renderModalCustomTags();
+        }
+    }
+
+    function updateModalTitleCount() {
+        const len = document.getElementById('modalTitle').value.length;
+        document.getElementById('modalTitleCount').innerText = len;
+    }
+
+    function validateModalForm() {
+        let ok = true;
+        if(!selectedMandatoryTag) { 
+            document.getElementById('modalMandatoryError').style.display='block'; 
+            ok=false; 
+        }
+        else document.getElementById('modalMandatoryError').style.display='none';
+        
+        if(!document.getElementById('modalTitle').value.trim()) { 
+            document.getElementById('modalTitleError').style.display='block'; 
+            ok=false; 
+        }
+        else document.getElementById('modalTitleError').style.display='none';
+        
+        if(!document.getElementById('modalEditor').innerText.trim()) { 
+            document.getElementById('modalContentError').style.display='block'; 
+            ok=false; 
+        }
+        else document.getElementById('modalContentError').style.display='none';
+        
+        if(customTagsArray.length > 3) { 
+            document.getElementById('modalCustomTagError').style.display='block';
+            document.getElementById('modalCustomTagError').textContent = "最多3个自定义标签";
+            ok=false; 
+        }
+        else {
+            document.getElementById('modalCustomTagError').style.display='none';
+        }
+        return ok;
+    }
+
+    function publishModalPost() {
+        if (!requireLogin()) return;
+        if(!validateModalForm()) { showToast("请完整填写必填项",2000); return; }
+        
+        const currentUser = getCurrentUser();
+        const newPost = {
+            id: Date.now().toString(),
+            author: currentUser ? currentUser.username : "职途安用户",
+            authorAvatar: currentUser ? currentUser.avatar : "职",
+            title: document.getElementById('modalTitle').value.trim(),
+            content: document.getElementById('modalEditor').innerHTML,
+            mandatoryTag: selectedMandatoryTag,
+            customTags: [...customTagsArray],
+            likes: 0,
+            views: 0,
+            createdAt: new Date().toLocaleString()
+        };
+        posts.unshift(newPost);
+        savePostsToStorage();
+        renderPosts();
+        renderMyPosts();
+        closeModal();
+        showToast("发布成功！",1500);
+    }
+
+    // Ctrl+S 保存草稿
+    window.addEventListener('keydown', (e) => {
+        if((e.ctrlKey || e.metaKey) && e.key === 's') {
+            e.preventDefault();
+            if(modal.classList.contains('active')) {
+                saveModalDraft();
+                showToast("草稿已保存",1000);
+            }
+        }
+    });
+
+    window.addEventListener('beforeunload', () => { if(modal.classList.contains('active')) saveModalDraft(); });
+
+    // ==================== 初始化 ====================
+    function init() {
+        posts = getPosts();
+        renderFilterTags();
+        renderPosts();
+        renderMyPosts();
+        renderViewHistory();
+        renderAuthStatus();
+        initModalEditor();
+        renderMandatoryModal();
+        renderModalCustomTags();
+        
+        document.getElementById('searchInput').addEventListener('input', (e) => { searchKeyword = e.target.value; renderPosts(); });
+        
+        document.getElementById('openPostModalBtn').onclick = openModal;
+        document.getElementById('closeModalBtn').onclick = closeModal;
+        document.getElementById('modalPublishBtn').onclick = publishModalPost;
+        document.getElementById('modalDraftBtn').onclick = () => { saveModalDraft(); showToast("草稿已保存",1000); };
+        document.getElementById('modalTitle').addEventListener('input', updateModalTitleCount);
+        document.getElementById('modalCustomTagInput').addEventListener('keypress', (e) => {
+            if(e.key === 'Enter') { e.preventDefault(); addModalCustomTag(e.target.value); e.target.value=''; }
+        });
+        
+        const presetMini = document.getElementById('modalPresetTags');
+        if(presetMini) {
+            ALL_TAGS.forEach(t => {
+                const span = document.createElement('span'); span.className='preset-tag-mini'; span.innerText=t;
+                span.onclick = () => addModalCustomTag(t);
+                presetMini.appendChild(span);
+            });
+        }
+        
+        document.getElementById('homeBtn')?.addEventListener('click', () => window.location.reload());
+    }
+    
+    init();
+</script>
+</body>
+</html>

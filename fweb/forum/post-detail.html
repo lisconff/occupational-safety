@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>帖子详情 - 职途安论坛</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #f5f5f7;
+            font-family: 'Inter', sans-serif;
+            color: #0d0c22;
+            line-height: 1.5;
+        }
+
+        .detail-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 40px rgba(0,0,0,0.02);
+        }
+
+        .detail-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 28px;
+            border-bottom: 1px solid #e7e7e9;
+            background: white;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .logo-area {
+            font-size: 20px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #ea4c89, #f082ac);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            cursor: pointer;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 16px;
+        }
+
+        .nav-btn {
+            background: transparent;
+            border: 1px solid #e7e7e9;
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .nav-btn:hover {
+            background: #f0f0f4;
+        }
+
+        .detail-content {
+            padding: 28px;
+        }
+
+        .mandatory-tag {
+            display: inline-block;
+            background: #1e3a8a;
+            color: white;
+            padding: 4px 16px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .post-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            line-height: 1.3;
+        }
+
+        .custom-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .custom-tag {
+            background: #f0f0f4;
+            padding: 4px 14px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .author-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #efeff1;
+            margin-bottom: 24px;
+        }
+
+        .author-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .avatar {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #ea4c89, #f5a3c0);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 18px;
+            color: white;
+        }
+
+        .author-name {
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        .post-meta {
+            font-size: 12px;
+            color: #8e8e9a;
+            display: flex;
+            gap: 16px;
+        }
+
+        .stats {
+            display: flex;
+            gap: 20px;
+            color: #6e6d7a;
+            font-size: 14px;
+        }
+
+        .post-body {
+            background: #fafafc;
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 28px;
+            line-height: 1.7;
+            font-size: 15px;
+        }
+
+        .post-body img {
+            max-width: 100%;
+            border-radius: 12px;
+            margin: 12px 0;
+        }
+
+        .post-body pre {
+            background: #1e1e2a;
+            color: #e2e2e8;
+            padding: 16px;
+            border-radius: 12px;
+            overflow-x: auto;
+            font-size: 13px;
+        }
+
+        .post-body blockquote {
+            border-left: 4px solid #ea4c89;
+            padding-left: 16px;
+            margin: 12px 0;
+            color: #555;
+        }
+
+        .action-bar {
+            display: flex;
+            gap: 24px;
+            padding: 16px 0;
+            border-top: 1px solid #efeff1;
+            border-bottom: 1px solid #efeff1;
+            margin-bottom: 28px;
+        }
+
+        .action-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: none;
+            border: none;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            padding: 8px 16px;
+            border-radius: 40px;
+            transition: 0.2s;
+            color: #4b5563;
+        }
+
+        .action-btn:hover {
+            background: #f0f0f4;
+        }
+
+        .action-btn.liked {
+            color: #ea4c89;
+        }
+
+        .comments-section {
+            margin-bottom: 32px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            border-left: 4px solid #ea4c89;
+            padding-left: 12px;
+        }
+
+        .comment-form {
+            background: #f8f8fa;
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 24px;
+        }
+
+        .comment-form input,
+        .comment-form textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 16px;
+            font-family: inherit;
+            font-size: 14px;
+            margin-bottom: 12px;
+            resize: vertical;
+        }
+
+        .comment-form input:focus,
+        .comment-form textarea:focus {
+            outline: none;
+            border-color: #ea4c89;
+        }
+
+        .submit-comment {
+            background: #ea4c89;
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .comments-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .comment-item {
+            background: white;
+            border: 1px solid #efeff1;
+            border-radius: 20px;
+            padding: 16px;
+        }
+
+        .comment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .comment-author {
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .comment-time {
+            font-size: 11px;
+            color: #8e8e9a;
+        }
+
+        .comment-content {
+            font-size: 14px;
+            color: #2d2d3a;
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+
+        .related-section {
+            background: #f8f8fa;
+            border-radius: 24px;
+            padding: 20px;
+        }
+
+        .related-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .related-item {
+            padding: 12px;
+            background: white;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: 0.2s;
+            border: 1px solid #efeff1;
+        }
+
+        .related-item:hover {
+            border-color: #ea4c89;
+            transform: translateX(4px);
+        }
+
+        .related-title {
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 6px;
+        }
+
+        .related-tag {
+            font-size: 11px;
+            color: #ea4c89;
+        }
+
+        .error-container {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .error-container h2 {
+            font-size: 24px;
+            margin-bottom: 16px;
+            color: #dc2626;
+        }
+
+        .toast-msg {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1f2937;
+            color: white;
+            padding: 10px 24px;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            z-index: 2100;
+            pointer-events: none;
+            transition: 0.2s;
+        }
+
+        @media (max-width: 640px) {
+            .detail-content {
+                padding: 20px;
+            }
+            .post-title {
+                font-size: 22px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="detail-container">
+    <header class="detail-header">
+        <div class="logo-area" id="homeBtn">职途安论坛</div>
+        <div class="nav-buttons">
+            <button class="nav-btn" id="backBtn">← 返回</button>
+            <button class="nav-btn" id="homePageBtn">首页</button>
+        </div>
+    </header>
+    <div class="detail-content" id="detailContent">
+        <div style="text-align: center; padding: 60px;">加载中...</div>
+    </div>
+</div>
+<div id="toastMsg" class="toast-msg" style="opacity:0; visibility:hidden;"></div>
+
+<script>
+    // ==================== 工具函数 ====================
+    function showToast(msg, duration = 2000) {
+        const toast = document.getElementById('toastMsg');
+        toast.textContent = msg;
+        toast.style.visibility = 'visible';
+        toast.style.opacity = '1';
+        setTimeout(() => {
+            toast.style.opacity = '0';
+            setTimeout(() => toast.style.visibility = 'hidden', 300);
+        }, duration);
+    }
+
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+
+    function formatNumber(num) {
+        if (num >= 1000) return (num/1000).toFixed(1) + 'k';
+        return num;
+    }
+
+    // ==================== 登录状态管理 ====================
+    function isLoggedIn() {
+        return localStorage.getItem('isLoggedIn') === 'true' || sessionStorage.getItem('isLoggedIn') === 'true';
+    }
+
+    function getCurrentUser() {
+        const user = localStorage.getItem('currentUser') || sessionStorage.getItem('currentUser');
+        return user ? JSON.parse(user) : null;
+    }
+
+    function getRedirectParam() {
+        return encodeURIComponent(window.location.href);
+    }
+
+    function requireLogin() {
+        if (!isLoggedIn()) {
+            const redirectUrl = getRedirectParam();
+            showToast('请先登录后再操作', 1500);
+            setTimeout(() => {
+                if (confirm('是否跳转到登录页？')) {
+                    window.location.href = `../login/index.html?redirect=${redirectUrl}`;
+                }
+            }, 1500);
+            return false;
+        }
+        return true;
+    }
+
+    // ==================== 数据操作 ====================
+    function getPosts() {
+        const stored = localStorage.getItem('exposure_forum_posts');
+        if (stored && JSON.parse(stored).length > 0) {
+            return JSON.parse(stored);
+        }
+        return [
+            { id: "1", author: "打工人小张", authorAvatar: "小张", title: "曝光某科技公司试用期不交社保", content: "面试说入职即缴纳，结果三个月试用期都没有，HR还说是公司规定。大家注意避雷！", mandatoryTag: "黑公司曝光", customTags: ["社保避雷", "试用期"], likes: 23, views: 456, createdAt: "2025-01-15 14:30:00" },
+            { id: "2", author: "面试老手", authorAvatar: "面", title: "简历避雷：这家公司骗作品集", content: "面试要求发源文件，发完就没下文了，后来发现他们直接用我的设计去投标了。", mandatoryTag: "简历避雷", customTags: ["作品集诈骗"], likes: 45, views: 892, createdAt: "2025-01-16 10:20:00" },
+            { id: "3", author: "维权勇士", authorAvatar: "勇", title: "薪资爆料：某大厂PUA压榨", content: "加班不给加班费，绩效乱扣，年终奖还被克扣。已申请劳动仲裁。", mandatoryTag: "薪资爆料", customTags: ["压榨", "避雷"], likes: 67, views: 1230, createdAt: "2025-01-17 09:15:00" }
+        ];
+    }
+
+    function savePosts(posts) {
+        localStorage.setItem('exposure_forum_posts', JSON.stringify(posts));
+    }
+
+    function getCommentsData() {
+        const stored = localStorage.getItem('post_comments');
+        return stored ? JSON.parse(stored) : {};
+    }
+
+    function saveCommentsData(data) {
+        localStorage.setItem('post_comments', JSON.stringify(data));
+    }
+
+    function getLikedPosts() {
+        const stored = localStorage.getItem('liked_posts');
+        return stored ? JSON.parse(stored) : [];
+    }
+
+    function saveLikedPosts(liked) {
+        localStorage.setItem('liked_posts', JSON.stringify(liked));
+    }
+
+    function getFavoritedPosts() {
+        const stored = localStorage.getItem('favorited_posts');
+        return stored ? JSON.parse(stored) : [];
+    }
+
+    function saveFavoritedPosts(favorited) {
+        localStorage.setItem('favorited_posts', JSON.stringify(favorited));
+    }
+
+    function getViewedSessions() {
+        const stored = sessionStorage.getItem('viewed_posts');
+        return stored ? JSON.parse(stored) : [];
+    }
+
+    function addViewedSession(postId) {
+        const viewed = getViewedSessions();
+        if (!viewed.includes(postId)) {
+            viewed.push(postId);
+            sessionStorage.setItem('viewed_posts', JSON.stringify(viewed));
+            return true;
+        }
+        return false;
+    }
+
+    // ==================== 浏览记录保存（按用户分别存储） ====================
+    function saveViewHistory(post) {
+        // 只有登录用户才保存浏览记录
+        if (!isLoggedIn()) return;
+        
+        const currentUser = getCurrentUser();
+        if (!currentUser) return;
+        
+        // 使用用户名作为存储 key 的一部分，实现不同用户独立存储
+        const storageKey = `viewHistory_${currentUser.username}`;
+        const history = JSON.parse(localStorage.getItem(storageKey) || '[]');
+        const filtered = history.filter(item => item.postId !== post.id);
+        filtered.unshift({
+            postId: post.id,
+            title: post.title,
+            mandatoryTag: post.mandatoryTag,
+            viewTime: new Date().toLocaleString()
+        });
+        localStorage.setItem(storageKey, JSON.stringify(filtered.slice(0, 10)));
+    }
+
+    // ==================== 页面状态 ====================
+    let currentPost = null;
+    let currentPostId = null;
+
+    function getPostIdFromURL() {
+        const params = new URLSearchParams(window.location.search);
+        return params.get('id');
+    }
+
+    function updateViews(post) {
+        if (addViewedSession(post.id)) {
+            post.views = (post.views || 0) + 1;
+            const allPosts = getPosts();
+            const index = allPosts.findIndex(p => p.id === post.id);
+            if (index !== -1) {
+                allPosts[index].views = post.views;
+                savePosts(allPosts);
+            }
+        }
+        return post.views;
+    }
+
+    function getCommentsForPost(postId) {
+        const commentsData = getCommentsData();
+        return commentsData[postId] || [];
+    }
+
+    function addComment(postId, author, content) {
+        if (!author.trim()) {
+            showToast("请填写昵称");
+            return false;
+        }
+        if (!content.trim()) {
+            showToast("请填写评论内容");
+            return false;
+        }
+        const commentsData = getCommentsData();
+        if (!commentsData[postId]) {
+            commentsData[postId] = [];
+        }
+        const newComment = {
+            id: Date.now().toString(),
+            author: author.trim().substring(0, 20),
+            content: content.trim(),
+            createdAt: new Date().toLocaleString(),
+            likes: 0
+        };
+        commentsData[postId].unshift(newComment);
+        saveCommentsData(commentsData);
+        
+        const allPosts = getPosts();
+        const postIndex = allPosts.findIndex(p => p.id === postId);
+        if (postIndex !== -1) {
+            allPosts[postIndex].commentCount = commentsData[postId].length;
+            savePosts(allPosts);
+            if (currentPost) currentPost.commentCount = commentsData[postId].length;
+        }
+        return true;
+    }
+
+    function likePost(postId) {
+        const likedPosts = getLikedPosts();
+        if (likedPosts.includes(postId)) {
+            showToast("你已经点过赞了");
+            return false;
+        }
+        likedPosts.push(postId);
+        saveLikedPosts(likedPosts);
+        
+        const allPosts = getPosts();
+        const postIndex = allPosts.findIndex(p => p.id === postId);
+        if (postIndex !== -1) {
+            allPosts[postIndex].likes = (allPosts[postIndex].likes || 0) + 1;
+            savePosts(allPosts);
+            if (currentPost) currentPost.likes = allPosts[postIndex].likes;
+        }
+        return true;
+    }
+
+    function favoritePost(postId) {
+        const favorited = getFavoritedPosts();
+        if (favorited.includes(postId)) {
+            showToast("已经收藏过了");
+            return false;
+        }
+        favorited.push(postId);
+        saveFavoritedPosts(favorited);
+        showToast("收藏成功");
+        return true;
+    }
+
+    function copyLink() {
+        const url = window.location.href;
+        navigator.clipboard.writeText(url).then(() => {
+            showToast("链接已复制");
+        }).catch(() => {
+            showToast("复制失败");
+        });
+    }
+
+    function getRelatedPosts(currentPost, limit = 3) {
+        const allPosts = getPosts();
+        const others = allPosts.filter(p => p.id !== currentPost.id);
+        const scored = others.map(post => {
+            let score = 0;
+            if (post.mandatoryTag === currentPost.mandatoryTag) score += 10;
+            const commonCustom = (post.customTags || []).filter(t => (currentPost.customTags || []).includes(t)).length;
+            score += commonCustom * 5;
+            return { post, score };
+        });
+        scored.sort((a, b) => b.score - a.score);
+        return scored.slice(0, limit).map(item => item.post);
+    }
+
+    // ==================== 渲染页面 ====================
+    function renderPostDetail() {
+        const container = document.getElementById('detailContent');
+        
+        if (!currentPost) {
+            container.innerHTML = `
+                <div class="error-container">
+                    <h2>⚠️ 帖子不存在</h2>
+                    <p>该帖子可能已被删除或链接有误</p>
+                    <button class="nav-btn" id="goHomeBtn" style="margin-top: 20px;">返回首页</button>
+                </div>
+            `;
+            const goHomeBtn = document.getElementById('goHomeBtn');
+            if (goHomeBtn) goHomeBtn.onclick = () => window.location.href = 'index.html';
+            return;
+        }
+        
+        const isLiked = getLikedPosts().includes(currentPost.id);
+        const isFavorited = getFavoritedPosts().includes(currentPost.id);
+        const comments = getCommentsForPost(currentPost.id);
+        
+        const html = `
+            <div class="mandatory-tag">${escapeHtml(currentPost.mandatoryTag)}</div>
+            <h1 class="post-title">${escapeHtml(currentPost.title)}</h1>
+            <div class="custom-tags">
+                ${(currentPost.customTags || []).map(t => `<span class="custom-tag">${escapeHtml(t)}</span>`).join('')}
+            </div>
+            
+            <div class="author-bar">
+                <div class="author-info">
+                    <div class="avatar">${escapeHtml((currentPost.authorAvatar || currentPost.author?.substring(0,2) || '用'))}</div>
+                    <div class="author-details">
+                        <span class="author-name">${escapeHtml(currentPost.author || '匿名用户')}</span>
+                        <div class="post-meta">
+                            <span>📅 ${currentPost.createdAt || '刚刚'}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="stats">
+                    <span>👁️ ${currentPost.views || 0}</span>
+                    <span>❤️ ${currentPost.likes || 0}</span>
+                    <span>💬 ${comments.length}</span>
+                </div>
+            </div>
+            
+            <div class="post-body">
+                ${currentPost.content || '暂无内容'}
+            </div>
+            
+            <div class="action-bar">
+                <button class="action-btn ${isLiked ? 'liked' : ''}" id="likeBtn">
+                    ❤️ ${isLiked ? '已点赞' : '点赞'} (${currentPost.likes || 0})
+                </button>
+                <button class="action-btn ${isFavorited ? 'favorited' : ''}" id="favoriteBtn">
+                    ⭐ ${isFavorited ? '已收藏' : '收藏'}
+                </button>
+                <button class="action-btn" id="copyLinkBtn">
+                    📋 复制链接
+                </button>
+            </div>
+            
+            <div class="comments-section">
+                <div class="section-title">💬 评论 · ${comments.length}</div>
+                <div class="comment-form">
+                    <input type="text" id="commentAuthor" placeholder="你的昵称" value="热心网友">
+                    <textarea id="commentContent" rows="2" placeholder="写下你的评论..."></textarea>
+                    <button class="submit-comment" id="submitCommentBtn">发表评论</button>
+                </div>
+                <div class="comments-list" id="commentsList">
+                    ${renderCommentsList(comments)}
+                </div>
+            </div>
+            
+            <div class="related-section">
+                <div class="section-title">📌 相关推荐</div>
+                <div class="related-list" id="relatedList">
+                    加载中...
+                </div>
+            </div>
+        `;
+        
+        container.innerHTML = html;
+        
+        document.getElementById('likeBtn')?.addEventListener('click', () => {
+            if (!requireLogin()) return;
+            if (likePost(currentPost.id)) {
+                renderPostDetail();
+            }
+        });
+        document.getElementById('favoriteBtn')?.addEventListener('click', () => {
+            if (!requireLogin()) return;
+            favoritePost(currentPost.id);
+            renderPostDetail();
+        });
+        document.getElementById('copyLinkBtn')?.addEventListener('click', copyLink);
+        document.getElementById('submitCommentBtn')?.addEventListener('click', () => {
+            if (!requireLogin()) return;
+            const currentUser = getCurrentUser();
+            const author = currentUser ? currentUser.username : (document.getElementById('commentAuthor')?.value || '热心网友');
+            const content = document.getElementById('commentContent')?.value || '';
+            if (addComment(currentPost.id, author, content)) {
+                document.getElementById('commentContent').value = '';
+                renderPostDetail();
+            }
+        });
+        
+        renderRelatedPosts(currentPost);
+    }
+    
+    function renderCommentsList(comments) {
+        if (!comments.length) {
+            return '<div style="text-align:center; padding:30px; color:#aaa;">暂无评论，快来抢沙发～</div>';
+        }
+        return comments.map(comment => `
+            <div class="comment-item">
+                <div class="comment-header">
+                    <span class="comment-author">${escapeHtml(comment.author)}</span>
+                    <span class="comment-time">${comment.createdAt || '刚刚'}</span>
+                </div>
+                <div class="comment-content">${escapeHtml(comment.content)}</div>
+            </div>
+        `).join('');
+    }
+    
+    function renderRelatedPosts(currentPost) {
+        const related = getRelatedPosts(currentPost);
+        const container = document.getElementById('relatedList');
+        if (!container) return;
+        
+        if (related.length === 0) {
+            container.innerHTML = '<div style="color:#aaa;">暂无相关推荐</div>';
+            return;
+        }
+        
+        container.innerHTML = related.map(post => `
+            <div class="related-item" data-id="${post.id}">
+                <div class="related-title">${escapeHtml(post.title)}</div>
+                <div class="related-tag">${escapeHtml(post.mandatoryTag)} · ❤️ ${post.likes || 0}</div>
+            </div>
+        `).join('');
+        
+        document.querySelectorAll('.related-item').forEach(el => {
+            el.addEventListener('click', () => {
+                const id = el.getAttribute('data-id');
+                window.location.href = `post-detail.html?id=${id}`;
+            });
+        });
+    }
+    
+    // ==================== 初始化 ====================
+    function init() {
+        const postId = getPostIdFromURL();
+        if (!postId) {
+            document.getElementById('detailContent').innerHTML = `
+                <div class="error-container">
+                    <h2>⚠️ 缺少帖子ID</h2>
+                    <p>请从正确的链接访问</p>
+                    <button class="nav-btn" id="goHomeBtn" style="margin-top: 20px;">返回首页</button>
+                </div>
+            `;
+            const goHomeBtn = document.getElementById('goHomeBtn');
+            if (goHomeBtn) goHomeBtn.onclick = () => window.location.href = 'index.html';
+            return;
+        }
+        
+        currentPostId = postId;
+        const allPosts = getPosts();
+        currentPost = allPosts.find(p => p.id === postId);
+        
+        if (currentPost) {
+            updateViews(currentPost);
+            saveViewHistory(currentPost);  // 按用户分别存储浏览记录
+            renderPostDetail();
+        } else {
+            renderPostDetail();
+        }
+    }
+    
+    document.getElementById('backBtn')?.addEventListener('click', () => {
+        window.history.back();
+    });
+    document.getElementById('homePageBtn')?.addEventListener('click', () => {
+        window.location.href = 'index.html';
+    });
+    document.getElementById('homeBtn')?.addEventListener('click', () => {
+        window.location.href = 'index.html';
+    });
+    
+    init();
+</script>
+</body>
+</html>
