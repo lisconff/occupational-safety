@@ -9,165 +9,339 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+            font-family: "Segoe UI", "Microsoft YaHei", sans-serif;
         }
+
         body {
-            background: linear-gradient(135deg, #F0F9FF 0%, #E6F7FF 100%);
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            background: linear-gradient(145deg, #eef6ff 0%, #dbeafe 55%, #eff6ff 100%);
             min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             padding: 20px;
         }
-        .register-box {
-            width: 450px;
-            backdrop-filter: blur(12px);
-            background: rgba(255, 255, 255, 0.15);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            border-radius: 25px;
-            padding: 60px 50px;
-            box-shadow: 0 10px 35px rgba(0, 0, 0, 0.08);
+
+        .register-container {
+            width: 100%;
+            max-width: 440px;
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid #dbeafe;
+            border-radius: 18px;
+            box-shadow: 0 12px 40px rgba(30, 64, 175, 0.12);
+            padding: 34px 30px;
         }
-        .register-title {
+
+        .register-header {
             text-align: center;
-            font-size: 28px;
-            font-weight: 700;
-            color: #1D4ED8;
-            margin-bottom: 40px;
+            margin-bottom: 22px;
         }
-        .input-group {
-            margin-bottom: 25px;
+
+        .register-header h2 {
+            font-size: 26px;
+            color: #1e3a8a;
+            margin-bottom: 6px;
         }
-        .input-label {
-            display: block;
-            font-size: 15px;
+
+        .register-header p {
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .register-form {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-label {
+            font-size: 14px;
             color: #334155;
-            margin-bottom: 10px;
-            font-weight: 500;
+            font-weight: 600;
         }
-        .register-input {
+
+        .form-input {
             width: 100%;
-            padding: 16px 20px;
-            border-radius: 15px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            background: rgba(255, 255, 255, 0.2);
-            font-size: 16px;
+            border: 1px solid #cbd5e1;
+            border-radius: 10px;
+            padding: 12px 14px;
+            font-size: 14px;
+            transition: all 0.2s;
+            background: #fff;
+        }
+
+        .form-input:focus {
             outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.14);
         }
-        .register-input:focus {
-            border-color: #1D4ED8;
-            background: rgba(255, 255, 255, 0.3);
+
+        .password-box {
+            position: relative;
         }
-        .register-btn {
-            width: 100%;
-            padding: 18px;
-            background: #1D4ED8;
-            color: #fff;
+
+        .toggle-password {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
             border: none;
-            border-radius: 15px;
-            font-size: 17px;
+            background: none;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .register-btn {
+            margin-top: 4px;
+            width: 100%;
+            border: none;
+            border-radius: 10px;
+            padding: 12px;
+            background: linear-gradient(90deg, #1e3a8a, #2563eb);
+            color: #fff;
+            font-size: 16px;
             font-weight: 600;
             cursor: pointer;
-            transition: 0.3s;
-            margin-top: 10px;
+            transition: opacity 0.2s;
         }
+
         .register-btn:hover {
-            transform: scale(1.03);
-            background: #1E40AF;
+            opacity: 0.92;
         }
-        .link-tip {
+
+        .register-btn.loading {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        .register-btn.secondary {
+            background: #e2e8f0;
+            color: #1e3a8a;
+        }
+
+        .error-message {
+            display: none;
+            color: #b91c1c;
+            font-size: 13px;
+            margin-top: -2px;
+        }
+
+        .tip {
+            color: #64748b;
+            font-size: 12px;
+            margin-top: -6px;
+        }
+
+        .login-link {
             text-align: center;
-            margin-top: 30px;
-            font-size: 15px;
-            color: #64748B;
+            font-size: 14px;
+            color: #64748b;
+            margin-top: 18px;
         }
-        .link-tip a {
-            color: #1D4ED8;
+
+        .login-link a {
+            color: #1d4ed8;
             text-decoration: none;
-            font-weight: 500;
+            font-weight: 600;
+        }
+
+        .step {
+            display: none;
+        }
+
+        .step.active {
+            display: block;
+        }
+
+        .inline-row {
+            display: flex;
+            gap: 8px;
         }
     </style>
 </head>
 <body>
-    <div class="register-box">
-        <h2 class="register-title">职途安 - 注册</h2>
-        <form id="registerForm">
-            <div class="input-group">
-                <label class="input-label" for="registerUsername">用户名</label>
-                <input id="registerUsername" type="text" class="register-input" placeholder="请输入用户名" required>
-            </div>
-            <div class="input-group">
-                <label class="input-label" for="registerPhone">手机号</label>
-                <input id="registerPhone" type="text" class="register-input" placeholder="请输入手机号（仅展示，不提交后端）">
-            </div>
-            <div class="input-group">
-                <label class="input-label" for="registerPassword">设置密码</label>
-                <input id="registerPassword" type="password" class="register-input" placeholder="请输入6-16位密码" required>
-            </div>
-            <div class="input-group">
-                <label class="input-label" for="registerConfirmPassword">确认密码</label>
-                <input id="registerConfirmPassword" type="password" class="register-input" placeholder="请再次输入密码" required>
-            </div>
-            <div id="registerError" style="display:none;color:#B91C1C;font-size:14px;margin-top:-8px;margin-bottom:12px;"></div>
-            <button class="register-btn" type="submit">注册</button>
-        </form>
-        <div class="link-tip">已有账号？<a href="login.html">立即登录</a></div>
+    <div class="register-container">
+        <div class="register-header">
+            <h2>创建账号</h2>
+            <p>请填写信息完成注册</p>
+        </div>
+
+        <div id="step1" class="step active">
+            <form class="register-form" id="step1Form">
+                <div class="form-group">
+                    <label class="form-label" for="username">用户名</label>
+                    <input type="text" id="username" class="form-input" placeholder="请输入用户名" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="password">密码</label>
+                    <div class="password-box">
+                        <input type="password" id="password" class="form-input" placeholder="至少6位" required>
+                        <button type="button" class="toggle-password" id="togglePassword">👁️</button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="repassword">确认密码</label>
+                    <input type="password" id="repassword" class="form-input" placeholder="再次输入密码" required>
+                </div>
+
+                <div id="step1Error" class="error-message"></div>
+                <button type="submit" class="register-btn">下一步</button>
+            </form>
+        </div>
+
+        <div id="step2" class="step">
+            <form class="register-form" id="registerForm">
+                <div class="form-group">
+                    <label class="form-label" for="phone">手机号（选填）</label>
+                    <input type="text" id="phone" class="form-input" placeholder="请输入11位手机号">
+                    <div class="tip">手机号仅用于页面展示，不会提交到后端。</div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="code">验证码（模拟）</label>
+                    <div class="inline-row">
+                        <input type="text" id="code" class="form-input" placeholder="请输入验证码" required>
+                        <button type="button" class="register-btn secondary" id="getCodeBtn">获取验证码</button>
+                    </div>
+                    <div id="codeTip" class="tip"></div>
+                </div>
+
+                <div id="registerError" class="error-message"></div>
+                <button type="submit" class="register-btn" id="registerBtn">完成注册</button>
+            </form>
+        </div>
+
+        <div class="login-link">
+            已有账号？<a id="toLoginLink" href="login.html">去登录</a>
+        </div>
     </div>
 
     <script>
         const API_BASE = "http://localhost:8090";
-        const registerForm = document.getElementById("registerForm");
-        const registerError = document.getElementById("registerError");
-        const usernameInput = document.getElementById("registerUsername");
-        const passwordInput = document.getElementById("registerPassword");
-        const confirmPasswordInput = document.getElementById("registerConfirmPassword");
+        const query = new URLSearchParams(window.location.search);
+        const redirectUrl = query.get("redirect") || "home.html";
+        const toLoginLink = document.getElementById("toLoginLink");
+        toLoginLink.href = "login.html?redirect=" + encodeURIComponent(redirectUrl);
 
-        function setError(message) {
-            registerError.textContent = message;
-            registerError.style.display = "block";
+        const step1 = document.getElementById("step1");
+        const step2 = document.getElementById("step2");
+        const step1Form = document.getElementById("step1Form");
+        const registerForm = document.getElementById("registerForm");
+        const registerBtn = document.getElementById("registerBtn");
+
+        const usernameInput = document.getElementById("username");
+        const passwordInput = document.getElementById("password");
+        const repasswordInput = document.getElementById("repassword");
+        const phoneInput = document.getElementById("phone");
+        const codeInput = document.getElementById("code");
+        const codeTip = document.getElementById("codeTip");
+        const getCodeBtn = document.getElementById("getCodeBtn");
+        const togglePassword = document.getElementById("togglePassword");
+        const step1Error = document.getElementById("step1Error");
+        const registerError = document.getElementById("registerError");
+
+        const userData = {
+            username: "",
+            password: "",
+            phone: ""
+        };
+
+        function showError(el, msg) {
+            el.style.display = "block";
+            el.textContent = msg;
         }
 
-        registerForm.addEventListener("submit", async function (event) {
-            event.preventDefault();
-            registerError.style.display = "none";
+        togglePassword.addEventListener("click", () => {
+            const nextType = passwordInput.type === "password" ? "text" : "password";
+            passwordInput.type = nextType;
+            repasswordInput.type = nextType;
+            togglePassword.textContent = nextType === "password" ? "👁️" : "🙈";
+        });
+
+        getCodeBtn.addEventListener("click", () => {
+            const phone = phoneInput.value.trim();
+            if (!phone || /^\d{11}$/.test(phone)) {
+                codeTip.textContent = "测试验证码：123456";
+                return;
+            }
+            codeTip.textContent = "手机号格式应为11位数字";
+        });
+
+        step1Form.addEventListener("submit", (e) => {
+            e.preventDefault();
+            step1Error.style.display = "none";
 
             const username = usernameInput.value.trim();
             const password = passwordInput.value;
-            const confirmPassword = confirmPasswordInput.value;
+            const repassword = repasswordInput.value;
 
             if (username.length < 3 || username.length > 16) {
-                setError("用户名长度需为3-16位");
+                showError(step1Error, "用户名长度需为3-16位");
                 return;
             }
-
             if (password.length < 6 || password.length > 16) {
-                setError("密码长度需为6-16位");
+                showError(step1Error, "密码长度需为6-16位");
+                return;
+            }
+            if (password !== repassword) {
+                showError(step1Error, "两次输入的密码不一致");
                 return;
             }
 
-            if (password !== confirmPassword) {
-                setError("两次输入的密码不一致");
+            userData.username = username;
+            userData.password = password;
+            step1.classList.remove("active");
+            step2.classList.add("active");
+        });
+
+        registerForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            registerError.style.display = "none";
+
+            if (codeInput.value.trim() !== "123456") {
+                showError(registerError, "验证码错误，请输入 123456");
                 return;
             }
+
+            const phone = phoneInput.value.trim();
+            if (phone && !/^\d{11}$/.test(phone)) {
+                showError(registerError, "手机号格式应为11位数字");
+                return;
+            }
+            userData.phone = phone;
+
+            registerBtn.disabled = true;
+            registerBtn.classList.add("loading");
+            registerBtn.textContent = "注册中...";
 
             try {
                 const response = await fetch(API_BASE + "/api/auth/register", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ username: username, password: password })
+                    body: JSON.stringify({ username: userData.username, password: userData.password })
                 });
 
                 const data = await response.json();
                 if (data && data.code === 200 && data.data && data.data.token) {
                     localStorage.setItem("token", data.data.token);
-                    localStorage.setItem("username", data.data.username || username);
-                    window.location.href = "home.html";
+                    localStorage.setItem("username", data.data.username || userData.username);
+                    window.location.href = redirectUrl;
                     return;
                 }
-
-                setError((data && data.message) ? data.message : "注册失败，请稍后重试");
-            } catch (error) {
-                setError("网络错误，请确认后端服务已启动");
+                showError(registerError, data && data.message ? data.message : "注册失败，请稍后重试");
+            } catch (err) {
+                showError(registerError, "网络错误，请确认后端服务已启动");
+            } finally {
+                registerBtn.disabled = false;
+                registerBtn.classList.remove("loading");
+                registerBtn.textContent = "完成注册";
             }
         });
     </script>

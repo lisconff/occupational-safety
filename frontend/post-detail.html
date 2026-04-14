@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>帖子详情 - 职途安论坛</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Segoe UI", "Microsoft YaHei", sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(150deg, #eef6ff 0%, #dbeafe 48%, #eff6ff 100%);
+            color: #0f172a;
+            padding: 92px 18px 18px;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 40px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(255,255,255,0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid #dbeafe;
+            box-shadow: 0 6px 18px rgba(30,64,175,0.08);
+            z-index: 1000;
+        }
+
+        .logo {
+            font-weight: bold;
+            font-size: 20px;
+            color: #111827;
+        }
+
+        .nav-center {
+            display: flex;
+            gap: 30px;
+        }
+
+        .nav-center a {
+            text-decoration: none;
+            color: #334155;
+            font-size: 14px;
+            position: relative;
+        }
+
+        .nav-center a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #1677ff;
+            transition: 0.3s;
+        }
+
+        .nav-center a:hover::after {
+            width: 100%;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-btn {
+            padding: 6px 14px;
+            border-radius: 20px;
+            background: #eef2ff;
+            text-decoration: none;
+            color: #1e3a8a;
+            font-size: 13px;
+            border: 1px solid #c7d2fe;
+            cursor: pointer;
+        }
+
+        .nav-btn.primary {
+            background: #1d4ed8;
+            color: #fff;
+            border-color: #1d4ed8;
+        }
+
+        #guest-nav,
+        #user-nav {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        #user-nav {
+            display: none;
+        }
+
+        .avatar-wrapper {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            overflow: hidden;
+            background: #1d4ed8;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .avatar-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .container {
+            max-width: 920px;
+            margin: 0 auto;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid #dbeafe;
+            border-radius: 16px;
+            padding: 14px 16px;
+            margin-bottom: 12px;
+            box-shadow: 0 10px 24px rgba(30, 64, 175, 0.08);
+        }
+
+        .topbar h1 {
+            font-size: 22px;
+            color: #1e3a8a;
+        }
+
+        .btn {
+            border-radius: 999px;
+            padding: 8px 16px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            border: 1px solid #93c5fd;
+            color: #1e40af;
+            background: #fff;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid #dbeafe;
+            border-radius: 16px;
+            padding: 18px;
+            box-shadow: 0 10px 24px rgba(30, 64, 175, 0.06);
+        }
+
+        .title {
+            font-size: 26px;
+            color: #1e3a8a;
+            margin-bottom: 10px;
+            line-height: 1.35;
+        }
+
+        .meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            color: #64748b;
+            font-size: 13px;
+            margin-bottom: 14px;
+        }
+
+        .content {
+            font-size: 15px;
+            line-height: 1.75;
+            color: #334155;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        .empty {
+            text-align: center;
+            color: #64748b;
+            font-size: 14px;
+            padding: 36px 0;
+        }
+    </style>
+</head>
+<body>
+<header class="header">
+    <div class="logo">职途安</div>
+    <nav class="nav-center">
+        <a href="ai-chat-test.html" data-auth-required="true">AI助手</a>
+        <a href="case.html">案例模拟</a>
+        <a href="forum.html">交流论坛</a>
+    </nav>
+    <div class="nav-right">
+        <div id="guest-nav">
+            <a href="login.html?redirect=post-detail.html" class="nav-btn">登录</a>
+            <a href="register.html?redirect=post-detail.html" class="nav-btn primary">注册</a>
+        </div>
+        <div id="user-nav">
+            <div class="avatar-wrapper" id="topAvatarWrap">
+                <img id="topAvatarImage" alt="头像" style="display:none;">
+                <span id="topAvatarLetter">游</span>
+            </div>
+            <span id="topUserName" style="font-size:13px;color:#1e3a8a;">用户</span>
+            <button id="logoutBtn" class="nav-btn">退出</button>
+        </div>
+    </div>
+</header>
+
+<div class="container">
+    <div class="topbar">
+        <h1>帖子详情</h1>
+        <div>
+            <button class="btn" id="toForumBtn">返回论坛</button>
+        </div>
+    </div>
+
+    <div class="card" id="detailWrap">
+        <div class="empty">正在加载...</div>
+    </div>
+</div>
+
+<script>
+    const API_BASE = "http://localhost:8090";
+
+    function getToken() {
+        return localStorage.getItem("token") || sessionStorage.getItem("token") || "";
+    }
+
+    function getUsername() {
+        return localStorage.getItem("username") || sessionStorage.getItem("username") || "用户";
+    }
+
+    function getAvatarDataUrl() {
+        return localStorage.getItem("userAvatar") || "";
+    }
+
+    function requireLogin(actionName, redirectTarget) {
+        if (getToken()) return true;
+        if (window.confirm((actionName || "该功能") + "需要登录，是否前往登录页？")) {
+            window.location.href = "login.html?redirect=" + encodeURIComponent(redirectTarget || "post-detail.html") + "&action=" + encodeURIComponent(actionName || "该功能");
+        }
+        return false;
+    }
+
+    function renderTopRightUser() {
+        const guestNav = document.getElementById("guest-nav");
+        const userNav = document.getElementById("user-nav");
+        const nameEl = document.getElementById("topUserName");
+        const avatarImg = document.getElementById("topAvatarImage");
+        const avatarLetter = document.getElementById("topAvatarLetter");
+
+        const token = getToken();
+        const username = getUsername();
+        const avatarUrl = getAvatarDataUrl();
+
+        if (token) {
+            guestNav.style.display = "none";
+            userNav.style.display = "flex";
+            nameEl.textContent = username;
+            if (avatarUrl) {
+                avatarImg.src = avatarUrl;
+                avatarImg.style.display = "block";
+                avatarLetter.style.display = "none";
+            } else {
+                avatarImg.style.display = "none";
+                avatarLetter.style.display = "inline";
+                avatarLetter.textContent = (username || "游").charAt(0).toUpperCase();
+            }
+        } else {
+            guestNav.style.display = "flex";
+            userNav.style.display = "none";
+        }
+    }
+
+    function getPostId() {
+        const params = new URLSearchParams(window.location.search);
+        return params.get("id") || "";
+    }
+
+    function escapeHtml(text) {
+        const str = (text || "").toString();
+        return str.replace(/[&<>\"]/g, (ch) => {
+            if (ch === "&") return "&amp;";
+            if (ch === "<") return "&lt;";
+            if (ch === ">") return "&gt;";
+            return "&quot;";
+        });
+    }
+
+    function formatDate(value) {
+        if (!value) return "未知时间";
+        const d = new Date(value);
+        if (Number.isNaN(d.getTime())) return value;
+        const pad = (n) => String(n).padStart(2, "0");
+        return d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate()) + " " + pad(d.getHours()) + ":" + pad(d.getMinutes());
+    }
+
+    async function loadDetail() {
+        const postId = getPostId();
+        const wrap = document.getElementById("detailWrap");
+        if (!postId) {
+            wrap.innerHTML = '<div class="empty">缺少帖子ID</div>';
+            return;
+        }
+
+        try {
+            const response = await fetch(API_BASE + "/api/forum/posts/" + encodeURIComponent(postId));
+            const data = await response.json();
+            if (data && data.code === 200 && data.data) {
+                const p = data.data;
+                wrap.innerHTML =
+                    '<h2 class="title">' + escapeHtml(p.title) + '</h2>' +
+                    '<div class="meta">' +
+                        '<span>作者：' + escapeHtml(p.userId || "匿名") + '</span>' +
+                        '<span>点赞：' + (p.likeCount || 0) + '</span>' +
+                        '<span>评论：' + (p.commentCount || 0) + '</span>' +
+                        '<span>收藏：' + (p.favoriteCount || 0) + '</span>' +
+                        '<span>发布时间：' + escapeHtml(formatDate(p.createdAt)) + '</span>' +
+                    '</div>' +
+                    '<div class="content">' + escapeHtml(p.content || "") + '</div>';
+                return;
+            }
+            wrap.innerHTML = '<div class="empty">加载失败：' + escapeHtml(data && data.message ? data.message : "未知错误") + '</div>';
+        } catch (err) {
+            wrap.innerHTML = '<div class="empty">网络错误，无法连接后端服务。</div>';
+        }
+    }
+
+    document.getElementById("toForumBtn").addEventListener("click", () => {
+        window.location.href = "forum.html";
+    });
+
+    document.getElementById("topAvatarWrap").addEventListener("click", () => {
+        window.location.href = "profile.html";
+    });
+
+    document.getElementById("logoutBtn").addEventListener("click", () => {
+        localStorage.removeItem("token");
+        localStorage.removeItem("username");
+        sessionStorage.removeItem("token");
+        sessionStorage.removeItem("username");
+        location.reload();
+    });
+
+    document.querySelectorAll('[data-auth-required="true"]').forEach((el) => {
+        el.addEventListener("click", (event) => {
+            event.preventDefault();
+            const target = el.getAttribute("href") || "ai-chat-test.html";
+            if (requireLogin(el.textContent.trim(), target)) {
+                window.location.href = target;
+            }
+        });
+    });
+
+    renderTopRightUser();
+
+    loadDetail();
+</script>
+</body>
+</html>

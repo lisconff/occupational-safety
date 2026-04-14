@@ -1,12 +1,15 @@
 package com.zhituan.backend.service.impl;
 
 import com.zhituan.backend.domain.model.ai.AnalysisReport;
+import com.zhituan.backend.domain.model.ai.AiChatMessage;
 import com.zhituan.backend.domain.model.ai.RiskItem;
 import com.zhituan.backend.dto.AiDtos;
 import com.zhituan.backend.common.exception.BusinessException;
 import com.zhituan.backend.repository.ai.AnalysisReportRepository;
+import com.zhituan.backend.repository.ai.AiChatMessageRepository;
 import com.zhituan.backend.repository.ai.RiskItemRepository;
 import com.zhituan.backend.service.AiAssistantService;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -22,15 +25,18 @@ public class AiAssistantServiceImpl implements AiAssistantService {
 
     private final AnalysisReportRepository analysisReportRepository;
     private final RiskItemRepository riskItemRepository;
+    private final AiChatMessageRepository aiChatMessageRepository;
     private final CozeStreamClient cozeStreamClient;
     private final DocumentTextExtractor documentTextExtractor;
 
     public AiAssistantServiceImpl(AnalysisReportRepository analysisReportRepository,
                                   RiskItemRepository riskItemRepository,
+                                  AiChatMessageRepository aiChatMessageRepository,
                                   CozeStreamClient cozeStreamClient,
                                   DocumentTextExtractor documentTextExtractor) {
         this.analysisReportRepository = analysisReportRepository;
         this.riskItemRepository = riskItemRepository;
+        this.aiChatMessageRepository = aiChatMessageRepository;
         this.cozeStreamClient = cozeStreamClient;
         this.documentTextExtractor = documentTextExtractor;
     }
@@ -52,12 +58,23 @@ public class AiAssistantServiceImpl implements AiAssistantService {
 
     @Override
     public AiDtos.CozeQueryResponse queryCozeAgent(AiDtos.CozeQueryRequest request) {
+        return queryCozeAgent(request, null);
+    }
+
+    @Override
+    public AiDtos.CozeQueryResponse queryCozeAgent(AiDtos.CozeQueryRequest request, String userId) {
         CozeStreamClient.CozeResult result = cozeStreamClient.streamRun(request.prompt(), request.sessionId());
+        saveCozeChatHistory(userId, result.sessionId(), request.prompt(), result.answer());
         return new AiDtos.CozeQueryResponse(result.answer(), result.eventCount(), result.sessionId());
     }
 
     @Override
     public SseEmitter queryCozeAgentStream(AiDtos.CozeQueryRequest request) {
+        return queryCozeAgentStream(request, null);
+    }
+
+    @Override
+    public SseEmitter queryCozeAgentStream(AiDtos.CozeQueryRequest request, String userId) {
         SseEmitter emitter = new SseEmitter(0L);
 
         CompletableFuture.runAsync(() -> {
@@ -82,6 +99,7 @@ public class AiAssistantServiceImpl implements AiAssistantService {
                                 "eventCount", result.eventCount(),
                                 "answer", result.answer()
                         )));
+                saveCozeChatHistory(userId, result.sessionId(), request.prompt(), result.answer());
                 emitter.complete();
             } catch (Exception e) {
                 try {
@@ -97,6 +115,11 @@ public class AiAssistantServiceImpl implements AiAssistantService {
 
     @Override
     public SseEmitter queryCozeAgentWithFileStream(String prompt, String sessionId, MultipartFile file) {
+        return queryCozeAgentWithFileStream(prompt, sessionId, file, null);
+    }
+
+    @Override
+    public SseEmitter queryCozeAgentWithFileStream(String prompt, String sessionId, MultipartFile file, String userId) {
         if (!StringUtils.hasText(prompt) && (file == null || file.isEmpty())) {
             throw new BusinessException("prompt 和 file 不能同时为空");
         }
@@ -142,6 +165,7 @@ public class AiAssistantServiceImpl implements AiAssistantService {
                                 "fileType", fileType == null ? "" : fileType,
                                 "extractedTextLength", extractedLen
                         )));
+                        saveCozeChatHistory(userId, result.sessionId(), mergedPrompt, result.answer());
                 emitter.complete();
             } catch (Exception e) {
                 try {
@@ -157,12 +181,18 @@ public class AiAssistantServiceImpl implements AiAssistantService {
 
     @Override
     public AiDtos.CozeFileQueryResponse queryCozeAgentWithFile(String prompt, String sessionId, MultipartFile file) {
+        return queryCozeAgentWithFile(prompt, sessionId, file, null);
+    }
+
+    @Override
+    public AiDtos.CozeFileQueryResponse queryCozeAgentWithFile(String prompt, String sessionId, MultipartFile file, String userId) {
         if (!StringUtils.hasText(prompt) && (file == null || file.isEmpty())) {
             throw new BusinessException("prompt 和 file 不能同时为空");
         }
 
         if (file == null || file.isEmpty()) {
             CozeStreamClient.CozeResult textOnlyResult = cozeStreamClient.streamRun(prompt, sessionId);
+            saveCozeChatHistory(userId, textOnlyResult.sessionId(), prompt, textOnlyResult.answer());
             return new AiDtos.CozeFileQueryResponse(
                     textOnlyResult.answer(),
                     textOnlyResult.eventCount(),
@@ -176,6 +206,7 @@ public class AiAssistantServiceImpl implements AiAssistantService {
         DocumentTextExtractor.ExtractResult extracted = documentTextExtractor.extract(file);
         String mergedPrompt = buildFilePrompt(prompt, extracted.text());
         CozeStreamClient.CozeResult result = cozeStreamClient.streamRun(mergedPrompt, sessionId);
+        saveCozeChatHistory(userId, result.sessionId(), mergedPrompt, result.answer());
         return new AiDtos.CozeFileQueryResponse(
                 result.answer(),
                 result.eventCount(),
@@ -204,6 +235,35 @@ public class AiAssistantServiceImpl implements AiAssistantService {
                                 .toList()
                 ))
                 .toList();
+    }
+
+    @Override
+    public AiDtos.ChatHistoryView getChatHistory(String userId, String sessionId, Integer limit) {
+        if (!StringUtils.hasText(userId)) {
+            throw new BusinessException(401, "请先登录后再查看聊天记录");
+        }
+        if (!StringUtils.hasText(sessionId)) {
+            throw new BusinessException(400, "sessionId 不能为空");
+        }
+
+        int safeLimit = (limit == null || limit <= 0) ? 30 : Math.min(limit, 200);
+        List<AiChatMessage> desc = aiChatMessageRepository.findByUserIdAndSessionIdOrderByCreatedAtDesc(
+                userId,
+                sessionId,
+                PageRequest.of(0, safeLimit)
+        );
+
+        List<AiDtos.ChatMessageView> messages = desc.stream()
+                .sorted((a, b) -> a.getCreatedAt().compareTo(b.getCreatedAt()))
+                .map(item -> new AiDtos.ChatMessageView(
+                        item.getId(),
+                        item.getRole(),
+                        item.getContent(),
+                        item.getCreatedAt().toString()
+                ))
+                .toList();
+
+        return new AiDtos.ChatHistoryView(sessionId, messages);
     }
 
     private AiDtos.AnalysisReportView analyzeByType(String businessType, AiDtos.AnalyzeRequest request) {
@@ -260,5 +320,29 @@ public class AiAssistantServiceImpl implements AiAssistantService {
         }
         sb.append("文档正文：\n").append(extractedText);
         return sb.toString();
+    }
+
+    private void saveCozeChatHistory(String userId, String sessionId, String prompt, String answer) {
+        if (!StringUtils.hasText(userId) || !StringUtils.hasText(sessionId)) {
+            return;
+        }
+
+        if (StringUtils.hasText(prompt)) {
+            aiChatMessageRepository.save(AiChatMessage.builder()
+                    .userId(userId)
+                    .sessionId(sessionId)
+                    .role("user")
+                    .content(prompt)
+                    .build());
+        }
+
+        if (StringUtils.hasText(answer)) {
+            aiChatMessageRepository.save(AiChatMessage.builder()
+                    .userId(userId)
+                    .sessionId(sessionId)
+                    .role("bot")
+                    .content(answer)
+                    .build());
+        }
     }
 }

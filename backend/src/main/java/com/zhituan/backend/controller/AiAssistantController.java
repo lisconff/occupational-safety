@@ -1,6 +1,7 @@
 package com.zhituan.backend.controller;
 
 import com.zhituan.backend.common.api.ApiResponse;
+import com.zhituan.backend.common.utils.SecurityUtils;
 import com.zhituan.backend.dto.AiDtos;
 import com.zhituan.backend.service.AiAssistantService;
 import jakarta.validation.Valid;
@@ -38,12 +39,12 @@ public class AiAssistantController {
 
     @PostMapping("/coze/query")
     public ApiResponse<AiDtos.CozeQueryResponse> queryCozeAgent(@Valid @RequestBody AiDtos.CozeQueryRequest request) {
-        return ApiResponse.ok(aiAssistantService.queryCozeAgent(request));
+        return ApiResponse.ok(aiAssistantService.queryCozeAgent(request, SecurityUtils.getCurrentUserId()));
     }
 
     @PostMapping(value = "/coze/query-stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public SseEmitter queryCozeAgentStream(@Valid @RequestBody AiDtos.CozeQueryRequest request) {
-        return aiAssistantService.queryCozeAgentStream(request);
+        return aiAssistantService.queryCozeAgentStream(request, SecurityUtils.getCurrentUserId());
     }
 
     @PostMapping(value = "/coze/query-with-file-stream", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.TEXT_EVENT_STREAM_VALUE)
@@ -52,7 +53,7 @@ public class AiAssistantController {
             @RequestParam(value = "prompt", required = false) String prompt,
             @RequestParam(value = "sessionId", required = false) String sessionId
     ) {
-        return aiAssistantService.queryCozeAgentWithFileStream(prompt, sessionId, file);
+        return aiAssistantService.queryCozeAgentWithFileStream(prompt, sessionId, file, SecurityUtils.getCurrentUserId());
     }
 
     @PostMapping(value = "/coze/query-with-file", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -61,7 +62,16 @@ public class AiAssistantController {
             @RequestParam(value = "prompt", required = false) String prompt,
             @RequestParam(value = "sessionId", required = false) String sessionId
     ) {
-        return ApiResponse.ok(aiAssistantService.queryCozeAgentWithFile(prompt, sessionId, file));
+        return ApiResponse.ok(aiAssistantService.queryCozeAgentWithFile(prompt, sessionId, file, SecurityUtils.getCurrentUserId()));
+    }
+
+    @GetMapping("/coze/history")
+    public ApiResponse<AiDtos.ChatHistoryView> getChatHistory(
+            @RequestParam("sessionId") String sessionId,
+            @RequestParam(value = "limit", required = false) Integer limit
+    ) {
+        String userId = SecurityUtils.getCurrentUserId();
+        return ApiResponse.ok(aiAssistantService.getChatHistory(userId, sessionId, limit));
     }
 
     @GetMapping("/reports/{userId}")

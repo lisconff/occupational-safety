@@ -6,6 +6,12 @@ import java.util.List;
 
 public class AiDtos {
 
+        public record ChatMessageView(Long id, String role, String content, String createdAt) {
+        }
+
+        public record ChatHistoryView(String sessionId, List<ChatMessageView> messages) {
+        }
+
     public record AnalyzeRequest(@NotBlank String userId, @NotBlank String text) {
     }
 
