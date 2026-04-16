@@ -13,4 +13,9 @@ public class UserDtos {
             String bio
     ) {
     }
+
+        public record UpdateAvatarRequest(
+            String avatarDataUrl
+        ) {
+        }
 }

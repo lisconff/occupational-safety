@@ -29,4 +29,12 @@ public class UserController {
     ) {
         return ApiResponse.ok("更新成功", userService.updateProfile(userId, request));
     }
+
+    @PutMapping("/{userId}/avatar")
+    public ApiResponse<UserProfile> updateAvatar(
+            @PathVariable String userId,
+            @RequestBody UserDtos.UpdateAvatarRequest request
+    ) {
+        return ApiResponse.ok("头像更新成功", userService.updateAvatar(userId, request));
+    }
 }

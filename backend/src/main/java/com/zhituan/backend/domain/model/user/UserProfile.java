@@ -24,6 +24,10 @@ public class UserProfile {
     @Column(columnDefinition = "TEXT")
     private String bio;
 
+    @Lob
+    @Column(name = "avatar_data_url", columnDefinition = "LONGTEXT")
+    private String avatarDataUrl;
+
     // --- 领域行为方法 (Rich Domain Model) ---
 
     /**

@@ -7,4 +7,6 @@ public interface UserService {
     UserProfile getProfile(String userId);
 
     UserProfile updateProfile(String userId, UserDtos.UpdateProfileRequest request);
+
+    UserProfile updateAvatar(String userId, UserDtos.UpdateAvatarRequest request);
 }

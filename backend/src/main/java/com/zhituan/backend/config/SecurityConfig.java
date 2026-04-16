@@ -2,6 +2,7 @@ package com.zhituan.backend.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -29,9 +30,11 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         // 放行由于前端跨域发起的 OPTIONS 请求
-                        .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
+                    .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         // 登录与注册接口公开
                         .requestMatchers("/api/auth/login", "/api/auth/register").permitAll()
+                    // 论坛只读接口公开，便于游客浏览
+                    .requestMatchers(HttpMethod.GET, "/api/forum/posts", "/api/forum/posts/**", "/api/forum/users/**", "/api/forum/attachments/**", "/api/users/**").permitAll()
                         // 放行 AI 助手 Coze 查询接口，便于前端测试页直接联调
                         .requestMatchers("/api/ai/coze/query", "/api/ai/coze/query-stream", "/api/ai/coze/query-with-file", "/api/ai/coze/query-with-file-stream").permitAll()
                         // 其他健康检查等也公开

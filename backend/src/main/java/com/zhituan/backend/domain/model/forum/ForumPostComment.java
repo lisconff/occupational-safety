@@ -4,33 +4,27 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Entity
-@Table(name = "forum_posts")
+@Table(name = "forum_post_comments")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ForumPost {
+public class ForumPostComment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private String postId;
+    private String commentId;
 
+    private String postId;
     private String userId;
-    private String title;
+    private String parentCommentId;
+    private String replyToUserId;
 
     @Column(columnDefinition = "TEXT")
     private String content;
 
-    private Integer likeCount;
-    private Integer commentCount;
-    private Integer favoriteCount;
     private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
-
-    @Transient
-    private List<com.zhituan.backend.dto.ForumDtos.ForumAttachmentView> attachments;
 }

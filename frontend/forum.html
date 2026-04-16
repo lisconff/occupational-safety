@@ -16,12 +16,15 @@
       background: linear-gradient(150deg, #eef6ff 0%, #dbeafe 48%, #eff6ff 100%);
       color: #0f172a;
       min-height: 100vh;
+      height: 100vh;
+      overflow: hidden;
     }
 
     .app-container {
-      max-width: 1380px;
-      margin: 0 auto;
-      padding: 92px 18px 18px;
+      width: 100%;
+      margin: 0;
+      height: 100vh;
+      padding: 92px 12px 12px;
     }
 
     .main-header {
@@ -46,11 +49,14 @@
       font-weight: bold;
       color: #111827;
       cursor: pointer;
+      min-width: 110px;
     }
 
     .nav-center {
       display: flex;
       align-items: center;
+      flex: 1;
+      justify-content: center;
       gap: 30px;
       flex-wrap: wrap;
     }
@@ -82,6 +88,9 @@
       display: flex;
       gap: 10px;
       align-items: center;
+      justify-content: flex-end;
+      min-width: 220px;
+      flex: 0 0 220px;
     }
 
     .nav-btn {
@@ -153,14 +162,6 @@
       object-fit: cover;
     }
 
-    .search-section {
-      background: rgba(255, 255, 255, 0.82);
-      border: 1px solid #dbeafe;
-      border-radius: 18px;
-      padding: 16px;
-      margin-bottom: 14px;
-    }
-
     .search-row {
       display: flex;
       gap: 10px;
@@ -206,12 +207,14 @@
 
     .main-grid {
       display: grid;
-      grid-template-columns: 1fr 310px;
+      grid-template-columns: 280px minmax(0, 1fr);
       gap: 14px;
+      align-items: stretch;
+      height: calc(100vh - 104px);
+      min-height: 0;
     }
 
-    .posts-feed,
-    .sidebar .widget {
+    .posts-feed {
       background: rgba(255, 255, 255, 0.82);
       border: 1px solid #dbeafe;
       border-radius: 18px;
@@ -219,8 +222,81 @@
     }
 
     .posts-feed {
-      padding: 16px;
-      min-height: 520px;
+      padding: 0;
+      height: 100%;
+      min-height: 0;
+      overflow-y: auto;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+
+    .posts-feed::-webkit-scrollbar {
+      width: 0;
+      height: 0;
+    }
+
+    .posts-feed.is-scrolling {
+      scrollbar-width: thin;
+      scrollbar-color: rgba(30, 64, 175, 0.45) transparent;
+    }
+
+    .posts-feed.is-scrolling::-webkit-scrollbar {
+      width: 9px;
+    }
+
+    .posts-feed.is-scrolling::-webkit-scrollbar-thumb {
+      background: rgba(30, 64, 175, 0.45);
+      border-radius: 999px;
+    }
+
+    .posts-feed.is-scrolling::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .feed-pagination {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      margin-top: 14px;
+      flex-wrap: wrap;
+    }
+
+    .page-info {
+      font-size: 13px;
+      color: #64748b;
+      min-width: 120px;
+      text-align: center;
+    }
+
+    .page-btn {
+      border: 1px solid #bfdbfe;
+      background: #fff;
+      color: #1e40af;
+      border-radius: 999px;
+      padding: 7px 14px;
+      cursor: pointer;
+      font-size: 13px;
+    }
+
+    .page-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .feed-toolbar {
+      border: 1px solid #dbeafe;
+      background: #f8fbff;
+      border-radius: 18px 18px 14px 14px;
+      padding: 12px;
+      margin-bottom: 14px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    #postsFeed {
+      padding: 0 16px 16px;
     }
 
     .post-card {
@@ -263,16 +339,51 @@
       display: flex;
       flex-wrap: wrap;
       gap: 12px;
+      margin-bottom: 10px;
+    }
+
+    .post-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .post-action-btn {
+      border: 1px solid #bfdbfe;
+      background: #eff6ff;
+      color: #1e40af;
+      border-radius: 999px;
+      padding: 5px 12px;
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    .post-action-btn:hover {
+      background: #dbeafe;
     }
 
     .sidebar {
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 0;
+      position: relative;
+      top: 0;
+      height: 100%;
+      min-height: 0;
+      overflow-y: auto;
+      padding-right: 2px;
+      background: rgba(255, 255, 255, 0.82);
+      border: 1px solid #dbeafe;
+      border-radius: 18px;
+      box-shadow: 0 10px 24px rgba(30, 64, 175, 0.06);
     }
 
     .widget {
       padding: 14px;
+      background: transparent;
+      border: none;
+      border-radius: 0;
+      box-shadow: none;
     }
 
     .widget-title {
@@ -280,6 +391,8 @@
       color: #1e3a8a;
       font-weight: 700;
       margin-bottom: 10px;
+      padding-left: 8px;
+      border-left: 3px solid #2563eb;
     }
 
     .user-card {
@@ -300,6 +413,17 @@
       color: #fff;
       font-weight: 700;
       font-size: 18px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: none;
+      position: absolute;
+      inset: 0;
     }
 
     .username {
@@ -429,9 +553,89 @@
       margin-top: 8px;
     }
 
+    .comment-drawer {
+      position: fixed;
+      left: 50%;
+      bottom: 0;
+      width: min(920px, calc(100vw - 20px));
+      transform: translate(-50%, 105%);
+      background: #ffffff;
+      border: 1px solid #dbeafe;
+      border-bottom: none;
+      box-shadow: 0 -16px 28px rgba(15, 23, 42, 0.18);
+      z-index: 1300;
+      transition: transform 0.25s ease;
+      padding: 14px 18px 16px;
+      max-height: 45vh;
+      overflow: auto;
+      border-radius: 18px 18px 0 0;
+    }
+
+    .comment-drawer.active {
+      transform: translate(-50%, 0);
+    }
+
+    .comment-drawer-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      color: #1e3a8a;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .comment-drawer textarea {
+      width: 100%;
+      min-height: 90px;
+      border: 1px solid #cbd5e1;
+      border-radius: 10px;
+      padding: 10px;
+      font-size: 14px;
+      line-height: 1.6;
+      resize: vertical;
+      margin-bottom: 10px;
+    }
+
+    .comment-drawer-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+
     @media (max-width: 980px) {
+      body {
+        height: auto;
+        overflow: auto;
+      }
+
+      .app-container {
+        height: auto;
+        min-height: 100vh;
+        padding: 84px 10px 10px;
+      }
+
       .main-grid {
         grid-template-columns: 1fr;
+        height: auto;
+      }
+
+      .sidebar {
+        position: static;
+        order: 2;
+        height: auto;
+        overflow: visible;
+        padding-right: 0;
+      }
+
+      .posts-feed {
+        order: 1;
+        height: auto;
+        overflow: visible;
+      }
+
+      .feed-toolbar {
+        position: static;
       }
     }
   </style>
@@ -441,6 +645,7 @@
   <header class="main-header">
     <div class="logo" id="homeBtn">职途安</div>
     <nav class="nav-center">
+      <a href="home.html">首页</a>
       <a href="ai-chat-test.html" data-auth-required="true">AI助手</a>
       <a href="case.html">案例模拟</a>
       <a href="forum.html">交流论坛</a>
@@ -456,36 +661,20 @@
           <span id="topAvatarLetter">游</span>
         </div>
         <span id="topUserName" style="font-size:13px;color:#1e3a8a;">用户</span>
-        <button id="logoutBtn" class="nav-btn">退出</button>
       </div>
     </div>
   </header>
 
-  <section class="search-section">
-    <div class="search-row">
-      <input id="searchInput" class="search-input" type="text" placeholder="搜索标题或正文...">
-      <button class="btn-primary" id="refreshBtn">刷新</button>
-    </div>
-    <div class="tag-nav" id="tagNav">
-      <button class="tag-item active" data-filter="all">全部</button>
-      <button class="tag-item" data-filter="new">最新</button>
-      <button class="tag-item" data-filter="hot">最热</button>
-      <button class="tag-item" data-filter="mine">我的</button>
-    </div>
-  </section>
-
   <div class="main-grid">
-    <main class="posts-feed">
-      <div id="postsFeed"></div>
-    </main>
     <aside class="sidebar">
       <div class="widget">
-        <div class="widget-title">我的状态</div>
         <div class="user-card">
-          <div class="avatar" id="userAvatar">游</div>
+          <div class="avatar" id="userAvatar">
+            <img id="userAvatarImage" alt="用户头像">
+            <span id="userAvatarLetter">游</span>
+          </div>
           <div>
             <div class="username" id="forumUsername">游客</div>
-            <div style="font-size:12px;color:#64748b;">公开浏览，发帖需登录</div>
           </div>
         </div>
         <button class="btn-primary" id="openPostBtn" style="width:100%;">发布帖子</button>
@@ -502,13 +691,52 @@
       </div>
 
       <div class="widget">
-        <div class="widget-title">快捷功能</div>
+        <div class="widget-title">我的收藏</div>
+        <div class="plain-list" id="myFavoritesList"></div>
+      </div>
+
+      <div class="widget">
+        <div class="widget-title">我的点赞</div>
+        <div class="plain-list" id="myLikesList"></div>
+      </div>
+
+      <div class="widget">
+        <div class="widget-title">功能</div>
         <div class="menu-item" data-action="publish" data-auth-required="true">📝 发布帖子</div>
         <div class="menu-item" data-action="my-posts" data-auth-required="true">📂 查看我的帖子</div>
+        <div class="menu-item" data-action="my-favorites" data-auth-required="true">⭐ 我的收藏</div>
+        <div class="menu-item" data-action="my-likes" data-auth-required="true">👍 我的点赞</div>
         <div class="menu-item" data-action="history" data-auth-required="false">🕒 查看浏览历史</div>
         <div class="menu-item" data-action="settings" data-auth-required="true">⚙️ 个人设置</div>
       </div>
     </aside>
+    <main class="posts-feed">
+      <section class="feed-toolbar">
+        <div class="search-row">
+          <input id="searchInput" class="search-input" type="text" placeholder="搜索标题或正文...">
+          <button class="btn-primary" id="searchBtn">搜索</button>
+        </div>
+        <div class="tag-nav" id="tagNav">
+          <button class="tag-item active" data-filter="all">全部</button>
+          <button class="tag-item" data-filter="new">最新</button>
+          <button class="tag-item" data-filter="hot">最热</button>
+          <button class="tag-item" data-filter="mine">我的</button>
+        </div>
+      </section>
+      <div id="postsFeed"></div>
+    </main>
+  </div>
+</div>
+
+<div class="comment-drawer" id="commentDrawer">
+  <div class="comment-drawer-head">
+    <span>发表评论</span>
+    <button class="close-btn" id="closeCommentDrawerBtn">×</button>
+  </div>
+  <textarea id="commentInput" placeholder="写下你的评论内容..."></textarea>
+  <div class="comment-drawer-actions">
+    <button class="btn-outline" id="cancelCommentBtn">取消</button>
+    <button class="btn-primary" id="submitCommentBtn">发布评论</button>
   </div>
 </div>
 
@@ -540,6 +768,11 @@
   let allPosts = [];
   let currentFilter = "all";
   let currentKeyword = "";
+  let activeCommentPostId = "";
+  let currentPage = 1;
+  const PAGE_SIZE = 10;
+  const USER_AVATAR_MAP_KEY = "userAvatarMap";
+  const USER_AVATAR_OWNER_KEY = "userAvatarOwner";
 
   function getToken() {
     return localStorage.getItem("token") || sessionStorage.getItem("token") || "";
@@ -549,8 +782,42 @@
     return localStorage.getItem("username") || sessionStorage.getItem("username") || "";
   }
 
-  function getAvatarDataUrl() {
-    return localStorage.getItem("userAvatar") || "";
+  function getUserId() {
+    return localStorage.getItem("userId") || sessionStorage.getItem("userId") || getUsername();
+  }
+
+  function getAvatarMap() {
+    try {
+      const raw = localStorage.getItem(USER_AVATAR_MAP_KEY);
+      if (!raw) return {};
+      const parsed = JSON.parse(raw);
+      return parsed && typeof parsed === "object" ? parsed : {};
+    } catch (err) {
+      return {};
+    }
+  }
+
+  function getAvatarDataUrl(userId) {
+    const map = getAvatarMap();
+    const key = userId || getUsername();
+    if (key && map[key]) {
+      return map[key];
+    }
+    return "";
+  }
+
+  function setAvatarDataUrl(url) {
+    const username = getUsername();
+    const userId = getUserId();
+    if (!username) return;
+    const map = getAvatarMap();
+    map[username] = url;
+    if (userId) {
+      map[userId] = url;
+    }
+    localStorage.setItem(USER_AVATAR_MAP_KEY, JSON.stringify(map));
+    localStorage.setItem(USER_AVATAR_OWNER_KEY, userId || username);
+    localStorage.setItem("userAvatar", url);
   }
 
   function isLoggedIn() {
@@ -594,7 +861,7 @@
 
     const username = getUsername();
     const token = getToken();
-    const avatarUrl = getAvatarDataUrl();
+    const avatarUrl = getAvatarDataUrl(getUserId());
 
     if (token) {
       guestNav.style.display = "none";
@@ -617,8 +884,19 @@
 
   function updateUserPanel() {
     const username = getUsername() || "游客";
+    const avatarUrl = getAvatarDataUrl(getUserId());
+    const avatarImg = document.getElementById("userAvatarImage");
+    const avatarLetter = document.getElementById("userAvatarLetter");
     document.getElementById("forumUsername").textContent = username;
-    document.getElementById("userAvatar").textContent = username.slice(0, 1) || "游";
+    avatarLetter.textContent = username.slice(0, 1) || "游";
+    if (avatarUrl) {
+      avatarImg.src = avatarUrl;
+      avatarImg.style.display = "block";
+      avatarLetter.style.display = "none";
+    } else {
+      avatarImg.style.display = "none";
+      avatarLetter.style.display = "inline";
+    }
   }
 
   function filterPosts() {
@@ -647,13 +925,17 @@
 
   function renderPosts() {
     const posts = filterPosts();
+    const totalPages = Math.max(1, Math.ceil(posts.length / PAGE_SIZE));
+    currentPage = Math.min(currentPage, totalPages);
+    const start = (currentPage - 1) * PAGE_SIZE;
+    const pagePosts = posts.slice(start, start + PAGE_SIZE);
     const postsFeed = document.getElementById("postsFeed");
     if (!posts.length) {
-      postsFeed.innerHTML = '<div class="empty-message">暂无帖子，去发布第一篇吧。</div>';
+      postsFeed.innerHTML = '<div class="empty-message">暂无帖子，去发布第一篇吧。</div><div class="feed-pagination"></div>';
       return;
     }
 
-    postsFeed.innerHTML = posts.map((post) => {
+    postsFeed.innerHTML = pagePosts.map((post) => {
       const snippet = (post.content || "").replace(/\s+/g, " ").trim();
       const excerpt = snippet.length > 120 ? snippet.slice(0, 120) + "..." : snippet;
       return '<article class="post-card" data-id="' + escapeHtml(post.postId) + '">' +
@@ -666,8 +948,19 @@
           '<span>收藏：' + (post.favoriteCount || 0) + '</span>' +
           '<span>' + escapeHtml(formatDate(post.createdAt)) + '</span>' +
         '</div>' +
+        '<div class="post-actions">' +
+          '<button class="post-action-btn" data-action="like" data-id="' + escapeHtml(post.postId) + '">👍 点赞</button>' +
+          '<button class="post-action-btn" data-action="favorite" data-id="' + escapeHtml(post.postId) + '">⭐ 收藏</button>' +
+          '<button class="post-action-btn" data-action="comment" data-id="' + escapeHtml(post.postId) + '">💬 评论</button>' +
+          '<button class="post-action-btn" data-action="view-comments" data-id="' + escapeHtml(post.postId) + '">🧾 查看评论</button>' +
+        '</div>' +
       '</article>';
-    }).join("");
+    }).join("") +
+      '<div class="feed-pagination">' +
+        '<button class="page-btn" id="prevPageBtn" ' + (currentPage <= 1 ? 'disabled' : '') + '>上一页</button>' +
+        '<span class="page-info">第 ' + currentPage + ' / ' + totalPages + ' 页</span>' +
+        '<button class="page-btn" id="nextPageBtn" ' + (currentPage >= totalPages ? 'disabled' : '') + '>下一页</button>' +
+      '</div>';
 
     document.querySelectorAll(".post-card").forEach((card) => {
       card.addEventListener("click", () => {
@@ -676,6 +969,146 @@
         window.location.href = "post-detail.html?id=" + encodeURIComponent(id);
       });
     });
+
+    document.querySelectorAll(".post-action-btn").forEach((btn) => {
+      btn.addEventListener("click", async (event) => {
+        event.stopPropagation();
+        const action = btn.getAttribute("data-action") || "";
+        const postId = btn.getAttribute("data-id") || "";
+        await handlePostAction(action, postId);
+      });
+    });
+
+    const prevPageBtn = document.getElementById("prevPageBtn");
+    const nextPageBtn = document.getElementById("nextPageBtn");
+    if (prevPageBtn) {
+      prevPageBtn.addEventListener("click", () => {
+        if (currentPage > 1) {
+          currentPage -= 1;
+          renderPosts();
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        }
+      });
+    }
+    if (nextPageBtn) {
+      nextPageBtn.addEventListener("click", () => {
+        const totalPages = Math.max(1, Math.ceil(filterPosts().length / PAGE_SIZE));
+        if (currentPage < totalPages) {
+          currentPage += 1;
+          renderPosts();
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        }
+      });
+    }
+  }
+
+  function updatePostStats(postId, stats) {
+    allPosts = allPosts.map((post) => {
+      if (post.postId !== postId) return post;
+      return {
+        ...post,
+        likeCount: stats.likeCount,
+        commentCount: stats.commentCount,
+        favoriteCount: stats.favoriteCount
+      };
+    });
+  }
+
+  function getAuthHeaders() {
+    const token = getToken();
+    const headers = { "Content-Type": "application/json" };
+    if (token) {
+      headers.Authorization = "Bearer " + token;
+    }
+    return headers;
+  }
+
+  async function toggleLike(postId) {
+    const response = await fetch(API_BASE + "/api/forum/posts/" + encodeURIComponent(postId) + "/like", {
+      method: "POST",
+      headers: getAuthHeaders(),
+      body: JSON.stringify({ userId: getUserId() })
+    });
+    return response.json();
+  }
+
+  async function toggleFavorite(postId) {
+    const response = await fetch(API_BASE + "/api/forum/posts/" + encodeURIComponent(postId) + "/favorite", {
+      method: "POST",
+      headers: getAuthHeaders(),
+      body: JSON.stringify({ userId: getUserId() })
+    });
+    return response.json();
+  }
+
+  async function createComment(postId, content) {
+    const response = await fetch(API_BASE + "/api/forum/posts/" + encodeURIComponent(postId) + "/comments", {
+      method: "POST",
+      headers: getAuthHeaders(),
+      body: JSON.stringify({ userId: getUserId(), content })
+    });
+    return response.json();
+  }
+
+  async function loadComments(postId) {
+    const response = await fetch(API_BASE + "/api/forum/posts/" + encodeURIComponent(postId) + "/comments");
+    return response.json();
+  }
+
+  async function handlePostAction(action, postId) {
+    if (!postId) return;
+
+    try {
+      if (action === "like") {
+        if (!requireLogin("点赞帖子")) return;
+        const data = await toggleLike(postId);
+        if (data && data.code === 200 && data.data) {
+          updatePostStats(postId, data.data);
+          renderPosts();
+          renderMyPosts();
+        } else {
+          window.alert(data && data.message ? data.message : "点赞失败");
+        }
+        return;
+      }
+
+      if (action === "favorite") {
+        if (!requireLogin("收藏帖子")) return;
+        const data = await toggleFavorite(postId);
+        if (data && data.code === 200 && data.data) {
+          updatePostStats(postId, data.data);
+          renderPosts();
+          renderMyPosts();
+        } else {
+          window.alert(data && data.message ? data.message : "收藏失败");
+        }
+        return;
+      }
+
+      if (action === "comment") {
+        if (!requireLogin("评论帖子")) return;
+        openCommentDrawer(postId);
+        return;
+      }
+
+      if (action === "view-comments") {
+        const data = await loadComments(postId);
+        if (!(data && data.code === 200 && Array.isArray(data.data))) {
+          window.alert(data && data.message ? data.message : "获取评论失败");
+          return;
+        }
+        if (!data.data.length) {
+          window.alert("暂无评论");
+          return;
+        }
+        const preview = data.data.slice(-5).map((item) => {
+          return "- " + (item.userId || "匿名") + "：" + (item.content || "");
+        }).join("\n");
+        window.alert("最新评论：\n" + preview);
+      }
+    } catch (err) {
+      window.alert("网络错误，请稍后重试");
+    }
   }
 
   function saveViewHistory(postId) {
@@ -686,7 +1119,7 @@
     if (!post) return;
     const next = oldHistory.filter((item) => item.postId !== postId);
     next.unshift({ postId: post.postId, title: post.title, time: Date.now() });
-    localStorage.setItem(key, JSON.stringify(next.slice(0, 10)));
+    localStorage.setItem(key, JSON.stringify(next.slice(0, 30)));
   }
 
   function renderHistory() {
@@ -698,7 +1131,7 @@
       historyList.innerHTML = '<div class="empty-message">暂无浏览记录</div>';
       return;
     }
-    historyList.innerHTML = list.map((item) => '<div class="plain-item" data-id="' + escapeHtml(item.postId) + '">' + escapeHtml(item.title || "未命名帖子") + '</div>').join("");
+    historyList.innerHTML = list.slice(0, 2).map((item) => '<div class="plain-item" data-id="' + escapeHtml(item.postId) + '">' + escapeHtml(item.title || "未命名帖子") + '</div>').join("");
     historyList.querySelectorAll(".plain-item").forEach((el) => {
       el.addEventListener("click", () => {
         const id = el.getAttribute("data-id");
@@ -714,7 +1147,7 @@
       myPostsList.innerHTML = '<div class="empty-message">登录后可查看我的帖子</div>';
       return;
     }
-    const mine = allPosts.filter((p) => p.userId === username).slice(0, 8);
+    const mine = allPosts.filter((p) => p.userId === username).slice(0, 2);
     if (!mine.length) {
       myPostsList.innerHTML = '<div class="empty-message">你还没有发布帖子</div>';
       return;
@@ -728,17 +1161,56 @@
     });
   }
 
+  async function renderUserPostList(endpoint, targetListId) {
+    const wrap = document.getElementById(targetListId);
+    const username = getUsername();
+    if (!username) {
+      wrap.innerHTML = '<div class="empty-message">登录后可查看</div>';
+      return;
+    }
+    try {
+      const response = await fetch(API_BASE + endpoint.replace("{userId}", encodeURIComponent(username)), {
+        headers: getToken() ? { "Authorization": "Bearer " + getToken() } : {}
+      });
+      const data = await response.json();
+      if (!(data && data.code === 200 && Array.isArray(data.data))) {
+        wrap.innerHTML = '<div class="empty-message">加载失败</div>';
+        return;
+      }
+      const posts = data.data.slice(0, 2);
+      if (!posts.length) {
+        wrap.innerHTML = '<div class="empty-message">暂无数据</div>';
+        return;
+      }
+      wrap.innerHTML = posts.map((post) => '<div class="plain-item" data-id="' + escapeHtml(post.postId) + '">' + escapeHtml(post.title || "未命名帖子") + '</div>').join("");
+      wrap.querySelectorAll('.plain-item').forEach((el) => {
+        el.addEventListener('click', () => {
+          const id = el.getAttribute('data-id');
+          if (id) window.location.href = 'post-detail.html?id=' + encodeURIComponent(id);
+        });
+      });
+    } catch (err) {
+      wrap.innerHTML = '<div class="empty-message">网络错误</div>';
+    }
+  }
+
   async function loadPosts() {
     const postsFeed = document.getElementById("postsFeed");
     postsFeed.innerHTML = '<div class="empty-message">正在加载帖子...</div>';
     try {
-      const response = await fetch(API_BASE + "/api/forum/posts");
+      const token = getToken();
+      const response = await fetch(API_BASE + "/api/forum/posts", {
+        headers: token ? { "Authorization": "Bearer " + token } : {}
+      });
       const data = await response.json();
       if (data && data.code === 200 && Array.isArray(data.data)) {
         allPosts = data.data;
+        currentPage = 1;
         renderPosts();
         renderMyPosts();
         renderHistory();
+        renderUserPostList("/api/forum/users/{userId}/favorites", "myFavoritesList");
+        renderUserPostList("/api/forum/users/{userId}/likes", "myLikesList");
         return;
       }
       postsFeed.innerHTML = '<div class="empty-message">加载失败：' + escapeHtml(data && data.message ? data.message : "未知错误") + '</div>';
@@ -770,7 +1242,7 @@
     }
 
     const token = getToken();
-    const userId = getUsername();
+    const userId = getUserId();
     try {
       const response = await fetch(API_BASE + "/api/forum/posts", {
         method: "POST",
@@ -802,6 +1274,44 @@
     document.getElementById("postModal").classList.remove("active");
   }
 
+  function openCommentDrawer(postId) {
+    activeCommentPostId = postId || "";
+    const drawer = document.getElementById("commentDrawer");
+    const input = document.getElementById("commentInput");
+    input.value = "";
+    drawer.classList.add("active");
+    input.focus();
+  }
+
+  function closeCommentDrawer() {
+    activeCommentPostId = "";
+    document.getElementById("commentDrawer").classList.remove("active");
+  }
+
+  async function submitCommentFromDrawer() {
+    if (!activeCommentPostId) return;
+    const input = document.getElementById("commentInput");
+    const content = (input.value || "").trim();
+    if (!content) {
+      window.alert("请输入评论内容");
+      return;
+    }
+    const data = await createComment(activeCommentPostId, content);
+    if (data && data.code === 200) {
+      const post = allPosts.find((p) => p.postId === activeCommentPostId);
+      updatePostStats(activeCommentPostId, {
+        likeCount: post ? post.likeCount : 0,
+        favoriteCount: post ? post.favoriteCount : 0,
+        commentCount: (post ? post.commentCount : 0) + 1
+      });
+      closeCommentDrawer();
+      renderPosts();
+      renderMyPosts();
+      return;
+    }
+    window.alert(data && data.message ? data.message : "评论失败");
+  }
+
   function bindEvents() {
     document.getElementById("homeBtn").addEventListener("click", () => {
       window.location.href = "home.html";
@@ -811,15 +1321,7 @@
       window.location.href = "profile.html";
     });
 
-    document.getElementById("logoutBtn").addEventListener("click", () => {
-      localStorage.removeItem("token");
-      localStorage.removeItem("username");
-      sessionStorage.removeItem("token");
-      sessionStorage.removeItem("username");
-      window.location.reload();
-    });
-
-    document.querySelectorAll('[data-auth-required="true"]').forEach((el) => {
+    document.querySelectorAll('.nav-center a[data-auth-required="true"]').forEach((el) => {
       el.addEventListener("click", (event) => {
         event.preventDefault();
         const target = el.getAttribute("href") || "ai-chat-test.html";
@@ -832,10 +1334,15 @@
 
     document.getElementById("searchInput").addEventListener("input", (e) => {
       currentKeyword = e.target.value.trim();
+      currentPage = 1;
       renderPosts();
     });
 
-    document.getElementById("refreshBtn").addEventListener("click", loadPosts);
+    document.getElementById("searchBtn").addEventListener("click", () => {
+      currentKeyword = document.getElementById("searchInput").value.trim();
+      currentPage = 1;
+      renderPosts();
+    });
 
     document.querySelectorAll(".tag-item").forEach((btn) => {
       btn.addEventListener("click", () => {
@@ -847,12 +1354,15 @@
           document.querySelector('.tag-item[data-filter="all"]').classList.add("active");
           btn.classList.remove("active");
         }
+        currentPage = 1;
         renderPosts();
       });
     });
 
     document.getElementById("openPostBtn").addEventListener("click", () => {
-      if (requireLogin("发布帖子")) openModal();
+      if (requireLogin("发布帖子")) {
+        window.open("post.html", "_blank");
+      }
     });
 
     document.getElementById("closeModalBtn").addEventListener("click", closeModal);
@@ -866,6 +1376,16 @@
       if (e.target.id === "postModal") closeModal();
     });
 
+    document.getElementById("closeCommentDrawerBtn").addEventListener("click", closeCommentDrawer);
+    document.getElementById("cancelCommentBtn").addEventListener("click", closeCommentDrawer);
+    document.getElementById("submitCommentBtn").addEventListener("click", submitCommentFromDrawer);
+
+    document.getElementById("commentDrawer").addEventListener("click", (event) => {
+      if (event.target.id === "commentDrawer") {
+        closeCommentDrawer();
+      }
+    });
+
     document.querySelectorAll(".menu-item").forEach((item) => {
       item.addEventListener("click", () => {
         const action = item.getAttribute("data-action");
@@ -874,19 +1394,23 @@
         if (needAuth && !requireLogin(label)) return;
 
         if (action === "publish") {
-          openModal();
+          window.open("post.html", "_blank");
           return;
         }
         if (action === "my-posts") {
-          currentFilter = "mine";
-          document.querySelectorAll(".tag-item").forEach((b) => b.classList.remove("active"));
-          const mineTag = document.querySelector('.tag-item[data-filter="mine"]');
-          mineTag.classList.add("active");
-          renderPosts();
+          window.open("forum-my-posts.html", "_blank");
+          return;
+        }
+        if (action === "my-favorites") {
+          window.open("forum-my-favorites.html", "_blank");
+          return;
+        }
+        if (action === "my-likes") {
+          window.open("forum-my-likes.html", "_blank");
           return;
         }
         if (action === "history") {
-          renderHistory();
+          window.open("forum-history.html", "_blank");
           return;
         }
         if (action === "settings") {
@@ -896,9 +1420,28 @@
     });
   }
 
+  function bindPostsFeedScrollbarBehavior() {
+    const feed = document.querySelector('.posts-feed');
+    if (!feed) return;
+
+    let hideTimer = null;
+    const showScrollbar = () => {
+      feed.classList.add('is-scrolling');
+      if (hideTimer) {
+        window.clearTimeout(hideTimer);
+      }
+      hideTimer = window.setTimeout(() => {
+        feed.classList.remove('is-scrolling');
+      }, 480);
+    };
+
+    feed.addEventListener('scroll', showScrollbar, { passive: true });
+  }
+
   renderTopRightUser();
   updateUserPanel();
   bindEvents();
+  bindPostsFeedScrollbarBehavior();
   loadPosts();
 </script>
 </body>

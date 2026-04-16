@@ -186,6 +186,7 @@
 
     <script>
         const API_BASE = "http://localhost:8090";
+        const USER_AVATAR_MAP_KEY = "userAvatarMap";
         const query = new URLSearchParams(window.location.search);
         const redirectUrl = query.get("redirect") || "home.html";
         const actionName = query.get("action") || "";
@@ -207,6 +208,44 @@
             loginError.style.display = "block";
             loginError.style.color = "#1e40af";
             loginError.textContent = actionName + "需要登录后使用";
+        }
+
+        async function syncCurrentUserAvatar(userId, username, token) {
+            if (!userId || !token) return;
+            let map = {};
+            try {
+                const raw = localStorage.getItem(USER_AVATAR_MAP_KEY);
+                if (raw) {
+                    const parsed = JSON.parse(raw);
+                    if (parsed && typeof parsed === "object") {
+                        map = parsed;
+                    }
+                }
+            } catch (e) {
+                map = {};
+            }
+
+            try {
+                const response = await fetch(API_BASE + "/api/users/" + encodeURIComponent(userId) + "/profile", {
+                    headers: { Authorization: "Bearer " + token }
+                });
+                const data = await response.json();
+                const avatarDataUrl = data && data.code === 200 && data.data ? (data.data.avatarDataUrl || "") : "";
+                if (avatarDataUrl) {
+                    map[userId] = avatarDataUrl;
+                    if (username) map[username] = avatarDataUrl;
+                    localStorage.setItem("userAvatar", avatarDataUrl);
+                    localStorage.setItem("userAvatarOwner", userId);
+                } else {
+                    delete map[userId];
+                    if (username) delete map[username];
+                    localStorage.removeItem("userAvatar");
+                    localStorage.removeItem("userAvatarOwner");
+                }
+                localStorage.setItem(USER_AVATAR_MAP_KEY, JSON.stringify(map));
+            } catch (e) {
+                // Keep login successful even if avatar sync fails.
+            }
         }
 
         function setError(msg) {
@@ -248,12 +287,20 @@
                 const data = await response.json();
 
                 if (data && data.code === 200 && data.data && data.data.token) {
-                    const store = rememberMe.checked ? localStorage : sessionStorage;
-                    const clearStore = rememberMe.checked ? sessionStorage : localStorage;
-                    clearStore.removeItem("token");
-                    clearStore.removeItem("username");
-                    store.setItem("token", data.data.token);
-                    store.setItem("username", data.data.username || username);
+                    localStorage.removeItem("token");
+                    localStorage.removeItem("username");
+                    localStorage.removeItem("userId");
+                    localStorage.removeItem("userAvatarOwner");
+                    sessionStorage.removeItem("token");
+                    sessionStorage.removeItem("username");
+                    sessionStorage.removeItem("userId");
+                    sessionStorage.removeItem("userAvatarOwner");
+                    [localStorage, sessionStorage].forEach((store) => {
+                        store.setItem("token", data.data.token);
+                        store.setItem("userId", data.data.userId || "");
+                        store.setItem("username", data.data.username || username);
+                    });
+                    await syncCurrentUserAvatar(data.data.userId || "", data.data.username || username, data.data.token);
                     window.location.href = redirectUrl;
                     return;
                 }

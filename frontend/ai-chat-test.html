@@ -29,7 +29,9 @@
             background: linear-gradient(135deg, var(--bg-1) 0%, var(--bg-2) 100%);
             color: var(--text);
             min-height: 100vh;
-            padding: 92px 12px 28px;
+            height: 100vh;
+            padding: 92px 12px 12px;
+            overflow: hidden;
         }
 
         .header {
@@ -52,10 +54,13 @@
             font-weight: bold;
             font-size: 20px;
             color: #111827;
+            min-width: 110px;
         }
 
         .nav-center {
             display: flex;
+            flex: 1;
+            justify-content: center;
             gap: 30px;
         }
 
@@ -85,6 +90,9 @@
             display: flex;
             align-items: center;
             gap: 10px;
+            justify-content: flex-end;
+            min-width: 220px;
+            flex: 0 0 220px;
         }
 
         .nav-btn {
@@ -136,13 +144,152 @@
         }
 
         .chat-shell {
-            width: min(1080px, 100%);
+            width: 100%;
             margin: 0 auto;
+            height: calc(100vh - 104px);
             background: var(--panel);
             border: 1px solid var(--line);
             border-radius: 22px;
             backdrop-filter: blur(12px);
             box-shadow: 0 12px 35px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+        }
+
+        .chat-layout {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            height: 100%;
+            min-height: 0;
+        }
+
+        .chat-sidebar {
+            background: rgba(255, 255, 255, 0.3);
+            border-right: 1px solid var(--line);
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+            overflow: hidden;
+        }
+
+        .sidebar-header {
+            padding: 14px 12px;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .new-chat-btn {
+            width: 100%;
+            height: 40px;
+            border-radius: 10px;
+            background: #2563eb;
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .new-chat-btn:hover {
+            background: #1d4ed8;
+        }
+
+        .sidebar-note {
+            margin-top: 8px;
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.4;
+        }
+
+        .session-list {
+            padding: 10px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            min-height: 0;
+            flex: 1;
+        }
+
+        .session-item {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.62);
+            border: 1px solid transparent;
+            border-radius: 10px;
+            padding: 8px;
+        }
+
+        .session-item.active {
+            border-color: #93c5fd;
+            box-shadow: inset 0 0 0 1px #bfdbfe;
+            background: #eff6ff;
+        }
+
+        .session-main {
+            border: none;
+            background: transparent;
+            text-align: left;
+            color: #1e293b;
+            padding: 0;
+            width: auto;
+            flex: 1;
+            cursor: pointer;
+            min-width: 0;
+        }
+
+        .session-main:hover {
+            background: transparent;
+        }
+
+        .session-title {
+            font-size: 13px;
+            font-weight: 600;
+            line-height: 1.3;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .session-time {
+            margin-top: 2px;
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.2;
+        }
+
+        .session-delete {
+            width: 26px;
+            height: 26px;
+            border-radius: 8px;
+            border: 1px solid #dbeafe;
+            background: #fff;
+            color: #64748b;
+            font-size: 14px;
+            cursor: pointer;
+            padding: 0;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .session-delete:hover {
+            background: #fee2e2;
+            color: #b91c1c;
+            border-color: #fecaca;
+        }
+
+        .session-empty {
+            text-align: center;
+            color: var(--muted);
+            font-size: 13px;
+            padding: 28px 8px;
+        }
+
+        .chat-main {
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+            min-width: 0;
             overflow: hidden;
         }
 
@@ -198,6 +345,9 @@
         }
 
         .status {
+            margin-top: 6px;
+            font-size: 12px;
+            color: var(--muted);
             display: none;
         }
 
@@ -206,7 +356,9 @@
         }
 
         .messages {
-            height: 460px;
+            height: auto;
+            flex: 1;
+            min-height: 0;
             overflow-y: auto;
             padding: 18px 16px;
             display: flex;
@@ -239,6 +391,14 @@
             flex-shrink: 0;
             border: 2px solid rgba(255, 255, 255, 0.6);
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+        }
+
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
         }
 
         .avatar.bot {
@@ -331,6 +491,7 @@
             flex-direction: column;
             gap: 10px;
             background: rgba(255, 255, 255, 0.45);
+            flex-shrink: 0;
         }
 
         .composer-top {
@@ -417,6 +578,10 @@
         }
 
         @media (max-width: 680px) {
+            body {
+                padding: 84px 8px 8px;
+            }
+
             .header {
                 padding: 12px 16px;
             }
@@ -429,12 +594,29 @@
                 padding: 14px 16px;
             }
 
+            .chat-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .chat-shell {
+                height: calc(100vh - 92px);
+            }
+
+            .chat-sidebar {
+                border-right: none;
+                border-bottom: 1px solid var(--line);
+            }
+
+            .session-list {
+                max-height: 200px;
+            }
+
             .brand {
                 font-size: 20px;
             }
 
             .messages {
-                height: 55vh;
+                min-height: 240px;
             }
 
             .composer-main {
@@ -452,6 +634,7 @@
 <header class="header">
     <div class="logo">职途安</div>
     <nav class="nav-center">
+        <a href="home.html">首页</a>
         <a href="ai-chat-test.html" data-auth-required="true">AI助手</a>
         <a href="case.html">案例模拟</a>
         <a href="forum.html">交流论坛</a>
@@ -467,37 +650,46 @@
                 <span id="topAvatarLetter">游</span>
             </div>
             <span id="topUserName" style="font-size:13px;color:#1e3a8a;">用户</span>
-            <button id="logoutBtn" class="nav-btn">退出</button>
         </div>
     </div>
 </header>
 
 <div class="chat-shell">
     <input id="apiUrl" type="hidden" value="http://localhost:8090/api/ai/coze/query-stream" />
-    <div id="status" class="status" aria-hidden="true"></div>
-
-    <div id="messages" class="messages">
-        <div class="message-row bot">
-            <div class="avatar bot">AI</div>
-            <div class="message-bubble">你好，我是AI助手。</div>
-        </div>
-    </div>
-
-    <div class="composer">
-        <div class="composer-top">
-            <input id="fileInput" class="file-input" type="file" accept=".txt,.md,.doc,.docx,.pdf" />
-            <span id="fileName" class="file-name">未选择文件（可选）</span>
-        </div>
-        <div id="uploadProgressWrap" class="upload-progress-wrap">
-            <div class="upload-progress-track">
-                <div id="uploadProgressBar" class="upload-progress-bar"></div>
+    <div class="chat-layout">
+        <aside class="chat-sidebar">
+            <div class="sidebar-header">
+                <button id="newChatBtn" class="new-chat-btn" type="button">+ 新对话</button>
             </div>
-            <span id="uploadProgressText" class="upload-progress-text">0%</span>
-        </div>
-        <div class="composer-main">
-            <textarea id="promptInput" placeholder="请输入测试内容，例如：请帮我判断一份劳动合同中可能的风险条款"></textarea>
-            <button id="sendBtn" type="button">发送</button>
-        </div>
+            <div id="sessionList" class="session-list"></div>
+        </aside>
+
+        <section class="chat-main">
+            <div id="messages" class="messages">
+                <div class="message-row bot">
+                    <div class="avatar bot"><img src="assets/images/scenarios/AI头像.png" alt="AI头像"></div>
+                    <div class="message-bubble">你好，我是AI助手。</div>
+                </div>
+            </div>
+
+            <div class="composer">
+                <div class="composer-top">
+                    <input id="fileInput" class="file-input" type="file" accept=".txt,.md,.doc,.docx,.pdf" />
+                    <span id="fileName" class="file-name">未选择文件（可选）</span>
+                </div>
+                <div id="uploadProgressWrap" class="upload-progress-wrap">
+                    <div class="upload-progress-track">
+                        <div id="uploadProgressBar" class="upload-progress-bar"></div>
+                    </div>
+                    <span id="uploadProgressText" class="upload-progress-text">0%</span>
+                </div>
+                <div class="composer-main">
+                    <textarea id="promptInput" placeholder="请输入测试内容，例如：请帮我判断一份劳动合同中可能的风险条款"></textarea>
+                    <button id="sendBtn" type="button">发送</button>
+                </div>
+                <div id="status" class="status" aria-hidden="true"></div>
+            </div>
+        </section>
     </div>
 </div>
 
@@ -520,10 +712,13 @@
     const uploadProgressWrap = document.getElementById('uploadProgressWrap');
     const uploadProgressBar = document.getElementById('uploadProgressBar');
     const uploadProgressText = document.getElementById('uploadProgressText');
+    const newChatBtn = document.getElementById('newChatBtn');
+    const sessionListEl = document.getElementById('sessionList');
 
-    const FILE_API_URL = 'http://localhost:8090/api/ai/coze/query-with-file';
-    const FILE_STREAM_API_URL = 'http://localhost:8090/api/ai/coze/query-with-file-stream';
-    const CHAT_HISTORY_API_URL = 'http://localhost:8090/api/ai/coze/history';
+    const API_BASE = 'http://localhost:8090';
+    const FILE_API_URL = API_BASE + '/api/ai/coze/query-with-file';
+    const FILE_STREAM_API_URL = API_BASE + '/api/ai/coze/query-with-file-stream';
+    const CHAT_HISTORY_API_URL = API_BASE + '/api/ai/coze/history';
 
     function getToken() {
         return localStorage.getItem('token') || sessionStorage.getItem('token') || '';
@@ -533,12 +728,74 @@
         return localStorage.getItem('username') || sessionStorage.getItem('username') || '用户';
     }
 
+    function getCurrentUserId() {
+        return localStorage.getItem('userId') || sessionStorage.getItem('userId') || '';
+    }
+
     function getAvatarDataUrl() {
-        return localStorage.getItem('userAvatar') || '';
+        return localStorage.getItem('userAvatar') || sessionStorage.getItem('userAvatar') || '';
+    }
+
+    async function syncCurrentUserAvatarFromBackend() {
+        const token = getToken();
+        const userId = getCurrentUserId();
+        if (!token || !userId) {
+            return;
+        }
+        try {
+            const response = await fetch(API_BASE + '/api/users/' + encodeURIComponent(userId) + '/profile', {
+                headers: { Authorization: 'Bearer ' + token }
+            });
+            if (!response.ok) {
+                return;
+            }
+            const payload = await response.json();
+            if (!(payload && payload.code === 200 && payload.data)) {
+                return;
+            }
+            const avatarDataUrl = payload.data.avatarDataUrl || '';
+            if (avatarDataUrl) {
+                localStorage.setItem('userAvatar', avatarDataUrl);
+                sessionStorage.setItem('userAvatar', avatarDataUrl);
+            } else {
+                localStorage.removeItem('userAvatar');
+                sessionStorage.removeItem('userAvatar');
+            }
+        } catch (err) {
+            // ignore network errors and keep current local avatar fallback
+        }
     }
 
     function isLoggedIn() {
         return Boolean(getToken());
+    }
+
+    function getAiAvatarPath() {
+        return 'assets/images/scenarios/AI头像.png';
+    }
+
+    function createAvatarNode(role) {
+        const avatar = document.createElement('div');
+        avatar.className = `avatar ${role}`;
+
+        const img = document.createElement('img');
+        if (role === 'bot') {
+            img.src = getAiAvatarPath();
+            img.alt = 'AI头像';
+            avatar.appendChild(img);
+            return avatar;
+        }
+
+        const avatarUrl = getAvatarDataUrl();
+        if (avatarUrl) {
+            img.src = avatarUrl;
+            img.alt = '用户头像';
+            avatar.appendChild(img);
+            return avatar;
+        }
+
+        avatar.textContent = (getUsername() || '我').charAt(0).toUpperCase();
+        return avatar;
     }
 
     function requireLogin(actionName) {
@@ -554,11 +811,14 @@
         return false;
     }
 
-    let sessionId = localStorage.getItem('coze-test-session-id') || crypto.randomUUID();
-    localStorage.setItem('coze-test-session-id', sessionId);
-
+    const SESSION_LIST_KEY = 'coze-chat-session-list-v1';
+    const ACTIVE_SESSION_ID_KEY = 'coze-chat-active-session-id-v1';
+    const LOGIN_MARKER_KEY = 'coze-chat-login-marker-v1';
+    const SESSION_LIST_LIMIT = 30;
     const CHAT_HISTORY_LIMIT = 30;
     let chatHistory = [];
+    let activeSessionId = '';
+    let sessionList = [];
 
     function getAuthToken() {
         return getToken();
@@ -608,6 +868,208 @@
         return 'h-' + Date.now() + '-' + Math.floor(Math.random() * 1000000);
     }
 
+    function createSessionId() {
+        if (window.crypto && typeof window.crypto.randomUUID === 'function') {
+            return window.crypto.randomUUID();
+        }
+        return 's-' + Date.now() + '-' + Math.floor(Math.random() * 1000000);
+    }
+
+    function formatSessionTime(ts) {
+        const date = new Date(ts);
+        if (Number.isNaN(date.getTime())) {
+            return '';
+        }
+        const now = new Date();
+        const sameDay = now.toDateString() === date.toDateString();
+        const hh = String(date.getHours()).padStart(2, '0');
+        const mm = String(date.getMinutes()).padStart(2, '0');
+        if (sameDay) {
+            return `今天 ${hh}:${mm}`;
+        }
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${month}-${day} ${hh}:${mm}`;
+    }
+
+    function safeSessionTitle(title) {
+        const clean = (title || '').replace(/\s+/g, ' ').trim();
+        if (!clean) {
+            return '新对话';
+        }
+        return clean.length > 22 ? clean.slice(0, 22) + '...' : clean;
+    }
+
+    function loadSessionList() {
+        try {
+            const raw = localStorage.getItem(SESSION_LIST_KEY);
+            if (!raw) {
+                return [];
+            }
+            const parsed = JSON.parse(raw);
+            if (!Array.isArray(parsed)) {
+                return [];
+            }
+            return parsed
+                .filter(item => item && typeof item.id === 'string')
+                .map(item => ({
+                    id: item.id,
+                    title: safeSessionTitle(item.title),
+                    updatedAt: Number(item.updatedAt) || Date.now()
+                }))
+                .sort((a, b) => b.updatedAt - a.updatedAt)
+                .slice(0, SESSION_LIST_LIMIT);
+        } catch (_) {
+            return [];
+        }
+    }
+
+    function getCurrentLoginMarker() {
+        const userId = getCurrentUserId();
+        const token = getToken();
+        if (!userId || !token) {
+            return '';
+        }
+        return `${userId}:${token.slice(0, 24)}`;
+    }
+
+    function saveActiveSessionId() {
+        if (activeSessionId) {
+            localStorage.setItem(ACTIVE_SESSION_ID_KEY, activeSessionId);
+            return;
+        }
+        localStorage.removeItem(ACTIVE_SESSION_ID_KEY);
+    }
+
+    function isSessionInList(sessionId) {
+        if (!sessionId) {
+            return false;
+        }
+        return sessionList.some(item => item.id === sessionId);
+    }
+
+    function saveSessionList() {
+        sessionList = sessionList
+            .sort((a, b) => b.updatedAt - a.updatedAt)
+            .slice(0, SESSION_LIST_LIMIT);
+        localStorage.setItem(SESSION_LIST_KEY, JSON.stringify(sessionList));
+    }
+
+    function renderSessionList() {
+        sessionListEl.innerHTML = '';
+        if (sessionList.length === 0) {
+            const empty = document.createElement('div');
+            empty.className = 'session-empty';
+            empty.textContent = '暂无对话，点击上方“新对话”开始。';
+            sessionListEl.appendChild(empty);
+            return;
+        }
+
+        sessionList.forEach(item => {
+            const row = document.createElement('div');
+            row.className = 'session-item' + (item.id === activeSessionId ? ' active' : '');
+            row.dataset.sessionId = item.id;
+
+            const mainBtn = document.createElement('button');
+            mainBtn.type = 'button';
+            mainBtn.className = 'session-main';
+            mainBtn.dataset.action = 'open';
+            mainBtn.dataset.sessionId = item.id;
+            mainBtn.innerHTML = `<div class="session-title">${escapeHtml(item.title)}</div><div class="session-time">${formatSessionTime(item.updatedAt)}</div>`;
+
+            const deleteBtn = document.createElement('button');
+            deleteBtn.type = 'button';
+            deleteBtn.className = 'session-delete';
+            deleteBtn.title = '删除对话';
+            deleteBtn.textContent = '×';
+            deleteBtn.dataset.action = 'delete';
+            deleteBtn.dataset.sessionId = item.id;
+
+            row.appendChild(mainBtn);
+            row.appendChild(deleteBtn);
+            sessionListEl.appendChild(row);
+        });
+    }
+
+    function ensureSessionExists(sessionId) {
+        const existing = sessionList.find(item => item.id === sessionId);
+        if (existing) {
+            return existing;
+        }
+        const newItem = {
+            id: sessionId,
+            title: '新对话',
+            updatedAt: Date.now()
+        };
+        sessionList.unshift(newItem);
+        saveSessionList();
+        return newItem;
+    }
+
+    function touchSession(sessionId, title) {
+        const item = ensureSessionExists(sessionId);
+        item.updatedAt = Date.now();
+        if (title) {
+            item.title = safeSessionTitle(title);
+        }
+        saveSessionList();
+        renderSessionList();
+    }
+
+    function removeSession(sessionId) {
+        sessionList = sessionList.filter(item => item.id !== sessionId);
+        saveSessionList();
+    }
+
+    function createNewSessionAndActivate() {
+        activeSessionId = createSessionId();
+        ensureSessionExists(activeSessionId);
+        saveActiveSessionId();
+        saveSessionList();
+        renderSessionList();
+        restoreHistoryToView();
+    }
+
+    function replaceActiveSessionId(newSessionId) {
+        if (!newSessionId || newSessionId === activeSessionId) {
+            return;
+        }
+        const duplicate = sessionList.find(item => item.id === newSessionId);
+        if (duplicate) {
+            removeSession(activeSessionId);
+            activeSessionId = newSessionId;
+            saveActiveSessionId();
+            touchSession(activeSessionId);
+            return;
+        }
+
+        const activeItem = sessionList.find(item => item.id === activeSessionId);
+        if (activeItem) {
+            activeItem.id = newSessionId;
+            activeItem.updatedAt = Date.now();
+        } else {
+            sessionList.unshift({
+                id: newSessionId,
+                title: '新对话',
+                updatedAt: Date.now()
+            });
+        }
+        activeSessionId = newSessionId;
+        saveActiveSessionId();
+        saveSessionList();
+        renderSessionList();
+    }
+
+    function switchSession(sessionId) {
+        if (!sessionId) {
+            return;
+        }
+        activeSessionId = sessionId;
+        saveActiveSessionId();
+        touchSession(activeSessionId);
+        restoreHistoryToView();
+    }
+
     function saveChatHistory() {
         if (chatHistory.length > CHAT_HISTORY_LIMIT) {
             chatHistory = chatHistory.slice(-CHAT_HISTORY_LIMIT);
@@ -641,8 +1103,10 @@
     }
 
     function setStatus(text, isError = false) {
-        statusEl.textContent = text;
+        const safeText = typeof text === 'string' ? text.trim() : '';
+        statusEl.textContent = safeText;
         statusEl.classList.toggle('error', isError);
+        statusEl.style.display = safeText ? 'block' : 'none';
     }
 
     function escapeHtml(text) {
@@ -799,9 +1263,7 @@
         const message = document.createElement('div');
         message.className = `message-row ${role}`;
 
-        const avatar = document.createElement('div');
-        avatar.className = `avatar ${role}`;
-        avatar.textContent = role === 'bot' ? 'AI' : '我';
+        const avatar = createAvatarNode(role);
 
         const bubble = document.createElement('div');
         bubble.className = 'message-bubble';
@@ -855,8 +1317,13 @@
             return;
         }
 
+        if (!activeSessionId) {
+            appendMessage('你好，我是AI助手。', 'bot', false, false);
+            return;
+        }
+
         const token = getAuthToken();
-        const url = CHAT_HISTORY_API_URL + '?sessionId=' + encodeURIComponent(sessionId) + '&limit=' + CHAT_HISTORY_LIMIT;
+        const url = CHAT_HISTORY_API_URL + '?sessionId=' + encodeURIComponent(activeSessionId) + '&limit=' + CHAT_HISTORY_LIMIT;
 
         fetch(url, {
             method: 'GET',
@@ -897,6 +1364,7 @@
                 });
             });
             saveChatHistory();
+            touchSession(activeSessionId);
         }).catch(() => {
             messagesEl.innerHTML = '';
             chatHistory = [];
@@ -976,7 +1444,7 @@
                 updateBotMessage(botMessageEl, finalAnswer);
                 const firstMs = firstChunkAt ? (firstChunkAt - startedAt) : (Date.now() - startedAt);
                 const totalMs = Date.now() - startedAt;
-                setStatus(`连接成功。首字 ${firstMs}ms，总耗时 ${totalMs}ms，eventCount: ${doneEventCount ?? eventCount}，sessionId: ${sessionId}`);
+                setStatus(`连接成功。首字 ${firstMs}ms，总耗时 ${totalMs}ms，eventCount: ${doneEventCount ?? eventCount}，sessionId: ${activeSessionId}`);
                 resolve();
             };
 
@@ -1006,8 +1474,7 @@
                             try {
                                 const donePayload = JSON.parse(parsed.data);
                                 if (donePayload.sessionId) {
-                                    sessionId = donePayload.sessionId;
-                                    localStorage.setItem('coze-test-session-id', sessionId);
+                                    replaceActiveSessionId(donePayload.sessionId);
                                 }
                                 finalize(donePayload.answer || fullAnswer, donePayload.eventCount);
                             } catch (_) {
@@ -1053,7 +1520,7 @@
                 reject(new Error('流式连接失败，请检查后端服务或网络'));
             };
 
-            xhr.send(JSON.stringify({ prompt, sessionId }));
+            xhr.send(JSON.stringify({ prompt, sessionId: activeSessionId }));
         });
     }
 
@@ -1092,7 +1559,7 @@
                 updateBotMessage(botMessageEl, finalAnswer);
                 const firstMs = firstChunkAt ? (firstChunkAt - startedAt) : (Date.now() - startedAt);
                 const totalMs = Date.now() - startedAt;
-                setStatus(`连接成功。首字 ${firstMs}ms，总耗时 ${totalMs}ms，eventCount: ${doneEventCount ?? eventCount}，sessionId: ${sessionId}`);
+                setStatus(`连接成功。首字 ${firstMs}ms，总耗时 ${totalMs}ms，eventCount: ${doneEventCount ?? eventCount}，sessionId: ${activeSessionId}`);
                 resolve();
             };
 
@@ -1127,8 +1594,7 @@
                             try {
                                 const donePayload = JSON.parse(parsed.data);
                                 if (donePayload.sessionId) {
-                                    sessionId = donePayload.sessionId;
-                                    localStorage.setItem('coze-test-session-id', sessionId);
+                                    replaceActiveSessionId(donePayload.sessionId);
                                 }
                                 finalize(donePayload.answer || fullAnswer, donePayload.eventCount);
                             } catch (_) {
@@ -1188,7 +1654,7 @@
             if (prompt) {
                 formData.append('prompt', prompt);
             }
-            formData.append('sessionId', sessionId);
+            formData.append('sessionId', activeSessionId);
             formData.append('file', selectedFile);
             xhr.send(formData);
         });
@@ -1261,6 +1727,10 @@
 
         const userText = selectedFile ? `${prompt || '（仅文件）'}\n[文件] ${selectedFile.name}` : prompt;
         appendMessage(userText, 'user');
+        const inferredTitle = selectedFile && !prompt
+            ? '[文件] ' + selectedFile.name
+            : (prompt || '新对话');
+        touchSession(activeSessionId, inferredTitle);
         promptInput.value = '';
         sendBtn.disabled = true;
         setStatus(selectedFile ? '文件分析中，请稍候...' : '流式生成中，请稍候...');
@@ -1292,16 +1762,54 @@
         }
     });
 
-    document.getElementById('topAvatarWrap').addEventListener('click', () => {
-        window.location.href = 'profile.html';
+    newChatBtn.addEventListener('click', () => {
+        createNewSessionAndActivate();
+        setStatus('已创建新会话。');
+        promptInput.focus();
     });
 
-    document.getElementById('logoutBtn').addEventListener('click', () => {
-        localStorage.removeItem('token');
-        localStorage.removeItem('username');
-        sessionStorage.removeItem('token');
-        sessionStorage.removeItem('username');
-        location.reload();
+    sessionListEl.addEventListener('click', (event) => {
+        const target = event.target;
+        if (!(target instanceof HTMLElement)) {
+            return;
+        }
+        const actionNode = target.closest('[data-action]');
+        if (!(actionNode instanceof HTMLElement)) {
+            return;
+        }
+        const action = actionNode.dataset.action;
+        const sessionId = actionNode.dataset.sessionId;
+        if (!action || !sessionId) {
+            return;
+        }
+
+        if (action === 'open') {
+            if (sessionId !== activeSessionId) {
+                switchSession(sessionId);
+            }
+            return;
+        }
+
+        if (action === 'delete') {
+            removeSession(sessionId);
+            if (sessionId === activeSessionId) {
+                if (sessionList.length > 0) {
+                    activeSessionId = sessionList[0].id;
+                    saveActiveSessionId();
+                    renderSessionList();
+                    restoreHistoryToView();
+                } else {
+                    createNewSessionAndActivate();
+                }
+            } else {
+                renderSessionList();
+            }
+            setStatus('会话已删除。');
+        }
+    });
+
+    document.getElementById('topAvatarWrap').addEventListener('click', () => {
+        window.location.href = 'profile.html';
     });
 
     document.querySelectorAll('[data-auth-required="true"]').forEach((el) => {
@@ -1314,8 +1822,32 @@
         });
     });
 
-    renderTopRightUser();
-    restoreHistoryToView();
+    (async () => {
+        await syncCurrentUserAvatarFromBackend();
+        renderTopRightUser();
+        sessionList = loadSessionList();
+        renderSessionList();
+
+        const currentLoginMarker = getCurrentLoginMarker();
+        const previousLoginMarker = localStorage.getItem(LOGIN_MARKER_KEY) || '';
+        const isNewLogin = Boolean(currentLoginMarker) && currentLoginMarker !== previousLoginMarker;
+
+        if (currentLoginMarker) {
+            localStorage.setItem(LOGIN_MARKER_KEY, currentLoginMarker);
+        }
+
+        const storedActiveSessionId = localStorage.getItem(ACTIVE_SESSION_ID_KEY) || '';
+
+        if (!isNewLogin && isSessionInList(storedActiveSessionId)) {
+            activeSessionId = storedActiveSessionId;
+            saveActiveSessionId();
+            renderSessionList();
+            restoreHistoryToView();
+            return;
+        }
+
+        createNewSessionAndActivate();
+    })();
 </script>
 </body>
 </html>

@@ -16,7 +16,7 @@
             min-height: 100vh;
             background: linear-gradient(150deg, #eef6ff 0%, #dbeafe 48%, #eff6ff 100%);
             color: #0f172a;
-            padding: 92px 18px 18px;
+            padding: 18px;
         }
 
         .header {
@@ -209,6 +209,46 @@
             margin-top: 6px;
         }
 
+        .upload-box {
+            border: 1px dashed #bfdbfe;
+            border-radius: 12px;
+            padding: 12px;
+            background: #f8fbff;
+        }
+
+        .upload-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .upload-list {
+            margin-top: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .upload-item {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            align-items: center;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            background: #fff;
+            padding: 8px 10px;
+            font-size: 13px;
+            color: #334155;
+        }
+
+        .upload-meta {
+            font-size: 12px;
+            color: #64748b;
+            white-space: nowrap;
+        }
+
         .actions {
             display: flex;
             justify-content: flex-end;
@@ -218,35 +258,10 @@
     </style>
 </head>
 <body>
-<header class="header">
-    <div class="logo">职途安</div>
-    <nav class="nav-center">
-        <a href="ai-chat-test.html" data-auth-required="true">AI助手</a>
-        <a href="case.html">案例模拟</a>
-        <a href="forum.html">交流论坛</a>
-    </nav>
-    <div class="nav-right">
-        <div id="guest-nav">
-            <a href="login.html?redirect=post.html" class="nav-btn">登录</a>
-            <a href="register.html?redirect=post.html" class="nav-btn primary">注册</a>
-        </div>
-        <div id="user-nav">
-            <div class="avatar-wrapper" id="topAvatarWrap">
-                <img id="topAvatarImage" alt="头像" style="display:none;">
-                <span id="topAvatarLetter">游</span>
-            </div>
-            <span id="topUserName" style="font-size:13px;color:#1e3a8a;">用户</span>
-            <button id="logoutBtn" class="nav-btn">退出</button>
-        </div>
-    </div>
-</header>
-
 <div class="container">
     <div class="topbar">
         <h1>发布帖子</h1>
-        <div>
-            <button class="btn" id="backBtn">返回论坛</button>
-        </div>
+        <button class="btn" id="backBtn">返回论坛</button>
     </div>
 
     <div class="card">
@@ -261,6 +276,18 @@
             <textarea id="content" placeholder="请描述详细经过，帮助更多人避坑。"></textarea>
             <div id="contentError" class="error">内容不能为空</div>
             <div class="hint">提示：正文支持换行，发布后会按原文展示。</div>
+        </div>
+
+        <div class="form-group">
+            <label for="attachmentInput">附件（文档 / 图片）</label>
+            <div class="upload-box">
+                <div class="upload-row">
+                    <input id="attachmentInput" type="file" multiple accept=".pdf,.doc,.docx,.txt,.md,image/*">
+                    <span class="hint">单个文件不超过 10MB，最多支持 5 个附件。</span>
+                </div>
+                <div class="upload-list" id="attachmentList"></div>
+            </div>
+            <div id="attachmentError" class="error">附件不符合要求</div>
         </div>
 
         <div class="actions">
@@ -281,8 +308,41 @@
         return localStorage.getItem("username") || sessionStorage.getItem("username") || "";
     }
 
+    function getUserId() {
+        return localStorage.getItem("userId") || sessionStorage.getItem("userId") || "";
+    }
+
+    const AVATAR_RESET_FLAG_KEY = "avatarReset_20260415";
+
+    function resetAvatarStorageOnce() {
+        if (localStorage.getItem(AVATAR_RESET_FLAG_KEY) === "1") return;
+        ["userAvatar", "userAvatarMap", "userAvatarOwner"].forEach((k) => {
+            localStorage.removeItem(k);
+            sessionStorage.removeItem(k);
+        });
+        localStorage.setItem(AVATAR_RESET_FLAG_KEY, "1");
+    }
+
+    const USER_AVATAR_MAP_KEY = "userAvatarMap";
+
+    function getAvatarMap() {
+        try {
+            const raw = localStorage.getItem(USER_AVATAR_MAP_KEY);
+            if (!raw) return {};
+            const parsed = JSON.parse(raw);
+            return parsed && typeof parsed === "object" ? parsed : {};
+        } catch (e) {
+            return {};
+        }
+    }
+
     function getAvatarDataUrl() {
-        return localStorage.getItem("userAvatar") || "";
+        const userId = getUserId();
+        const username = getUsername();
+        const map = getAvatarMap();
+        if (userId && map[userId]) return map[userId];
+        if (username && map[username]) return map[username];
+        return "";
     }
 
     function renderTopRightUser() {
@@ -291,6 +351,9 @@
         const nameEl = document.getElementById("topUserName");
         const avatarImg = document.getElementById("topAvatarImage");
         const avatarLetter = document.getElementById("topAvatarLetter");
+        if (!guestNav || !userNav || !nameEl || !avatarImg || !avatarLetter) {
+            return;
+        }
 
         const token = getToken();
         const username = getUsername();
@@ -328,11 +391,14 @@
 
         const titleEl = document.getElementById("title");
         const contentEl = document.getElementById("content");
+        const attachmentInput = document.getElementById("attachmentInput");
         const titleError = document.getElementById("titleError");
         const contentError = document.getElementById("contentError");
+        const attachmentError = document.getElementById("attachmentError");
 
         titleError.style.display = "none";
         contentError.style.display = "none";
+        attachmentError.style.display = "none";
 
         const title = titleEl.value.trim();
         const content = contentEl.value.trim();
@@ -345,18 +411,32 @@
             return;
         }
 
+        const files = attachmentInput.files ? Array.from(attachmentInput.files) : [];
+        if (files.length > 5) {
+            attachmentError.textContent = "最多只能上传 5 个附件";
+            attachmentError.style.display = "block";
+            return;
+        }
+        const oversized = files.find((file) => file.size > 10 * 1024 * 1024);
+        if (oversized) {
+            attachmentError.textContent = `附件 ${oversized.name} 超过 10MB 限制`;
+            attachmentError.style.display = "block";
+            return;
+        }
+
         try {
+            const formData = new FormData();
+            formData.append("userId", getUsername());
+            formData.append("title", title);
+            formData.append("content", content);
+            files.forEach((file) => formData.append("attachments", file));
+
             const response = await fetch(API_BASE + "/api/forum/posts", {
                 method: "POST",
                 headers: {
-                    "Content-Type": "application/json",
                     "Authorization": "Bearer " + getToken()
                 },
-                body: JSON.stringify({
-                    userId: getUsername(),
-                    title,
-                    content
-                })
+                body: formData
             });
             const data = await response.json();
             if (data && data.code === 200 && data.data && data.data.postId) {
@@ -373,22 +453,37 @@
     document.getElementById("resetBtn").addEventListener("click", () => {
         document.getElementById("title").value = "";
         document.getElementById("content").value = "";
+        document.getElementById("attachmentInput").value = "";
+        document.getElementById("attachmentList").innerHTML = "";
     });
+
+    const attachmentInput = document.getElementById("attachmentInput");
+    const attachmentList = document.getElementById("attachmentList");
+
+    function renderAttachmentPreview() {
+        const files = attachmentInput.files ? Array.from(attachmentInput.files) : [];
+        if (!files.length) {
+            attachmentList.innerHTML = '<div class="hint">未选择附件</div>';
+            return;
+        }
+        attachmentList.innerHTML = files.map((file) => {
+            const sizeMb = (file.size / (1024 * 1024)).toFixed(2);
+            return '<div class="upload-item"><span>' + file.name.replace(/[&<>\"]/g, (ch) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch])) + '</span><span class="upload-meta">' + sizeMb + ' MB</span></div>';
+        }).join('');
+    }
+
+    attachmentInput.addEventListener("change", renderAttachmentPreview);
+    renderAttachmentPreview();
     document.getElementById("backBtn").addEventListener("click", () => {
         window.location.href = "forum.html";
     });
 
-    document.getElementById("topAvatarWrap").addEventListener("click", () => {
-        window.location.href = "profile.html";
-    });
-
-    document.getElementById("logoutBtn").addEventListener("click", () => {
-        localStorage.removeItem("token");
-        localStorage.removeItem("username");
-        sessionStorage.removeItem("token");
-        sessionStorage.removeItem("username");
-        location.reload();
-    });
+    const topAvatarWrap = document.getElementById("topAvatarWrap");
+    if (topAvatarWrap) {
+        topAvatarWrap.addEventListener("click", () => {
+            window.location.href = "profile.html";
+        });
+    }
 
     document.querySelectorAll('[data-auth-required="true"]').forEach((el) => {
         el.addEventListener("click", (event) => {
@@ -400,6 +495,7 @@
         });
     });
 
+    resetAvatarStorageOnce();
     renderTopRightUser();
 
     if (!getToken()) {

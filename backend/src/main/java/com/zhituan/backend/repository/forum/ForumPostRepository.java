@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface ForumPostRepository extends JpaRepository<ForumPost, String> {
     List<ForumPost> findTop20ByOrderByCreatedAtDesc();
+
+    List<ForumPost> findByUserIdOrderByCreatedAtDesc(String userId);
 }

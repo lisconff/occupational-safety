@@ -5,246 +5,198 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>帖子详情 - 职途安论坛</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: "Segoe UI", "Microsoft YaHei", sans-serif;
-        }
-
-        body {
-            min-height: 100vh;
-            background: linear-gradient(150deg, #eef6ff 0%, #dbeafe 48%, #eff6ff 100%);
-            color: #0f172a;
-            padding: 92px 18px 18px;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: "Segoe UI", "Microsoft YaHei", sans-serif; }
+        body { min-height: 100vh; background: linear-gradient(150deg, #eef6ff 0%, #dbeafe 48%, #eff6ff 100%); color: #0f172a; padding: 18px; }
 
         .header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 14px 40px;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            background: rgba(255,255,255,0.85);
-            backdrop-filter: blur(12px);
-            border-bottom: 1px solid #dbeafe;
-            box-shadow: 0 6px 18px rgba(30,64,175,0.08);
-            z-index: 1000;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 14px 40px; position: fixed; top: 0; left: 0; width: 100%;
+            background: rgba(255,255,255,0.85); backdrop-filter: blur(12px);
+            border-bottom: 1px solid #dbeafe; box-shadow: 0 6px 18px rgba(30,64,175,0.08); z-index: 1000;
         }
+        .logo { font-weight: 700; font-size: 20px; color: #111827; }
+        .nav-center { display: flex; gap: 30px; }
+        .nav-center a { text-decoration: none; color: #334155; font-size: 14px; position: relative; }
+        .nav-center a::after { content: ''; position: absolute; bottom: -5px; left: 0; width: 0; height: 2px; background: #1677ff; transition: 0.3s; }
+        .nav-center a:hover::after { width: 100%; }
 
-        .logo {
-            font-weight: bold;
-            font-size: 20px;
-            color: #111827;
-        }
+        .nav-right { display: flex; align-items: center; gap: 10px; }
+        .nav-btn { padding: 6px 14px; border-radius: 20px; background: #eef2ff; text-decoration: none; color: #1e3a8a; font-size: 13px; border: 1px solid #c7d2fe; cursor: pointer; }
+        .nav-btn.primary { background: #1d4ed8; color: #fff; border-color: #1d4ed8; }
+        #guest-nav, #user-nav { display: flex; align-items: center; gap: 10px; }
+        #user-nav { display: none; }
+        .avatar-wrapper { width: 34px; height: 34px; border-radius: 50%; overflow: hidden; background: #1d4ed8; color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700; cursor: pointer; }
+        .avatar-wrapper img { width: 100%; height: 100%; object-fit: cover; }
 
-        .nav-center {
-            display: flex;
-            gap: 30px;
-        }
+        .container { max-width: 920px; margin: 0 auto; }
+        .topbar { display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.9); border: 1px solid #dbeafe; border-radius: 16px; padding: 14px 16px; margin-bottom: 12px; box-shadow: 0 10px 24px rgba(30, 64, 175, 0.08); }
+        .topbar h1 { font-size: 22px; color: #1e3a8a; }
 
-        .nav-center a {
-            text-decoration: none;
-            color: #334155;
-            font-size: 14px;
-            position: relative;
-        }
+        .btn { border-radius: 999px; padding: 8px 16px; font-size: 13px; font-weight: 600; cursor: pointer; border: 1px solid #93c5fd; color: #1e40af; background: #fff; }
+        .btn-primary { border-color: #1d4ed8; background: #1d4ed8; color: #fff; }
 
-        .nav-center a::after {
-            content: '';
-            position: absolute;
-            bottom: -5px;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: #1677ff;
-            transition: 0.3s;
-        }
+        .card { background: rgba(255,255,255,0.9); border: 1px solid #dbeafe; border-radius: 16px; padding: 18px; box-shadow: 0 10px 24px rgba(30, 64, 175, 0.06); }
+        .title { font-size: 26px; color: #1e3a8a; margin-bottom: 10px; line-height: 1.35; }
+        .meta { display: flex; flex-wrap: wrap; gap: 10px; color: #64748b; font-size: 13px; margin-bottom: 14px; }
+        .content { font-size: 15px; line-height: 1.75; color: #334155; white-space: pre-wrap; word-break: break-word; }
+        .actions { display: flex; gap: 8px; flex-wrap: wrap; margin: 14px 0; }
+        .action-btn { border: 1px solid #bfdbfe; background: #eff6ff; color: #1e40af; border-radius: 999px; padding: 7px 12px; font-size: 13px; cursor: pointer; }
 
-        .nav-center a:hover::after {
-            width: 100%;
-        }
+        .attachments-wrap, .comments-wrap { margin-top: 16px; border-top: 1px dashed #cbd5e1; padding-top: 12px; }
+        .attachments-title, .comments-title { font-weight: 700; color: #1e3a8a; margin-bottom: 10px; }
+        .attachment-list { display: flex; flex-direction: column; gap: 8px; }
+        .attachment-item { display: flex; justify-content: space-between; gap: 12px; align-items: center; border: 1px solid #e2e8f0; border-radius: 10px; background: #fff; padding: 10px; }
+        .attachment-name { font-size: 14px; color: #334155; font-weight: 600; word-break: break-word; }
+        .attachment-meta { font-size: 12px; color: #64748b; }
+        .attachment-link { border: 1px solid #bfdbfe; background: #eff6ff; color: #1e40af; border-radius: 999px; padding: 6px 12px; text-decoration: none; font-size: 13px; white-space: nowrap; }
+        .attachment-image { max-width: 100%; border-radius: 12px; border: 1px solid #e2e8f0; }
 
-        .nav-right {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
+        .comment-tree { display: flex; flex-direction: column; gap: 10px; }
+        .comment-item { border: 1px solid #e2e8f0; border-radius: 10px; background: #fff; padding: 10px; }
+        .comment-main { display: flex; gap: 10px; align-items: flex-start; }
+        .comment-avatar { width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg, #1e3a8a, #3b82f6); color: #fff; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; overflow: hidden; flex: 0 0 auto; }
+        .comment-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .comment-body { flex: 1; }
+        .comment-meta { font-size: 12px; color: #64748b; margin-bottom: 4px; }
+        .comment-content { font-size: 14px; color: #334155; line-height: 1.6; white-space: pre-wrap; }
+        .comment-prefix { color: #1e3a8a; font-weight: 700; }
+        .comment-actions { display: flex; gap: 10px; margin-top: 8px; flex-wrap: wrap; }
+        .comment-action-link { border: none; background: transparent; color: #2563eb; cursor: pointer; font-size: 12px; padding: 0; }
+        .comment-replies { margin-top: 10px; margin-left: 48px; border-left: 2px solid #dbeafe; padding-left: 10px; display: flex; flex-direction: column; gap: 8px; }
 
-        .nav-btn {
-            padding: 6px 14px;
-            border-radius: 20px;
-            background: #eef2ff;
-            text-decoration: none;
-            color: #1e3a8a;
-            font-size: 13px;
-            border: 1px solid #c7d2fe;
-            cursor: pointer;
-        }
+        .empty { text-align: center; color: #64748b; font-size: 14px; padding: 36px 0; }
 
-        .nav-btn.primary {
-            background: #1d4ed8;
-            color: #fff;
-            border-color: #1d4ed8;
+        .comment-drawer {
+            position: fixed; left: 50%; bottom: 0; width: min(920px, calc(100vw - 20px));
+            transform: translate(-50%, 105%); background: #fff; border: 1px solid #dbeafe; border-bottom: none;
+            border-radius: 18px 18px 0 0; box-shadow: 0 -16px 28px rgba(15, 23, 42, 0.18);
+            z-index: 1400; transition: transform 0.25s ease; padding: 14px 16px 16px; max-height: 45vh; overflow: auto;
         }
-
-        #guest-nav,
-        #user-nav {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        #user-nav {
-            display: none;
-        }
-
-        .avatar-wrapper {
-            width: 34px;
-            height: 34px;
-            border-radius: 50%;
-            overflow: hidden;
-            background: #1d4ed8;
-            color: #fff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            cursor: pointer;
-        }
-
-        .avatar-wrapper img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .container {
-            max-width: 920px;
-            margin: 0 auto;
-        }
-
-        .topbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: rgba(255, 255, 255, 0.9);
-            border: 1px solid #dbeafe;
-            border-radius: 16px;
-            padding: 14px 16px;
-            margin-bottom: 12px;
-            box-shadow: 0 10px 24px rgba(30, 64, 175, 0.08);
-        }
-
-        .topbar h1 {
-            font-size: 22px;
-            color: #1e3a8a;
-        }
-
-        .btn {
-            border-radius: 999px;
-            padding: 8px 16px;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            border: 1px solid #93c5fd;
-            color: #1e40af;
-            background: #fff;
-        }
-
-        .card {
-            background: rgba(255, 255, 255, 0.9);
-            border: 1px solid #dbeafe;
-            border-radius: 16px;
-            padding: 18px;
-            box-shadow: 0 10px 24px rgba(30, 64, 175, 0.06);
-        }
-
-        .title {
-            font-size: 26px;
-            color: #1e3a8a;
-            margin-bottom: 10px;
-            line-height: 1.35;
-        }
-
-        .meta {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            color: #64748b;
-            font-size: 13px;
-            margin-bottom: 14px;
-        }
-
-        .content {
-            font-size: 15px;
-            line-height: 1.75;
-            color: #334155;
-            white-space: pre-wrap;
-            word-break: break-word;
-        }
-
-        .empty {
-            text-align: center;
-            color: #64748b;
-            font-size: 14px;
-            padding: 36px 0;
-        }
+        .comment-drawer.active { transform: translate(-50%, 0); }
+        .comment-drawer-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; font-weight: 700; color: #1e3a8a; }
+        .comment-drawer textarea { width: 100%; min-height: 96px; border: 1px solid #cbd5e1; border-radius: 10px; padding: 10px; font-size: 14px; line-height: 1.6; resize: vertical; }
+        .comment-drawer-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 10px; }
     </style>
 </head>
 <body>
-<header class="header">
-    <div class="logo">职途安</div>
-    <nav class="nav-center">
-        <a href="ai-chat-test.html" data-auth-required="true">AI助手</a>
-        <a href="case.html">案例模拟</a>
-        <a href="forum.html">交流论坛</a>
-    </nav>
-    <div class="nav-right">
-        <div id="guest-nav">
-            <a href="login.html?redirect=post-detail.html" class="nav-btn">登录</a>
-            <a href="register.html?redirect=post-detail.html" class="nav-btn primary">注册</a>
-        </div>
-        <div id="user-nav">
-            <div class="avatar-wrapper" id="topAvatarWrap">
-                <img id="topAvatarImage" alt="头像" style="display:none;">
-                <span id="topAvatarLetter">游</span>
-            </div>
-            <span id="topUserName" style="font-size:13px;color:#1e3a8a;">用户</span>
-            <button id="logoutBtn" class="nav-btn">退出</button>
-        </div>
-    </div>
-</header>
-
 <div class="container">
     <div class="topbar">
         <h1>帖子详情</h1>
-        <div>
-            <button class="btn" id="toForumBtn">返回论坛</button>
-        </div>
+        <button class="btn" id="toForumBtn">返回论坛</button>
     </div>
-
     <div class="card" id="detailWrap">
         <div class="empty">正在加载...</div>
     </div>
 </div>
 
+<div class="comment-drawer" id="commentDrawer">
+    <div class="comment-drawer-head">
+        <span>发表评论</span>
+        <button class="btn" id="closeCommentDrawerBtn">关闭</button>
+    </div>
+    <textarea id="commentInput" placeholder="写下你的评论内容..."></textarea>
+    <div class="comment-drawer-actions">
+        <button class="btn" id="cancelCommentBtn">取消</button>
+        <button class="btn btn-primary" id="submitCommentBtn">发布评论</button>
+    </div>
+</div>
+
+<div id="previewOverlay" style="display:none;position:fixed;inset:0;background:rgba(15,23,42,0.62);z-index:1500;align-items:center;justify-content:center;padding:16px;">
+    <div style="width:min(980px,100%);background:#fff;border:1px solid #dbeafe;border-radius:16px;box-shadow:0 20px 40px rgba(15,23,42,0.28);padding:16px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px;">
+            <strong id="previewTitle" style="color:#1e3a8a;font-size:16px;">附件预览</strong>
+            <button class="btn" id="closePreviewBtn">关闭</button>
+        </div>
+        <div id="previewBody" style="min-height:60vh;max-height:80vh;overflow:auto;background:#f8fbff;border:1px solid #dbeafe;border-radius:12px;display:flex;align-items:center;justify-content:center;"></div>
+    </div>
+</div>
+
 <script>
     const API_BASE = "http://localhost:8090";
+    let activeCommentPostId = "";
+    let activeReplyRootId = "";
+    let activeReplyToUserId = "";
+    let currentPreviewAttachment = null;
+    let attachmentRegistry = {};
+    let commentAvatarCache = {};
 
-    function getToken() {
-        return localStorage.getItem("token") || sessionStorage.getItem("token") || "";
-    }
-
-    function getUsername() {
-        return localStorage.getItem("username") || sessionStorage.getItem("username") || "用户";
-    }
-
+    function getToken() { return localStorage.getItem("token") || sessionStorage.getItem("token") || ""; }
+    function getUsername() { return localStorage.getItem("username") || sessionStorage.getItem("username") || "用户"; }
+    function getCurrentUserId() { return localStorage.getItem("userId") || sessionStorage.getItem("userId") || ""; }
     function getAvatarDataUrl() {
-        return localStorage.getItem("userAvatar") || "";
+        return localStorage.getItem("userAvatar") || sessionStorage.getItem("userAvatar") || "";
+    }
+
+    async function hydrateCommentAvatars(comments) {
+        const items = Array.isArray(comments) ? comments : [];
+        const idsToFetch = new Set();
+
+        const collect = (entry) => {
+            if (!entry) return;
+            if (entry.userId && !entry.avatarDataUrl) idsToFetch.add(entry.userId);
+            if (Array.isArray(entry.replies)) {
+                entry.replies.forEach(collect);
+            }
+        };
+
+        items.forEach(collect);
+        if (!idsToFetch.size) return items;
+
+        const avatarCache = {};
+        await Promise.all([...idsToFetch].map(async (userId) => {
+            try {
+                const response = await fetch(API_BASE + "/api/users/" + encodeURIComponent(userId) + "/profile");
+                const data = await response.json();
+                avatarCache[userId] = data && data.code === 200 && data.data ? (data.data.avatarDataUrl || "") : "";
+            } catch (err) {
+                avatarCache[userId] = "";
+            }
+        }));
+
+        const fill = (entry) => ({
+            ...entry,
+            avatarDataUrl: entry.avatarDataUrl || avatarCache[entry.userId] || "",
+            replies: Array.isArray(entry.replies) ? entry.replies.map(fill) : []
+        });
+
+        return items.map(fill);
+    }
+
+    async function syncCurrentUserAvatarFromBackend() {
+        const token = getToken();
+        const userId = getCurrentUserId();
+        if (!token || !userId) {
+            return;
+        }
+        try {
+            const response = await fetch(API_BASE + "/api/users/" + encodeURIComponent(userId) + "/profile", {
+                headers: { Authorization: "Bearer " + token }
+            });
+            if (!response.ok) {
+                return;
+            }
+            const payload = await response.json();
+            if (!(payload && payload.code === 200 && payload.data)) {
+                return;
+            }
+            const avatarDataUrl = payload.data.avatarDataUrl || "";
+            if (avatarDataUrl) {
+                localStorage.setItem("userAvatar", avatarDataUrl);
+                sessionStorage.setItem("userAvatar", avatarDataUrl);
+            } else {
+                localStorage.removeItem("userAvatar");
+                sessionStorage.removeItem("userAvatar");
+            }
+        } catch (err) {
+            // ignore network errors and keep current local avatar fallback
+        }
+    }
+    function getPostId() { return new URLSearchParams(window.location.search).get("id") || ""; }
+
+    function toApiUrl(path) {
+        if (!path) return "#";
+        if (/^https?:\/\//i.test(path)) return path;
+        return API_BASE + (path.startsWith("/") ? path : "/" + path);
     }
 
     function requireLogin(actionName, redirectTarget) {
@@ -255,12 +207,32 @@
         return false;
     }
 
+    function escapeHtml(text) {
+        return (text || "").toString().replace(/[&<>\"]/g, (ch) => {
+            if (ch === "&") return "&amp;";
+            if (ch === "<") return "&lt;";
+            if (ch === ">") return "&gt;";
+            return "&quot;";
+        });
+    }
+
+    function formatDate(value) {
+        if (!value) return "未知时间";
+        const d = new Date(value);
+        if (Number.isNaN(d.getTime())) return value;
+        const pad = (n) => String(n).padStart(2, "0");
+        return d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate()) + " " + pad(d.getHours()) + ":" + pad(d.getMinutes());
+    }
+
     function renderTopRightUser() {
         const guestNav = document.getElementById("guest-nav");
         const userNav = document.getElementById("user-nav");
         const nameEl = document.getElementById("topUserName");
         const avatarImg = document.getElementById("topAvatarImage");
         const avatarLetter = document.getElementById("topAvatarLetter");
+        if (!guestNav || !userNav || !nameEl || !avatarImg || !avatarLetter) {
+            return;
+        }
 
         const token = getToken();
         const username = getUsername();
@@ -285,89 +257,439 @@
         }
     }
 
-    function getPostId() {
-        const params = new URLSearchParams(window.location.search);
-        return params.get("id") || "";
+    function getAuthHeaders() {
+        const token = getToken();
+        const headers = { "Content-Type": "application/json" };
+        if (token) headers.Authorization = "Bearer " + token;
+        return headers;
     }
 
-    function escapeHtml(text) {
-        const str = (text || "").toString();
-        return str.replace(/[&<>\"]/g, (ch) => {
-            if (ch === "&") return "&amp;";
-            if (ch === "<") return "&lt;";
-            if (ch === ">") return "&gt;";
-            return "&quot;";
+    async function toggleLike() {
+        const response = await fetch(API_BASE + "/api/forum/posts/" + encodeURIComponent(getPostId()) + "/like", {
+            method: "POST", headers: getAuthHeaders(), body: JSON.stringify({ userId: getCurrentUserId() || getUsername() })
+        });
+        return response.json();
+    }
+
+    async function toggleFavorite() {
+        const response = await fetch(API_BASE + "/api/forum/posts/" + encodeURIComponent(getPostId()) + "/favorite", {
+            method: "POST", headers: getAuthHeaders(), body: JSON.stringify({ userId: getCurrentUserId() || getUsername() })
+        });
+        return response.json();
+    }
+
+    async function submitComment(content) {
+        const response = await fetch(API_BASE + "/api/forum/posts/" + encodeURIComponent(getPostId()) + "/comments", {
+            method: "POST",
+            headers: getAuthHeaders(),
+            body: JSON.stringify({
+                userId: getCurrentUserId() || getUsername(),
+                content,
+                parentCommentId: activeReplyRootId || null,
+                replyToUserId: activeReplyToUserId || null
+            })
+        });
+        return response.json();
+    }
+
+    async function deleteComment(commentId) {
+        const response = await fetch(API_BASE + "/api/forum/comments/" + encodeURIComponent(commentId) + "?userId=" + encodeURIComponent(getUsername()), {
+            method: "DELETE", headers: getAuthHeaders()
+        });
+        return response.json();
+    }
+
+    function getCommentAvatarHtml(userId) {
+        const display = (userId || "匿名").trim();
+        const letter = display.slice(0, 1).toUpperCase() || "U";
+        return '<span class="comment-avatar" data-avatar-user="' + escapeHtml(userId || "") + '" data-avatar-letter="' + escapeHtml(letter) + '">' + escapeHtml(letter) + '</span>';
+    }
+
+    function collectCommentAvatarCache(comments) {
+        commentAvatarCache = {};
+        const currentAvatar = getAvatarDataUrl();
+        const currentUserId = getCurrentUserId();
+        const currentUsername = getUsername();
+        if (currentAvatar) {
+            if (currentUserId) commentAvatarCache[currentUserId] = currentAvatar;
+            if (currentUsername) commentAvatarCache[currentUsername] = currentAvatar;
+        }
+
+        const walk = (entry) => {
+            if (!entry) return;
+            if (entry.userId && entry.avatarDataUrl) {
+                commentAvatarCache[entry.userId] = entry.avatarDataUrl;
+            }
+            if (Array.isArray(entry.replies)) {
+                entry.replies.forEach(walk);
+            }
+        };
+
+        (Array.isArray(comments) ? comments : []).forEach(walk);
+    }
+
+    function applyCommentAvatarImages() {
+        document.querySelectorAll('.comment-avatar[data-avatar-user]').forEach((avatar) => {
+            const userId = avatar.getAttribute('data-avatar-user') || '';
+            const letter = avatar.getAttribute('data-avatar-letter') || 'U';
+            const avatarUrl = commentAvatarCache[userId] || '';
+            if (avatarUrl) {
+                avatar.innerHTML = '<img src="' + escapeHtml(avatarUrl) + '" alt="头像">';
+            } else {
+                avatar.textContent = letter;
+            }
         });
     }
 
-    function formatDate(value) {
-        if (!value) return "未知时间";
-        const d = new Date(value);
-        if (Number.isNaN(d.getTime())) return value;
-        const pad = (n) => String(n).padStart(2, "0");
-        return d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate()) + " " + pad(d.getHours()) + ":" + pad(d.getMinutes());
+    function getAttachmentPreviewKind(item) {
+        const contentType = (item.contentType || "").toLowerCase();
+        const name = (item.originalName || "").toLowerCase();
+        if (item.image || contentType.startsWith("image/")) return "image";
+        if (contentType.includes("pdf") || name.endsWith(".pdf")) return "pdf";
+        if (contentType.startsWith("text/") || name.endsWith(".txt") || name.endsWith(".md")) return "text";
+        return "file";
+    }
+
+    function openAttachmentPreview(item, openUrl) {
+        const overlay = document.getElementById("previewOverlay");
+        const title = document.getElementById("previewTitle");
+        const body = document.getElementById("previewBody");
+        const kind = getAttachmentPreviewKind(item);
+        title.textContent = item.originalName || "附件预览";
+
+        if (kind === "image") {
+            body.innerHTML = '<img src="' + escapeHtml(openUrl) + '" alt="' + escapeHtml(item.originalName || "图片") + '" style="max-width:100%;max-height:78vh;object-fit:contain;display:block;">';
+        } else if (kind === "pdf" || kind === "text") {
+            body.innerHTML = '<iframe src="' + escapeHtml(openUrl) + '" style="width:100%;height:78vh;border:0;background:#fff;"></iframe>';
+        } else {
+            body.innerHTML = '<div style="padding:24px;text-align:center;color:#64748b;line-height:1.8;">该文件类型浏览器可能无法直接预览。<br>你可以点击下载按钮获取原文件。</div>';
+        }
+
+        overlay.style.display = "flex";
+        currentPreviewAttachment = item;
+    }
+
+    function closeAttachmentPreview() {
+        const overlay = document.getElementById("previewOverlay");
+        const body = document.getElementById("previewBody");
+        overlay.style.display = "none";
+        body.innerHTML = "";
+        currentPreviewAttachment = null;
+    }
+
+    async function downloadAttachmentFile(downloadUrl, fileName) {
+        try {
+            const response = await fetch(downloadUrl, {
+                method: "GET",
+                headers: getToken() ? { Authorization: "Bearer " + getToken() } : {}
+            });
+            if (!response.ok) {
+                throw new Error("download failed");
+            }
+            const blob = await response.blob();
+            const blobUrl = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.href = blobUrl;
+            link.download = fileName || "附件";
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(blobUrl);
+        } catch (err) {
+            window.alert("下载失败，请稍后重试");
+        }
+    }
+
+    function renderCommentReply(reply) {
+        const isMine = (reply.userId || "") === getUsername();
+        const prefix = reply.replyToUserId ? '<span class="comment-prefix">回复' + escapeHtml(reply.replyToUserId) + '：</span>' : '';
+        return '<div class="comment-item">' +
+            '<div class="comment-main">' +
+                getCommentAvatarHtml(reply.userId) +
+                '<div class="comment-body">' +
+                    '<div class="comment-meta">' + escapeHtml(reply.userId || "匿名") + ' · ' + escapeHtml(formatDate(reply.createdAt)) + '</div>' +
+                    '<div class="comment-content">' + prefix + escapeHtml(reply.content || "") + '</div>' +
+                    '<div class="comment-actions">' +
+                        '<button class="comment-action-link" data-reply-user="' + escapeHtml(reply.userId || "") + '" data-root-id="' + escapeHtml(reply.parentCommentId || reply.commentId) + '">回复</button>' +
+                        (isMine ? '<button class="comment-action-link" data-delete-comment="' + escapeHtml(reply.commentId) + '">删除</button>' : '') +
+                    '</div>' +
+                '</div>' +
+            '</div>' +
+        '</div>';
+    }
+
+    function renderCommentNode(comment) {
+        const isMine = (comment.userId || "") === getUsername();
+        const prefix = comment.replyToUserId ? '<span class="comment-prefix">回复' + escapeHtml(comment.replyToUserId) + '：</span>' : '';
+        const replies = Array.isArray(comment.replies) && comment.replies.length
+            ? '<div class="comment-replies">' + comment.replies.map(renderCommentReply).join('') + '</div>'
+            : '';
+
+        return '<div class="comment-item">' +
+            '<div class="comment-main">' +
+                getCommentAvatarHtml(comment.userId) +
+                '<div class="comment-body">' +
+                    '<div class="comment-meta">' + escapeHtml(comment.userId || "匿名") + ' · ' + escapeHtml(formatDate(comment.createdAt)) + '</div>' +
+                    '<div class="comment-content">' + prefix + escapeHtml(comment.content || "") + '</div>' +
+                    '<div class="comment-actions">' +
+                        '<button class="comment-action-link" data-reply-user="' + escapeHtml(comment.userId || "") + '" data-root-id="' + escapeHtml(comment.commentId) + '">回复</button>' +
+                        (isMine ? '<button class="comment-action-link" data-delete-comment="' + escapeHtml(comment.commentId) + '">删除</button>' : '') +
+                    '</div>' +
+                '</div>' +
+            '</div>' +
+            replies +
+        '</div>';
+    }
+
+    function openCommentDrawer(rootId, replyToUserId) {
+        activeCommentPostId = getPostId();
+        activeReplyRootId = rootId || "";
+        activeReplyToUserId = replyToUserId || "";
+        const drawer = document.getElementById("commentDrawer");
+        const input = document.getElementById("commentInput");
+        const head = document.querySelector(".comment-drawer-head span");
+        head.textContent = activeReplyToUserId ? ("回复 " + activeReplyToUserId) : "发表评论";
+        input.value = "";
+        drawer.classList.add("active");
+        input.focus();
+    }
+
+    function closeCommentDrawer() {
+        activeCommentPostId = "";
+        activeReplyRootId = "";
+        activeReplyToUserId = "";
+        document.getElementById("commentDrawer").classList.remove("active");
+    }
+
+    async function submitCommentFromDrawer() {
+        if (!activeCommentPostId) return;
+        const input = document.getElementById("commentInput");
+        const text = (input.value || "").trim();
+        if (!text) {
+            window.alert("请输入评论内容");
+            return;
+        }
+        const data = await submitComment(text);
+        if (!(data && data.code === 200)) {
+            window.alert(data && data.message ? data.message : "评论失败");
+            return;
+        }
+        closeCommentDrawer();
+        await loadDetail();
+    }
+
+    async function loadComments() {
+        const listEl = document.getElementById("commentsList");
+        if (!listEl) return;
+        try {
+            const response = await fetch(API_BASE + "/api/forum/posts/" + encodeURIComponent(getPostId()) + "/comments");
+            const data = await response.json();
+            if (!(data && data.code === 200 && Array.isArray(data.data))) {
+                listEl.innerHTML = '<div class="empty">评论加载失败</div>';
+                return;
+            }
+            const comments = await hydrateCommentAvatars(data.data);
+            if (!comments.length) {
+                listEl.innerHTML = '<div class="empty">还没有评论，来抢沙发吧。</div>';
+                return;
+            }
+
+            listEl.innerHTML = '<div class="comment-tree">' + comments.map(renderCommentNode).join('') + '</div>';
+            collectCommentAvatarCache(comments);
+            applyCommentAvatarImages();
+
+            document.querySelectorAll("[data-reply-user]").forEach((btn) => {
+                btn.addEventListener("click", () => {
+                    if (!requireLogin("评论帖子", window.location.pathname.split("/").pop() + window.location.search)) return;
+                    openCommentDrawer(btn.getAttribute("data-root-id") || "", btn.getAttribute("data-reply-user") || "");
+                });
+            });
+
+            document.querySelectorAll("[data-delete-comment]").forEach((btn) => {
+                btn.addEventListener("click", async (event) => {
+                    event.stopPropagation();
+                    if (!window.confirm("确定删除这条评论吗？")) return;
+                    const result = await deleteComment(btn.getAttribute("data-delete-comment") || "");
+                    if (!(result && result.code === 200)) {
+                        window.alert(result && result.message ? result.message : "删除失败");
+                        return;
+                    }
+                    await loadDetail();
+                });
+            });
+
+            document.querySelectorAll("[data-avatar-user]").forEach((avatar) => {
+                avatar.addEventListener("click", () => {
+                    const userId = avatar.getAttribute("data-avatar-user") || "";
+                    if (userId) window.location.href = "forum-user-posts.html?userId=" + encodeURIComponent(userId);
+                });
+            });
+        } catch (err) {
+            listEl.innerHTML = '<div class="empty">网络错误，评论加载失败。</div>';
+        }
+    }
+
+    function bindDetailActions() {
+        const likeBtn = document.getElementById("likeBtn");
+        const favoriteBtn = document.getElementById("favoriteBtn");
+        const commentBtn = document.getElementById("commentBtn");
+        if (!likeBtn || !favoriteBtn || !commentBtn) return;
+
+        likeBtn.addEventListener("click", async () => {
+            if (!requireLogin("点赞帖子", window.location.pathname.split("/").pop() + window.location.search)) return;
+            const data = await toggleLike();
+            if (!(data && data.code === 200)) {
+                window.alert(data && data.message ? data.message : "点赞失败");
+                return;
+            }
+            await loadDetail();
+        });
+
+        favoriteBtn.addEventListener("click", async () => {
+            if (!requireLogin("收藏帖子", window.location.pathname.split("/").pop() + window.location.search)) return;
+            const data = await toggleFavorite();
+            if (!(data && data.code === 200)) {
+                window.alert(data && data.message ? data.message : "收藏失败");
+                return;
+            }
+            await loadDetail();
+        });
+
+        commentBtn.addEventListener("click", () => {
+            if (!requireLogin("评论帖子", window.location.pathname.split("/").pop() + window.location.search)) return;
+            openCommentDrawer("", "");
+        });
     }
 
     async function loadDetail() {
-        const postId = getPostId();
         const wrap = document.getElementById("detailWrap");
-        if (!postId) {
+        if (!getPostId()) {
             wrap.innerHTML = '<div class="empty">缺少帖子ID</div>';
             return;
         }
 
         try {
-            const response = await fetch(API_BASE + "/api/forum/posts/" + encodeURIComponent(postId));
+            const response = await fetch(API_BASE + "/api/forum/posts/" + encodeURIComponent(getPostId()));
             const data = await response.json();
-            if (data && data.code === 200 && data.data) {
-                const p = data.data;
-                wrap.innerHTML =
-                    '<h2 class="title">' + escapeHtml(p.title) + '</h2>' +
-                    '<div class="meta">' +
-                        '<span>作者：' + escapeHtml(p.userId || "匿名") + '</span>' +
-                        '<span>点赞：' + (p.likeCount || 0) + '</span>' +
-                        '<span>评论：' + (p.commentCount || 0) + '</span>' +
-                        '<span>收藏：' + (p.favoriteCount || 0) + '</span>' +
-                        '<span>发布时间：' + escapeHtml(formatDate(p.createdAt)) + '</span>' +
-                    '</div>' +
-                    '<div class="content">' + escapeHtml(p.content || "") + '</div>';
+            if (!(data && data.code === 200 && data.data)) {
+                wrap.innerHTML = '<div class="empty">加载失败：' + escapeHtml(data && data.message ? data.message : "未知错误") + '</div>';
                 return;
             }
-            wrap.innerHTML = '<div class="empty">加载失败：' + escapeHtml(data && data.message ? data.message : "未知错误") + '</div>';
+
+            const p = data.data;
+            const attachments = Array.isArray(p.attachments) ? p.attachments : [];
+            attachmentRegistry = {};
+            const attachmentsHtml = attachments.length ?
+                '<div class="attachments-wrap">' +
+                    '<div class="attachments-title">附件</div>' +
+                    '<div class="attachment-list">' +
+                        attachments.map((item) => {
+                            if (item && item.attachmentId) {
+                                attachmentRegistry[item.attachmentId] = item;
+                            }
+                            const sizeMb = item.fileSize ? (item.fileSize / (1024 * 1024)).toFixed(2) : "0.00";
+                            const openUrl = toApiUrl(item.downloadUrl || "");
+                            const downloadUrl = openUrl + (openUrl.includes("?") ? "&download=true" : "?download=true");
+                            const previewKind = getAttachmentPreviewKind(item);
+                            if (previewKind === "image") {
+                                return '<div>' +
+                                    '<img class="attachment-image" src="' + escapeHtml(openUrl) + '" alt="' + escapeHtml(item.originalName || "附件") + '">' +
+                                    '<div class="attachment-meta" style="margin-top:6px;">' + escapeHtml(item.originalName || "附件") + ' · ' + sizeMb + ' MB</div>' +
+                                    '<div style="margin-top:6px;display:flex;gap:8px;flex-wrap:wrap;"><button class="attachment-link" type="button" data-preview-attachment="' + escapeHtml(item.attachmentId || "") + '" data-preview-url="' + escapeHtml(openUrl) + '">预览</button><button class="attachment-link" type="button" data-download-url="' + escapeHtml(downloadUrl) + '" data-download-name="' + escapeHtml(item.originalName || "附件") + '">下载</button></div>' +
+                                '</div>';
+                            }
+                            return '<div class="attachment-item">' +
+                                '<div>' +
+                                    '<div class="attachment-name">' + escapeHtml(item.originalName || "附件") + '</div>' +
+                                    '<div class="attachment-meta">' + sizeMb + ' MB · ' + escapeHtml(item.contentType || "file") + '</div>' +
+                                '</div>' +
+                                '<div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;">' +
+                                    '<button class="attachment-link" type="button" data-preview-attachment="' + escapeHtml(item.attachmentId || "") + '" data-preview-url="' + escapeHtml(openUrl) + '">预览</button>' +
+                                    '<button class="attachment-link" type="button" data-download-url="' + escapeHtml(downloadUrl) + '" data-download-name="' + escapeHtml(item.originalName || "附件") + '">下载</button>' +
+                                '</div>' +
+                            '</div>';
+                        }).join('') +
+                    '</div>' +
+                '</div>' : '';
+
+            wrap.innerHTML =
+                '<h2 class="title">' + escapeHtml(p.title) + '</h2>' +
+                '<div class="meta">' +
+                    '<span>作者：' + escapeHtml(p.userId || "匿名") + '</span>' +
+                    '<span>点赞：' + (p.likeCount || 0) + '</span>' +
+                    '<span>评论：' + (p.commentCount || 0) + '</span>' +
+                    '<span>收藏：' + (p.favoriteCount || 0) + '</span>' +
+                    '<span>发布时间：' + escapeHtml(formatDate(p.createdAt)) + '</span>' +
+                '</div>' +
+                '<div class="actions">' +
+                    '<button class="action-btn" id="likeBtn">👍 点赞</button>' +
+                    '<button class="action-btn" id="favoriteBtn">⭐ 收藏</button>' +
+                    '<button class="action-btn" id="commentBtn">💬 评论</button>' +
+                '</div>' +
+                '<div class="content">' + escapeHtml(p.content || "") + '</div>' +
+                attachmentsHtml +
+                '<div class="comments-wrap">' +
+                    '<div class="comments-title">评论区</div>' +
+                    '<div id="commentsList"><div class="empty">正在加载评论...</div></div>' +
+                '</div>';
+
+            bindDetailActions();
+            await loadComments();
         } catch (err) {
             wrap.innerHTML = '<div class="empty">网络错误，无法连接后端服务。</div>';
         }
     }
 
-    document.getElementById("toForumBtn").addEventListener("click", () => {
-        window.location.href = "forum.html";
+    document.getElementById("toForumBtn").addEventListener("click", () => { window.location.href = "forum.html"; });
+    const topAvatarWrap = document.getElementById("topAvatarWrap");
+    if (topAvatarWrap) {
+        topAvatarWrap.addEventListener("click", () => { window.location.href = "profile.html"; });
+    }
+    document.getElementById("closeCommentDrawerBtn").addEventListener("click", closeCommentDrawer);
+    document.getElementById("cancelCommentBtn").addEventListener("click", closeCommentDrawer);
+    document.getElementById("submitCommentBtn").addEventListener("click", submitCommentFromDrawer);
+    document.getElementById("commentDrawer").addEventListener("click", (event) => {
+        if (event.target.id === "commentDrawer") closeCommentDrawer();
     });
-
-    document.getElementById("topAvatarWrap").addEventListener("click", () => {
-        window.location.href = "profile.html";
-    });
-
-    document.getElementById("logoutBtn").addEventListener("click", () => {
-        localStorage.removeItem("token");
-        localStorage.removeItem("username");
-        sessionStorage.removeItem("token");
-        sessionStorage.removeItem("username");
-        location.reload();
+    document.getElementById("closePreviewBtn").addEventListener("click", closeAttachmentPreview);
+    document.getElementById("previewOverlay").addEventListener("click", (event) => {
+        if (event.target.id === "previewOverlay") closeAttachmentPreview();
     });
 
     document.querySelectorAll('[data-auth-required="true"]').forEach((el) => {
         el.addEventListener("click", (event) => {
             event.preventDefault();
             const target = el.getAttribute("href") || "ai-chat-test.html";
-            if (requireLogin(el.textContent.trim(), target)) {
-                window.location.href = target;
-            }
+            if (requireLogin(el.textContent.trim(), target)) window.location.href = target;
         });
     });
 
-    renderTopRightUser();
+    document.addEventListener("click", (event) => {
+        const button = event.target.closest("[data-preview-url]");
+        if (!button) return;
+        const previewUrl = button.getAttribute("data-preview-url") || "";
+        const attachmentId = button.getAttribute("data-preview-attachment") || "";
+        const attachment = attachmentId ? (attachmentRegistry[attachmentId] || null) : null;
+        openAttachmentPreview(attachment || { originalName: button.textContent || "附件" }, previewUrl);
+    });
 
-    loadDetail();
+    document.addEventListener("click", async (event) => {
+        const button = event.target.closest("[data-download-url]");
+        if (!button) return;
+        const downloadUrl = button.getAttribute("data-download-url") || "";
+        const fileName = button.getAttribute("data-download-name") || "附件";
+        if (!downloadUrl || downloadUrl === "#") {
+            window.alert("下载链接无效");
+            return;
+        }
+        await downloadAttachmentFile(downloadUrl, fileName);
+    });
+
+    (async () => {
+        await syncCurrentUserAvatarFromBackend();
+        renderTopRightUser();
+        loadDetail();
+    })();
 </script>
 </body>
 </html>

@@ -22,6 +22,13 @@ spring:
     properties:
       hibernate:
         format_sql: true
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 25MB
+
+forum:
+  upload-dir: ${FORUM_UPLOAD_DIR:uploads/forum-posts}
 
 coze:
   stream-url: ${COZE_STREAM_URL:https://k7zcnck7q6.coze.site/stream_run}
