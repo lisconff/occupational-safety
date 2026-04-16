@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>大学生就业防坑服务平台</title>
+    
+<link rel="icon" type="image/png" href="assets/images/scenarios/AI头像-圆形.png">
+<title>职途安</title>
     <style>
         * {
             margin: 0;
@@ -16,6 +18,31 @@
             line-height: 1.6;
             color: #1e293b;
             background: linear-gradient(145deg, #eef6ff 0%, #dbeafe 55%, #eff6ff 100%);
+            scrollbar-width: none;
+        }
+
+        body::-webkit-scrollbar {
+            width: 0;
+            height: 0;
+        }
+
+        body.is-scrolling {
+            scrollbar-width: thin;
+            scrollbar-color: rgba(29, 78, 216, 0.42) transparent;
+        }
+
+        body.is-scrolling::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        body.is-scrolling::-webkit-scrollbar-thumb {
+            background: rgba(29, 78, 216, 0.42);
+            border-radius: 999px;
+        }
+
+        body.is-scrolling::-webkit-scrollbar-track {
+            background: transparent;
         }
         
         /* 导航栏（与首页统一） */
@@ -133,6 +160,15 @@
         .nav-center a:hover::after {
             width: 100%;
         }
+
+        .nav-center a.active {
+            color: #1d4ed8;
+            font-weight: 600;
+        }
+
+        .nav-center a.active::after {
+            width: 100%;
+        }
         
         /* Banner区 */
         .banner {
@@ -164,6 +200,26 @@
             color: #1e3a8a;
             margin-bottom: 15px;
             text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+            opacity: 0;
+            animation: bannerBounceUp 0.95s cubic-bezier(0.2, 0.8, 0.2, 1) 1 forwards;
+        }
+
+        @keyframes bannerBounceUp {
+            0% {
+                opacity: 0;
+                transform: translateY(22px) scale(0.98);
+            }
+            60% {
+                opacity: 1;
+                transform: translateY(-8px) scale(1);
+            }
+            80% {
+                transform: translateY(2px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
         
         .banner p {
@@ -748,6 +804,309 @@
             transform: translateX(-50%) translateY(-8px);
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
         }
+
+        .content-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 28px;
+            align-items: start;
+        }
+
+        .scenarios-section {
+            order: 1;
+        }
+
+        .cases-section {
+            order: 2;
+        }
+
+        .scenario-showcase {
+            position: relative;
+            min-height: 430px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: transparent;
+            border-radius: 22px;
+            border: none;
+            box-shadow: none;
+            overflow: hidden;
+        }
+
+        .scenario-carousel {
+            position: relative;
+            width: 100%;
+            height: 360px;
+        }
+
+        .scenario-buttons {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        .scenario-btn {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 340px;
+            min-height: 286px;
+            transform: translate(-50%, -50%);
+            transition: transform 0.36s ease, opacity 0.36s ease, box-shadow 0.36s ease;
+            border: 1px solid #dbeafe;
+            border-left: 4px solid #93c5fd;
+            box-shadow: 0 12px 24px rgba(30, 64, 175, 0.14);
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(4px);
+            padding: 16px;
+            display: flex;
+            align-items: stretch;
+        }
+
+        .scenario-nav-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            border: 1px solid #93c5fd;
+            background: rgba(29, 78, 216, 0.88);
+            color: #fff;
+            font-weight: 700;
+            font-size: 28px;
+            line-height: 1;
+            cursor: pointer;
+            z-index: 40;
+            box-shadow: 0 8px 16px rgba(30, 64, 175, 0.32);
+        }
+
+        .scenario-nav-btn:hover {
+            background: #1e40af;
+        }
+
+        .scenario-nav-btn.prev {
+            left: 10px;
+        }
+
+        .scenario-nav-btn.next {
+            right: 10px;
+        }
+
+        .scenario-img {
+            width: 100%;
+            height: 148px;
+            border-radius: 10px;
+            margin-right: 0;
+            margin-bottom: 12px;
+            object-fit: cover;
+        }
+
+        .scenario-header {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            align-items: stretch;
+        }
+
+        .scenario-btn h3 {
+            font-size: 22px;
+            margin-bottom: 8px;
+        }
+
+        .scenario-btn p {
+            font-size: 15px;
+            line-height: 1.5;
+            min-height: 52px;
+        }
+
+        .cases-grid {
+            gap: 14px;
+        }
+
+        .case-card {
+            min-height: 132px;
+            padding: 16px;
+            border-left: none;
+            border: 1px solid #e4e8f3;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(30, 64, 175, 0.08);
+            display: flex;
+            flex-direction: row;
+            gap: 14px;
+            align-items: flex-start;
+        }
+
+        .case-card:hover {
+            transform: translateY(-2px);
+            border-color: #bfdbfe;
+            box-shadow: 0 10px 24px rgba(30, 64, 175, 0.12);
+        }
+
+        .case-meta-badge {
+            width: 56px;
+            min-width: 56px;
+            height: 70px;
+            border-radius: 10px;
+            background: linear-gradient(180deg, #f5f7fc 0%, #eef2ff 100%);
+            border: 1px solid #dde5f8;
+            color: #475569;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2px;
+        }
+
+        .case-meta-badge strong {
+            font-size: 18px;
+            line-height: 1;
+            color: #1e3a8a;
+        }
+
+        .case-meta-badge span {
+            font-size: 12px;
+            color: #64748b;
+        }
+
+        .case-main {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .case-main h3 {
+            font-size: 22px;
+            margin-bottom: 6px;
+        }
+
+        .case-type {
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+
+        .case-tips {
+            font-size: 14px;
+            font-weight: 500;
+            line-height: 1.55;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .case-details {
+            margin-top: 10px;
+            padding-top: 10px;
+            display: none !important;
+        }
+
+        .case-detail-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 1200;
+            background: rgba(15, 23, 42, 0.48);
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
+
+        .case-detail-modal.active {
+            display: flex;
+        }
+
+        .case-detail-dialog {
+            width: min(720px, 100%);
+            background: #fff;
+            border-radius: 14px;
+            border: 1px solid #dbeafe;
+            box-shadow: 0 20px 40px rgba(15, 23, 42, 0.22);
+            padding: 18px;
+            max-height: 78vh;
+            overflow-y: auto;
+        }
+
+        .case-detail-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .case-detail-head h3 {
+            font-size: 22px;
+            color: #1e3a8a;
+            margin: 0;
+        }
+
+        .case-detail-close {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            border: 1px solid #bfdbfe;
+            background: #eff6ff;
+            color: #1e3a8a;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        .case-detail-type {
+            display: inline-block;
+            margin-bottom: 10px;
+            background: #dbeafe;
+            color: #1e3a8a;
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-size: 13px;
+        }
+
+        .case-detail-tips {
+            font-size: 15px;
+            line-height: 1.7;
+            color: #334155;
+            margin-bottom: 12px;
+        }
+
+        .case-detail-paragraph {
+            font-size: 15px;
+            line-height: 1.75;
+            color: #475569;
+            margin-bottom: 10px;
+        }
+
+        .case-pagination {
+            margin-top: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .case-page-btn {
+            border: 1px solid #bfdbfe;
+            background: #fff;
+            color: #1e3a8a;
+            border-radius: 999px;
+            padding: 6px 14px;
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+        .case-page-btn:disabled {
+            opacity: 0.45;
+            cursor: not-allowed;
+        }
+
+        .case-page-indicator {
+            font-size: 13px;
+            color: #475569;
+            min-width: 84px;
+            text-align: center;
+        }
         
         /* 响应式设计 */
         @media (max-width: 768px) {
@@ -779,7 +1138,26 @@
             }
             
             .content-container {
-                flex-direction: column;
+                grid-template-columns: 1fr;
+            }
+
+            .scenario-showcase {
+                min-height: 390px;
+            }
+
+            .scenario-btn {
+                width: calc(100% - 72px);
+                min-height: 220px;
+            }
+
+            .scenario-img {
+                height: 128px;
+            }
+
+            .scenario-nav-btn {
+                width: 44px;
+                height: 44px;
+                font-size: 24px;
             }
             
             .cases-grid {
@@ -800,7 +1178,7 @@
             <nav class="nav-center">
                 <a href="home.html">首页</a>
                 <a href="ai-chat-test.html" data-auth-required="true">AI助手</a>
-                <a href="case.html">案例模拟</a>
+                <a href="case.html" class="active">案例模拟</a>
                 <a href="forum.html">交流论坛</a>
             </nav>
             <div class="nav-right">
@@ -834,7 +1212,7 @@
     <!-- Banner区 -->
     <section class="banner">
         <div class="banner-content">
-            <h2>大学生就业防坑指南</h2>
+            <h2>就业防坑指南</h2>
             <p>远离求职陷阱，守护自身权益</p>
             <a href="#scenarios" class="banner-btn">开始场景模拟</a>
         </div>
@@ -844,10 +1222,88 @@
     <div class="main-content">
         <!-- 经典案件和场景模拟区 -->
         <div class="content-container">
+            <!-- 场景模拟区 -->
+            <div class="scenarios-section" id="scenarios">
+                <h2 class="section-title">场景模拟</h2>
+                <div class="scenario-showcase">
+                    <button class="scenario-nav-btn prev" id="scenarioPrev" aria-label="上一组">‹</button>
+                    <div class="scenario-carousel">
+                        <div class="scenario-buttons">
+                            <!-- 场景1 -->
+                            <div class="scenario-btn" onclick="showGameInterface('dialog1')">
+                                <div class="scenario-header">
+                                    <img src="assets/images/scenarios/1.jpg" alt="面试收费骗局" class="scenario-img">
+                                    <div class="scenario-title-container">
+                                        <h3>面试收费骗局</h3>
+                                        <p>模拟面试中遇到收费要求的场景</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 场景2 -->
+                            <div class="scenario-btn" onclick="showGameInterface('dialog2')">
+                                <div class="scenario-header">
+                                    <img src="assets/images/scenarios/2.jpg" alt="培训贷骗局" class="scenario-img">
+                                    <div class="scenario-title-container">
+                                        <h3>培训贷骗局</h3>
+                                        <p>模拟遇到培训贷款的场景</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 场景3 -->
+                            <div class="scenario-btn" onclick="showGameInterface('dialog3')">
+                                <div class="scenario-header">
+                                    <img src="assets/images/scenarios/3.jpg" alt="刷单兼职骗局" class="scenario-img">
+                                    <div class="scenario-title-container">
+                                        <h3>刷单兼职骗局</h3>
+                                        <p>模拟遇到刷单兼职的场景</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 场景4 -->
+                            <div class="scenario-btn" onclick="showGameInterface('dialog4')">
+                                <div class="scenario-header">
+                                    <img src="assets/images/scenarios/4.jpg" alt="虚假高薪岗位" class="scenario-img">
+                                    <div class="scenario-title-container">
+                                        <h3>虚假高薪岗位</h3>
+                                        <p>模拟遇到虚假高薪岗位的场景</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 场景5 -->
+                            <div class="scenario-btn" onclick="showGameInterface('dialog5')">
+                                <div class="scenario-header">
+                                    <img src="assets/images/scenarios/5.jpg" alt="抵押骗局" class="scenario-img">
+                                    <div class="scenario-title-container">
+                                        <h3>抵押骗局</h3>
+                                        <p>模拟遇到抵押要求的场景</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 场景6 -->
+                            <div class="scenario-btn" onclick="showGameInterface('dialog6')">
+                                <div class="scenario-header">
+                                    <img src="assets/images/scenarios/6.jpg" alt="虚假offer骗局" class="scenario-img">
+                                    <div class="scenario-title-container">
+                                        <h3>虚假offer骗局</h3>
+                                        <p>模拟收到虚假offer的场景</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="scenario-nav-btn next" id="scenarioNext" aria-label="下一组">›</button>
+                </div>
+            </div>
+
             <!-- 经典案件展示区 -->
             <div class="cases-section">
                 <h2 class="section-title">经典案件</h2>
-                <div class="cases-grid">
+                <div class="cases-grid" id="casesGrid">
                     <!-- 案例1 -->
                     <div class="case-card" onclick="toggleCaseDetails(this)">
                         <h3>面试收费骗局</h3>
@@ -914,79 +1370,24 @@
                         </div>
                     </div>
                 </div>
-            </div>
-            
-            <!-- 场景模拟区 -->
-            <div class="scenarios-section" id="scenarios">
-                <h2 class="section-title">场景模拟</h2>
-                <div class="scenario-buttons">
-                    <!-- 场景1 -->
-                    <div class="scenario-btn" onclick="showGameInterface('dialog1')">
-                        <div class="scenario-header">
-                            <img src="assets/images/scenarios/1.jpg" alt="面试收费骗局" class="scenario-img">
-                            <div class="scenario-title-container">
-                                <h3>面试收费骗局</h3>
-                                <p>模拟面试中遇到收费要求的场景</p>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- 场景2 -->
-                    <div class="scenario-btn" onclick="showGameInterface('dialog2')">
-                        <div class="scenario-header">
-                            <img src="assets/images/scenarios/2.jpg" alt="培训贷骗局" class="scenario-img">
-                            <div class="scenario-title-container">
-                                <h3>培训贷骗局</h3>
-                                <p>模拟遇到培训贷款的场景</p>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- 场景3 -->
-                    <div class="scenario-btn" onclick="showGameInterface('dialog3')">
-                        <div class="scenario-header">
-                            <img src="assets/images/scenarios/3.jpg" alt="刷单兼职骗局" class="scenario-img">
-                            <div class="scenario-title-container">
-                                <h3>刷单兼职骗局</h3>
-                                <p>模拟遇到刷单兼职的场景</p>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- 场景4 -->
-                    <div class="scenario-btn" onclick="showGameInterface('dialog4')">
-                        <div class="scenario-header">
-                            <img src="assets/images/scenarios/4.jpg" alt="虚假高薪岗位" class="scenario-img">
-                            <div class="scenario-title-container">
-                                <h3>虚假高薪岗位</h3>
-                                <p>模拟遇到虚假高薪岗位的场景</p>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- 场景5 -->
-                    <div class="scenario-btn" onclick="showGameInterface('dialog5')">
-                        <div class="scenario-header">
-                            <img src="assets/images/scenarios/5.jpg" alt="抵押骗局" class="scenario-img">
-                            <div class="scenario-title-container">
-                                <h3>抵押骗局</h3>
-                                <p>模拟遇到抵押要求的场景</p>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- 场景6 -->
-                    <div class="scenario-btn" onclick="showGameInterface('dialog6')">
-                        <div class="scenario-header">
-                            <img src="assets/images/scenarios/6.jpg" alt="虚假offer骗局" class="scenario-img">
-                            <div class="scenario-title-container">
-                                <h3>虚假offer骗局</h3>
-                                <p>模拟收到虚假offer的场景</p>
-                            </div>
-                        </div>
-                    </div>
+                <div class="case-pagination">
+                    <button class="case-page-btn" id="casePrevPage">上一页</button>
+                    <span class="case-page-indicator" id="casePageIndicator">1 / 1</span>
+                    <button class="case-page-btn" id="caseNextPage">下一页</button>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <div id="caseDetailModal" class="case-detail-modal" aria-hidden="true">
+        <div class="case-detail-dialog" role="dialog" aria-modal="true" aria-labelledby="caseDetailTitle">
+            <div class="case-detail-head">
+                <h3 id="caseDetailTitle">案例详情</h3>
+                <button type="button" class="case-detail-close" id="caseDetailClose">×</button>
+            </div>
+            <span id="caseDetailType" class="case-detail-type"></span>
+            <p id="caseDetailTips" class="case-detail-tips"></p>
+            <div id="caseDetailBody"></div>
         </div>
     </div>
     
@@ -1429,6 +1830,45 @@
             return localStorage.getItem('userAvatar') || sessionStorage.getItem('userAvatar') || '';
         }
 
+        function getOnlineTimerStart() {
+            const raw = sessionStorage.getItem('onlineTimerStartAt') || '';
+            const value = Number(raw);
+            if (Number.isFinite(value) && value > 0) {
+                return value;
+            }
+            const now = Date.now();
+            sessionStorage.setItem('onlineTimerStartAt', String(now));
+            return now;
+        }
+
+        function flushOnlineSeconds() {
+            const now = Date.now();
+            const start = getOnlineTimerStart();
+            const seconds = Math.max(0, Math.floor((now - start) / 1000));
+            sessionStorage.setItem('onlineTimerStartAt', String(now));
+            return seconds;
+        }
+
+        async function reportUserActivity(payload) {
+            const token = getToken();
+            const userId = getUserId();
+            if (!token || !userId || !payload) {
+                return;
+            }
+            try {
+                await fetch(API_BASE + '/api/users/' + encodeURIComponent(userId) + '/activity', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + token
+                    },
+                    body: JSON.stringify(payload)
+                });
+            } catch (err) {
+                // ignore network errors
+            }
+        }
+
         async function syncCurrentUserAvatarFromBackend() {
             const token = getToken();
             const userId = getUserId();
@@ -1501,7 +1941,31 @@
 
         // 切换案例详细内容的显示/隐藏
         function toggleCaseDetails(element) {
-            element.classList.toggle('expanded');
+            const title = (element.querySelector('h3') || {}).textContent || '案例详情';
+            const typeText = (element.querySelector('.case-type') || {}).textContent || '案例';
+            const tipsText = (element.querySelector('.case-tips') || {}).textContent || '';
+            const detailNodes = element.querySelectorAll('.case-details .case-desc');
+
+            const modal = document.getElementById('caseDetailModal');
+            const titleEl = document.getElementById('caseDetailTitle');
+            const typeEl = document.getElementById('caseDetailType');
+            const tipsEl = document.getElementById('caseDetailTips');
+            const bodyEl = document.getElementById('caseDetailBody');
+
+            titleEl.textContent = title;
+            typeEl.textContent = typeText;
+            tipsEl.textContent = tipsText;
+            bodyEl.innerHTML = Array.from(detailNodes).map(function (node) {
+                return '<p class="case-detail-paragraph">' + node.textContent + '</p>';
+            }).join('');
+
+            modal.classList.add('active');
+            modal.setAttribute('aria-hidden', 'false');
+            element.classList.add('completed');
+            reportUserActivity({
+                onlineSeconds: flushOnlineSeconds(),
+                caseStudyCount: 1
+            });
         }
         
         // 对话数据
@@ -3043,16 +3507,157 @@
             if (scenarioBtn) {
                 scenarioBtn.classList.add('completed');
             }
+
+            reportUserActivity({
+                onlineSeconds: flushOnlineSeconds(),
+                simulationCount: 1
+            });
         }
         
         // 点击案例卡片标记为已读
         document.addEventListener('DOMContentLoaded', function() {
+            function normalizeOffset(index, active, total) {
+                let diff = index - active;
+                if (diff > total / 2) diff -= total;
+                if (diff < -total / 2) diff += total;
+                return diff;
+            }
+
+            function initScenarioCarousel() {
+                const cards = Array.from(document.querySelectorAll('.scenario-buttons .scenario-btn'));
+                const prevBtn = document.getElementById('scenarioPrev');
+                const nextBtn = document.getElementById('scenarioNext');
+                if (!cards.length || !prevBtn || !nextBtn) return;
+
+                let active = 0;
+
+                const render = function () {
+                    const total = cards.length;
+                    cards.forEach(function (card, index) {
+                        const offset = normalizeOffset(index, active, total);
+                        const abs = Math.abs(offset);
+                        if (abs > 2) {
+                            card.style.opacity = '0';
+                            card.style.pointerEvents = 'none';
+                            card.style.transform = 'translate(-50%, -50%) scale(0.76)';
+                            card.style.zIndex = '0';
+                            return;
+                        }
+
+                        const x = offset * 108;
+                        const scale = offset === 0 ? 1 : (abs === 1 ? 0.9 : 0.82);
+                        const y = abs * 6;
+                        card.style.opacity = offset === 0 ? '1' : (abs === 1 ? '0.78' : '0.56');
+                        card.style.pointerEvents = 'auto';
+                        card.style.transform = 'translate(calc(-50% + ' + x + 'px), calc(-50% + ' + y + 'px)) scale(' + scale + ')';
+                        card.style.zIndex = String(30 - abs);
+                    });
+                };
+
+                prevBtn.addEventListener('click', function () {
+                    active = (active - 1 + cards.length) % cards.length;
+                    render();
+                });
+
+                nextBtn.addEventListener('click', function () {
+                    active = (active + 1) % cards.length;
+                    render();
+                });
+
+                render();
+            }
+
+            function initCaseCardsAndPagination() {
+                const cards = Array.from(document.querySelectorAll('.cases-grid .case-card'));
+                const pageIndicator = document.getElementById('casePageIndicator');
+                const prevBtn = document.getElementById('casePrevPage');
+                const nextBtn = document.getElementById('caseNextPage');
+                if (!cards.length || !pageIndicator || !prevBtn || !nextBtn) return;
+
+                cards.forEach(function (card, index) {
+                    if (card.dataset.enhanced === '1') return;
+
+                    const typeEl = card.querySelector('.case-type');
+                    const titleEl = card.querySelector('h3');
+                    const tipsEl = card.querySelector('.case-tips');
+                    const detailsEl = card.querySelector('.case-details');
+                    const typeText = typeEl ? typeEl.textContent.trim() : '案例';
+
+                    const badge = document.createElement('div');
+                    badge.className = 'case-meta-badge';
+                    badge.innerHTML = '<strong>' + String(index + 1).padStart(2, '0') + '</strong><span>' + typeText.slice(0, 2) + '</span>';
+
+                    const main = document.createElement('div');
+                    main.className = 'case-main';
+                    if (titleEl) main.appendChild(titleEl);
+                    if (typeEl) main.appendChild(typeEl);
+                    if (tipsEl) main.appendChild(tipsEl);
+                    if (detailsEl) main.appendChild(detailsEl);
+
+                    card.innerHTML = '';
+                    card.appendChild(badge);
+                    card.appendChild(main);
+                    card.dataset.enhanced = '1';
+                });
+
+                let currentPage = 1;
+                const pageSize = 2;
+
+                const renderPage = function () {
+                    const totalPages = Math.max(1, Math.ceil(cards.length / pageSize));
+                    currentPage = Math.min(currentPage, totalPages);
+                    const start = (currentPage - 1) * pageSize;
+                    const end = start + pageSize;
+                    cards.forEach(function (card, index) {
+                        card.style.display = (index >= start && index < end) ? 'flex' : 'none';
+                    });
+                    pageIndicator.textContent = currentPage + ' / ' + totalPages;
+                    prevBtn.disabled = currentPage === 1;
+                    nextBtn.disabled = currentPage === totalPages;
+                };
+
+                prevBtn.addEventListener('click', function () {
+                    if (currentPage > 1) {
+                        currentPage -= 1;
+                        renderPage();
+                    }
+                });
+
+                nextBtn.addEventListener('click', function () {
+                    const totalPages = Math.max(1, Math.ceil(cards.length / pageSize));
+                    if (currentPage < totalPages) {
+                        currentPage += 1;
+                        renderPage();
+                    }
+                });
+
+                renderPage();
+            }
+
+            initScenarioCarousel();
+            initCaseCardsAndPagination();
+
             const caseCards = document.querySelectorAll('.case-card');
             caseCards.forEach(card => {
                 card.addEventListener('click', function() {
                     this.classList.add('completed');
                 });
             });
+
+            const caseDetailModal = document.getElementById('caseDetailModal');
+            const caseDetailClose = document.getElementById('caseDetailClose');
+            if (caseDetailModal && caseDetailClose) {
+                caseDetailClose.addEventListener('click', function () {
+                    caseDetailModal.classList.remove('active');
+                    caseDetailModal.setAttribute('aria-hidden', 'true');
+                });
+                caseDetailModal.addEventListener('click', function (event) {
+                    if (event.target === caseDetailModal) {
+                        caseDetailModal.classList.remove('active');
+                        caseDetailModal.setAttribute('aria-hidden', 'true');
+                    }
+                });
+            }
         });
         
         // 点击弹窗外部关闭
@@ -3079,6 +3684,28 @@
                 }
             });
         });
+
+        (function bindPageScrollbarBehavior() {
+            let hideTimer = null;
+            const showScrollbar = function () {
+                document.body.classList.add('is-scrolling');
+                if (hideTimer) {
+                    window.clearTimeout(hideTimer);
+                }
+                hideTimer = window.setTimeout(function () {
+                    document.body.classList.remove('is-scrolling');
+                }, 520);
+            };
+            window.addEventListener('scroll', showScrollbar, { passive: true });
+        })();
+
+        document.addEventListener('visibilitychange', function () {
+            if (document.visibilityState === 'hidden') {
+                reportUserActivity({ onlineSeconds: flushOnlineSeconds() });
+            }
+        });
     </script>
 </body>
 </html>
+
+

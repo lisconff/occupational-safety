@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>注册 - 职途安</title>
+    
+<link rel="icon" type="image/png" href="assets/images/scenarios/AI头像-圆形.png">
+<title>职途安</title>
     <style>
         * {
             margin: 0;
@@ -150,18 +152,6 @@
             font-weight: 600;
         }
 
-        .step {
-            display: none;
-        }
-
-        .step.active {
-            display: block;
-        }
-
-        .inline-row {
-            display: flex;
-            gap: 8px;
-        }
     </style>
 </head>
 <body>
@@ -171,8 +161,8 @@
             <p>请填写信息完成注册</p>
         </div>
 
-        <div id="step1" class="step active">
-            <form class="register-form" id="step1Form">
+        <div>
+            <form class="register-form" id="registerForm">
                 <div class="form-group">
                     <label class="form-label" for="username">用户名</label>
                     <input type="text" id="username" class="form-input" placeholder="请输入用户名" required>
@@ -189,28 +179,6 @@
                 <div class="form-group">
                     <label class="form-label" for="repassword">确认密码</label>
                     <input type="password" id="repassword" class="form-input" placeholder="再次输入密码" required>
-                </div>
-
-                <div id="step1Error" class="error-message"></div>
-                <button type="submit" class="register-btn">下一步</button>
-            </form>
-        </div>
-
-        <div id="step2" class="step">
-            <form class="register-form" id="registerForm">
-                <div class="form-group">
-                    <label class="form-label" for="phone">手机号（选填）</label>
-                    <input type="text" id="phone" class="form-input" placeholder="请输入11位手机号">
-                    <div class="tip">手机号仅用于页面展示，不会提交到后端。</div>
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label" for="code">验证码（模拟）</label>
-                    <div class="inline-row">
-                        <input type="text" id="code" class="form-input" placeholder="请输入验证码" required>
-                        <button type="button" class="register-btn secondary" id="getCodeBtn">获取验证码</button>
-                    </div>
-                    <div id="codeTip" class="tip"></div>
                 </div>
 
                 <div id="registerError" class="error-message"></div>
@@ -230,28 +198,14 @@
         const toLoginLink = document.getElementById("toLoginLink");
         toLoginLink.href = "login.html?redirect=" + encodeURIComponent(redirectUrl);
 
-        const step1 = document.getElementById("step1");
-        const step2 = document.getElementById("step2");
-        const step1Form = document.getElementById("step1Form");
         const registerForm = document.getElementById("registerForm");
         const registerBtn = document.getElementById("registerBtn");
 
         const usernameInput = document.getElementById("username");
         const passwordInput = document.getElementById("password");
         const repasswordInput = document.getElementById("repassword");
-        const phoneInput = document.getElementById("phone");
-        const codeInput = document.getElementById("code");
-        const codeTip = document.getElementById("codeTip");
-        const getCodeBtn = document.getElementById("getCodeBtn");
         const togglePassword = document.getElementById("togglePassword");
-        const step1Error = document.getElementById("step1Error");
         const registerError = document.getElementById("registerError");
-
-        const userData = {
-            username: "",
-            password: "",
-            phone: ""
-        };
 
         function showError(el, msg) {
             el.style.display = "block";
@@ -265,57 +219,26 @@
             togglePassword.textContent = nextType === "password" ? "👁️" : "🙈";
         });
 
-        getCodeBtn.addEventListener("click", () => {
-            const phone = phoneInput.value.trim();
-            if (!phone || /^\d{11}$/.test(phone)) {
-                codeTip.textContent = "测试验证码：123456";
-                return;
-            }
-            codeTip.textContent = "手机号格式应为11位数字";
-        });
-
-        step1Form.addEventListener("submit", (e) => {
+        registerForm.addEventListener("submit", async (e) => {
             e.preventDefault();
-            step1Error.style.display = "none";
+            registerError.style.display = "none";
 
             const username = usernameInput.value.trim();
             const password = passwordInput.value;
             const repassword = repasswordInput.value;
 
             if (username.length < 3 || username.length > 16) {
-                showError(step1Error, "用户名长度需为3-16位");
+                showError(registerError, "用户名长度需为3-16位");
                 return;
             }
             if (password.length < 6 || password.length > 16) {
-                showError(step1Error, "密码长度需为6-16位");
+                showError(registerError, "密码长度需为6-16位");
                 return;
             }
             if (password !== repassword) {
-                showError(step1Error, "两次输入的密码不一致");
+                showError(registerError, "两次输入的密码不一致");
                 return;
             }
-
-            userData.username = username;
-            userData.password = password;
-            step1.classList.remove("active");
-            step2.classList.add("active");
-        });
-
-        registerForm.addEventListener("submit", async (e) => {
-            e.preventDefault();
-            registerError.style.display = "none";
-
-            if (codeInput.value.trim() !== "123456") {
-                showError(registerError, "验证码错误，请输入 123456");
-                return;
-            }
-
-            const phone = phoneInput.value.trim();
-            if (phone && !/^\d{11}$/.test(phone)) {
-                showError(registerError, "手机号格式应为11位数字");
-                return;
-            }
-            userData.phone = phone;
 
             registerBtn.disabled = true;
             registerBtn.classList.add("loading");
@@ -325,20 +248,18 @@
                 const response = await fetch(API_BASE + "/api/auth/register", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ username: userData.username, password: userData.password })
+                    body: JSON.stringify({ username, password })
                 });
 
                 const data = await response.json();
                 if (data && data.code === 200 && data.data && data.data.token) {
-                    [localStorage, sessionStorage].forEach((store) => {
-                        store.removeItem("token");
-                        store.removeItem("username");
-                        store.removeItem("userId");
-                        store.removeItem("userAvatarOwner");
-                        store.setItem("token", data.data.token);
-                        store.setItem("userId", data.data.userId || "");
-                        store.setItem("username", data.data.username || userData.username);
-                    });
+                    localStorage.removeItem("token");
+                    localStorage.removeItem("username");
+                    localStorage.removeItem("userId");
+                    localStorage.removeItem("userAvatarOwner");
+                    sessionStorage.setItem("token", data.data.token);
+                    sessionStorage.setItem("userId", data.data.userId || "");
+                    sessionStorage.setItem("username", data.data.username || username);
                     window.location.href = redirectUrl;
                     return;
                 }
@@ -354,3 +275,5 @@
     </script>
 </body>
 </html>
+
+

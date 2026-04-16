@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>个人主页 - 大学生就业防坑服务平台</title>
+    
+<link rel="icon" type="image/png" href="assets/images/scenarios/AI头像-圆形.png">
+<title>职途安</title>
     <style>
         * {
             margin: 0;
@@ -33,12 +35,12 @@
         }
         
         .nav-container {
-            max-width: 1200px;
-            margin: 0 auto;
+            width: 100%;
+            margin: 0;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0 20px;
+            padding: 0 40px;
         }
 
         .nav-right {
@@ -138,6 +140,15 @@
         }
 
         .nav-center a:hover::after {
+            width: 100%;
+        }
+
+        .nav-center a.active {
+            color: #1d4ed8;
+            font-weight: 600;
+        }
+
+        .nav-center a.active::after {
             width: 100%;
         }
 
@@ -321,6 +332,33 @@
             border-bottom: 2px solid #93c5fd;
             padding-bottom: 10px;
         }
+
+        .risk-radar-wrap {
+            display: block;
+            align-items: center;
+        }
+
+        .risk-radar-canvas-wrap {
+            background: linear-gradient(180deg, #f8fbff 0%, #eef5ff 100%);
+            border: 1px solid #dbeafe;
+            border-radius: 14px;
+            padding: 14px;
+        }
+
+        .risk-radar-canvas {
+            width: 100%;
+            height: auto;
+            max-height: 340px;
+            display: block;
+        }
+
+        .content-card.tab-panel {
+            display: none;
+        }
+
+        .content-card.tab-panel.active {
+            display: block;
+        }
         
         /* 收藏和浏览记录 */
         .record-item {
@@ -418,6 +456,7 @@
                 flex-wrap: wrap;
                 justify-content: center;
                 gap: 10px;
+                padding: 0 16px;
             }
 
             .nav-links {
@@ -440,6 +479,10 @@
             
             .sidebar {
                 flex: 1;
+            }
+
+            .risk-radar-wrap {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -504,6 +547,7 @@
                 <div class="menu-card">
                     <h3>个人中心</h3>
                     <a href="#" class="menu-item active" id="profileEditTab">完善/修改资料</a>
+                    <a href="#" class="menu-item" id="riskRadarTab">风险评估雷达图</a>
                 </div>
                 <div class="menu-card">
                     <h3>快捷功能</h3>
@@ -514,7 +558,7 @@
             
             <!-- 右侧内容展示区 -->
             <div class="content-area" id="contentArea">
-                <div class="content-card">
+                <div class="content-card tab-panel active" id="profileEditPanel">
                     <h3>完善/修改资料</h3>
                     <form id="profileForm" style="margin-top: 20px;">
                         <div style="margin-bottom: 15px;">
@@ -544,6 +588,15 @@
                         <button type="submit" id="saveProfileBtn" style="background-color: #1d4ed8; color: #fff; border: none; padding: 10px 20px; border-radius: 999px; cursor: pointer;">保存资料</button>
                         <span id="profileSaveMessage" style="margin-left:10px;font-size:13px;color:#475569;"></span>
                     </form>
+                </div>
+
+                <div class="content-card tab-panel" id="riskRadarPanel">
+                    <h3>风险评估雷达图</h3>
+                    <div class="risk-radar-wrap">
+                        <div class="risk-radar-canvas-wrap">
+                            <canvas id="riskRadarCanvas" class="risk-radar-canvas" width="560" height="380"></canvas>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -592,6 +645,61 @@
 
         function getCurrentUserId() {
             return localStorage.getItem('userId') || sessionStorage.getItem('userId') || '';
+        }
+
+        function getOnlineTimerStart() {
+            const raw = sessionStorage.getItem('onlineTimerStartAt') || '';
+            const value = Number(raw);
+            if (Number.isFinite(value) && value > 0) {
+                return value;
+            }
+            const now = Date.now();
+            sessionStorage.setItem('onlineTimerStartAt', String(now));
+            return now;
+        }
+
+        function flushOnlineSeconds() {
+            const now = Date.now();
+            const start = getOnlineTimerStart();
+            const seconds = Math.max(0, Math.floor((now - start) / 1000));
+            sessionStorage.setItem('onlineTimerStartAt', String(now));
+            return seconds;
+        }
+
+        async function reportUserActivity(payload) {
+            const token = getToken();
+            const userId = getCurrentUserId();
+            if (!token || !userId || !payload) {
+                return;
+            }
+            try {
+                await fetch(API_BASE + '/api/users/' + encodeURIComponent(userId) + '/activity', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + token
+                    },
+                    body: JSON.stringify(payload)
+                });
+            } catch (e) {
+            }
+        }
+
+        async function fetchRiskAssessment() {
+            const token = getToken();
+            const userId = getCurrentUserId();
+            if (!token || !userId) return null;
+            try {
+                const response = await fetch(API_BASE + '/api/users/' + encodeURIComponent(userId) + '/risk-assessment', {
+                    headers: { Authorization: 'Bearer ' + token }
+                });
+                const data = await response.json();
+                if (data && data.code === 200 && data.data) {
+                    return data.data;
+                }
+            } catch (e) {
+            }
+            return null;
         }
 
         const USER_AVATAR_MAP_KEY = 'userAvatarMap';
@@ -674,15 +782,117 @@
             document.getElementById('bio').value = profile && profile.bio ? profile.bio : '';
         }
 
-        function updateProfileHeader(profile) {
+        function updateProfileHeader(profile, risk) {
             const username = getUsername();
             document.getElementById('profileDisplayName').textContent = username;
             const school = profile && profile.school ? profile.school : '';
             const major = profile && profile.major ? profile.major : '';
             const summary = [school, major].filter(Boolean).join(' · ');
             document.getElementById('profileSummary').textContent = summary || '资料待完善';
-            document.getElementById('antiFraudValue').textContent = '未知';
-            document.getElementById('antiFraudProgress').style.width = '0%';
+
+            const antiFraudValue = risk && Number.isFinite(risk.antiFraudValue)
+                ? risk.antiFraudValue
+                : 60;
+            document.getElementById('antiFraudValue').textContent = antiFraudValue;
+            document.getElementById('antiFraudProgress').style.width = Math.max(0, Math.min(100, antiFraudValue)) + '%';
+        }
+
+        function renderRiskMetrics(risk) {
+            const data = risk || {
+                onlineSeconds: 0,
+                aiQueryCount: 0,
+                caseStudyCount: 0,
+                simulationCount: 0,
+                forumViewCount: 0,
+                onlineScore: 0,
+                aiScore: 0,
+                caseScore: 0,
+                simulationScore: 0,
+                forumScore: 0,
+                antiFraudValue: 60
+            };
+
+            drawRiskRadar([
+                data.onlineScore || 0,
+                data.aiScore || 0,
+                data.caseScore || 0,
+                data.simulationScore || 0,
+                data.forumScore || 0
+            ]);
+        }
+
+        function drawRiskRadar(values) {
+            const canvas = document.getElementById('riskRadarCanvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            const width = canvas.width;
+            const height = canvas.height;
+            const cx = width * 0.38;
+            const cy = height * 0.52;
+            const radius = Math.min(width, height) * 0.32;
+            const labels = ['在线', 'AI', '案例', '模拟', '论坛'];
+            const count = labels.length;
+
+            ctx.clearRect(0, 0, width, height);
+
+            for (let ring = 1; ring <= 5; ring += 1) {
+                const r = radius * (ring / 5);
+                ctx.beginPath();
+                for (let i = 0; i < count; i += 1) {
+                    const angle = -Math.PI / 2 + (Math.PI * 2 * i / count);
+                    const x = cx + Math.cos(angle) * r;
+                    const y = cy + Math.sin(angle) * r;
+                    if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+                }
+                ctx.closePath();
+                ctx.strokeStyle = 'rgba(148, 163, 184, 0.45)';
+                ctx.lineWidth = 1;
+                ctx.stroke();
+            }
+
+            for (let i = 0; i < count; i += 1) {
+                const angle = -Math.PI / 2 + (Math.PI * 2 * i / count);
+                const x = cx + Math.cos(angle) * radius;
+                const y = cy + Math.sin(angle) * radius;
+                ctx.beginPath();
+                ctx.moveTo(cx, cy);
+                ctx.lineTo(x, y);
+                ctx.strokeStyle = 'rgba(100, 116, 139, 0.45)';
+                ctx.stroke();
+
+                const labelX = cx + Math.cos(angle) * (radius + 24);
+                const labelY = cy + Math.sin(angle) * (radius + 24);
+                ctx.fillStyle = '#334155';
+                ctx.font = '14px Microsoft YaHei';
+                ctx.textAlign = 'center';
+                ctx.fillText(labels[i], labelX, labelY + 5);
+            }
+
+            ctx.beginPath();
+            values.forEach((value, i) => {
+                const ratio = Math.max(0, Math.min(100, value || 0)) / 100;
+                const angle = -Math.PI / 2 + (Math.PI * 2 * i / count);
+                const x = cx + Math.cos(angle) * radius * ratio;
+                const y = cy + Math.sin(angle) * radius * ratio;
+                if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+            });
+            ctx.closePath();
+            ctx.fillStyle = 'rgba(37, 99, 235, 0.25)';
+            ctx.strokeStyle = 'rgba(29, 78, 216, 0.78)';
+            ctx.lineWidth = 2;
+            ctx.fill();
+            ctx.stroke();
+
+            values.forEach((value, i) => {
+                const ratio = Math.max(0, Math.min(100, value || 0)) / 100;
+                const angle = -Math.PI / 2 + (Math.PI * 2 * i / count);
+                const x = cx + Math.cos(angle) * radius * ratio;
+                const y = cy + Math.sin(angle) * radius * ratio;
+                ctx.beginPath();
+                ctx.arc(x, y, 3.5, 0, Math.PI * 2);
+                ctx.fillStyle = '#1d4ed8';
+                ctx.fill();
+            });
         }
 
         async function saveProfile() {
@@ -823,9 +1033,36 @@
             renderTopRightUser();
             renderProfileAvatar();
 
+            await reportUserActivity({ onlineSeconds: flushOnlineSeconds() });
+
             const profile = await fetchCurrentProfile();
+            const risk = await fetchRiskAssessment();
             fillProfileForm(profile);
-            updateProfileHeader(profile);
+            updateProfileHeader(profile, risk);
+            renderRiskMetrics(risk);
+
+            const profileEditTab = document.getElementById('profileEditTab');
+            const riskRadarTab = document.getElementById('riskRadarTab');
+            const profileEditPanel = document.getElementById('profileEditPanel');
+            const riskRadarPanel = document.getElementById('riskRadarPanel');
+
+            function switchTab(tab) {
+                const isProfile = tab === 'profile';
+                profileEditTab.classList.toggle('active', isProfile);
+                riskRadarTab.classList.toggle('active', !isProfile);
+                profileEditPanel.classList.toggle('active', isProfile);
+                riskRadarPanel.classList.toggle('active', !isProfile);
+            }
+
+            profileEditTab.addEventListener('click', function (e) {
+                e.preventDefault();
+                switchTab('profile');
+            });
+
+            riskRadarTab.addEventListener('click', function (e) {
+                e.preventDefault();
+                switchTab('risk');
+            });
 
             document.querySelectorAll('[data-auth-required="true"]').forEach(function (el) {
                 el.addEventListener('click', function (event) {
@@ -891,7 +1128,9 @@
                 try {
                     const saved = await saveProfile();
                     fillProfileForm(saved);
-                    updateProfileHeader(saved);
+                    const latestRisk = await fetchRiskAssessment();
+                    updateProfileHeader(saved, latestRisk);
+                    renderRiskMetrics(latestRisk);
                     messageEl.style.color = '#15803d';
                     messageEl.textContent = '保存成功';
                 } catch (err) {
@@ -902,7 +1141,15 @@
                     btn.textContent = '保存资料';
                 }
             });
+
+            document.addEventListener('visibilitychange', function () {
+                if (document.visibilityState === 'hidden') {
+                    reportUserActivity({ onlineSeconds: flushOnlineSeconds() });
+                }
+            });
         };
     </script>
 </body>
 </html>
+
+
