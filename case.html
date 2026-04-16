@@ -454,26 +454,24 @@
 
         .scene-role {
             position: absolute;
-            bottom: 20px;
-            width: 22%;
-            max-width: 150px;
-            min-width: 96px;
-            height: auto;
+            bottom: 0px;
+            width: 40%;
+            height: 80%;
             object-fit: contain;
             filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.25));
         }
 
         .scene-role.user {
-            left: 16%;
+            left: -2%;
         }
 
         .scene-role.recruiter {
-            right: 16%;
+            right: 0;
         }
 
         .dialog-floating {
             position: absolute;
-            top: 22px;
+            top: 8px;
             max-width: 300px;
             background: rgba(255, 255, 255, 0.95);
             border-radius: 14px;
@@ -485,13 +483,43 @@
         }
 
         .dialog-floating.recruiter {
-            right: 12%;
+            right: 23%;
         }
 
         .dialog-floating.user {
-            left: 12%;
+            top:210px;
+            left: 23%;
         }
-        
+
+        /* 面试收费骗局特定样式 */
+        #dialog1 .dialog-floating.user {
+            top: 100px;
+            left: 25%;
+        }
+
+        /* 刷单兼职骗局特定样式 */
+        #dialog3 .dialog-floating.user {
+            left: 26%;
+        }
+        #dialog3 .dialog-floating.recruiter {
+            right: 34%;
+        }
+
+        /* 虚假高薪岗位特定样式 */
+        #dialog4 .dialog-floating.user {
+            top: 100px;
+            left:25%;
+        }
+        /* 抵扣证件特定样式 */
+        #dialog5 .dialog-floating.user {
+            top: 100px;
+            left:25%;
+        }
+
+        #dialog6 .dialog-floating.user {
+            top: 120px;
+            left:28%;
+        }
         /* 对话框样式 */
         .dialog-bubble {
             position: absolute;
@@ -2470,6 +2498,7 @@
         
         // 显示游戏界面
         function showGameInterface(dialogId) {
+            // 注释掉登录检查，允许不登录使用场景模拟
             if (!requireLogin('场景模拟')) {
                 return;
             }
@@ -2479,7 +2508,7 @@
             
             // 设置游戏背景图（使用用户提供的具体图片路径）
             const imageMap = {
-                'dialog1': 'interview-scam-cover.jpg',
+                'dialog1': '面试收费骗局.1.jpg',
                 'dialog2': '培训贷骗局.1.jpg',
                 'dialog3': '刷单兼职骗局.1.jpg',
                 'dialog4': '虚假高薪岗位.1.jpg',
@@ -2495,6 +2524,7 @@
         
         // 开始游戏
         function startGame() {
+            // 注释掉登录检查，允许不登录使用场景模拟
             if (!requireLogin('场景模拟')) {
                 return;
             }
@@ -2557,16 +2587,17 @@
                     user: userAnimation,
                     camera: '中景，同时拍摄两个人物'
                 };
-                displayText = userAnimation.userText || userAnimation.text || currentDialog.text;
+                // 优先使用userAnimation中的text属性，如果没有则使用用户的回答文本
+                displayText = userAnimation.text || userAnimation.userText || currentDialog.userText || currentDialog.text;
                 speakerType = 'user';
             }
             
             // 设置图片映射
             const imageMap = {
                 'dialog1': {
-                    bg: 'interview-scam-bg.png',
-                    user: 'interview-scam-user.png',
-                    recruiter: 'interview-scam-user.png'
+                    bg: '面试收费骗局.3.png',
+                    user: '面试收费骗局.2.png',
+                    recruiter: '面试收费骗局.4.png'
                 },
                 'dialog2': {
                     bg: '培训贷骗局.3.png',
@@ -2574,24 +2605,24 @@
                     recruiter: '培训贷骗局.4.png'
                 },
                 'dialog3': {
-                    bg: '刷单兼职骗局.3.png',
+                    bg: '刷单兼职骗局.5.png',
                     user: '刷单兼职骗局.2.png',
-                    recruiter: '刷单兼职骗局.2.png'
+                    recruiter: '刷单兼职骗局.3.png'
                 },
                 'dialog4': {
-                    bg: '虚假高薪岗位.3.jpg',
+                    bg: '虚假高薪岗位.3.png',
                     user: '虚假高薪岗位.2.png',
-                    recruiter: '虚假高薪岗位.2.png'
+                    recruiter: '虚假高薪岗位.4.png'
                 },
                 'dialog5': {
                     bg: '抵押骗局.3.jpg',
-                    user: '抵押骗局.2.png',
+                    user: '抵押骗局.4.png',
                     recruiter: '抵押骗局.2.png'
                 },
                 'dialog6': {
-                    bg: '虚假offer骗局.3.jpg',
+                    bg: '虚假offer骗局.3.png',
                     user: '虚假offer骗局.2.png',
-                    recruiter: '虚假offer骗局.2.png'
+                    recruiter: '虚假offer骗局.5.png'
                 }
             };
             
@@ -2721,13 +2752,44 @@
                     userText: selectedOption.userText
                 });
                 
+                // 记录用户是否选择了同意贷款（培训贷骗局的错误选项）
+                if (dialogId === 'dialog2' && currentDialog.text.includes('帮你办理分期贷款') && selectedOption.text === 'B. 同意贷款') {
+                    state.selectedLoanOption = true;
+                }
+                
+                // 记录用户是否选择了刷单兼职骗局的错误选项
+                if (dialogId === 'dialog3' && selectedOption.feedback && selectedOption.feedback.includes('错误')) {
+                    state.selectedWrongOption = true;
+                }
+                
+                // 记录用户是否选择了虚假高薪岗位的错误选项
+                if (dialogId === 'dialog4' && selectedOption.feedback && selectedOption.feedback.includes('错误')) {
+                    state.selectedWrongOption = true;
+                }
+                
+                // 记录用户是否选择了抵押骗局的错误选项
+                if (dialogId === 'dialog5' && selectedOption.feedback && selectedOption.feedback.includes('错误')) {
+                    state.selectedWrongOption = true;
+                }
+                
+                // 记录用户是否选择了虚假offer骗局的错误选项
+                if (dialogId === 'dialog6' && selectedOption.feedback && selectedOption.feedback.includes('错误')) {
+                    state.selectedWrongOption = true;
+                }
+                
                 // 先显示用户的回答
-                const userAnimationData = selectedOption.userAnimation || {
+                const userAnimationData = {
                     expression: '中性',
                     action: '说话',
                     position: '坐在椅子上',
                     text: selectedOption.userText
                 };
+                // 合并用户动画数据
+                if (selectedOption.userAnimation) {
+                    Object.assign(userAnimationData, selectedOption.userAnimation);
+                    // 确保text属性优先使用用户的回答文本
+                    userAnimationData.text = selectedOption.userText;
+                }
                 // 调用updateAnimation函数显示用户回答
                 updateAnimation(dialogId, state.currentStep, true, userAnimationData);
                 
@@ -2739,13 +2801,13 @@
                         const feedback = selectedOption.feedback || '本轮对话已结束，请根据提示复盘关键风险点。';
                         showFeedback(dialogId, feedback);
                         state.isTransitioning = false;
-                    }, 1000);
+                    }, 2000); // 增加显示时间
                 } else {
                     if (!data.dialogs[nextStep]) {
                         setTimeout(() => {
                             showFeedback(dialogId, '该分支暂未配置完整，已为你结束本轮。建议重新尝试其他选项。');
                             state.isTransitioning = false;
-                        }, 1000);
+                        }, 2000); // 增加显示时间
                         return;
                     }
                     // 继续对话
@@ -2753,7 +2815,7 @@
                         state.currentStep = nextStep;
                         state.isTransitioning = false;
                         renderDialog(dialogId);
-                    }, 1000);
+                    }, 2000); // 增加显示时间
                 }
             }
         }
@@ -2792,6 +2854,91 @@
                         }
                     }
                 });
+            }
+            
+            // 如果是培训贷骗局且用户选择了同意贷款，替换左侧人物图片
+            if (dialogId === 'dialog2' && state.selectedLoanOption) {
+                const stage = dialog.querySelector('.scene-stage');
+                if (stage) {
+                    const userRole = stage.querySelector('.scene-role.user');
+                    if (userRole) {
+                        userRole.setAttribute('src', 'assets/images/scenarios/培训贷骗局.5.png');
+                    }
+                }
+            }
+            
+            // 如果是刷单兼职骗局且用户选择了错误选项，替换左侧人物图片
+            if (dialogId === 'dialog3' && state.selectedWrongOption) {
+                const stage = dialog.querySelector('.scene-stage');
+                if (stage) {
+                    const userRole = stage.querySelector('.scene-role.user');
+                    if (userRole) {
+                        userRole.setAttribute('src', 'assets/images/scenarios/刷单兼职骗局.4.png');
+                    }
+                }
+            }
+            
+            // 如果是虚假高薪岗位且用户选择了错误选项，替换右侧人物图片
+            if (dialogId === 'dialog4' && state.selectedWrongOption) {
+                const stage = dialog.querySelector('.scene-stage');
+                if (stage) {
+                    const recruiterRole = stage.querySelector('.scene-role.recruiter');
+                    if (recruiterRole) {
+                        recruiterRole.setAttribute('src', 'assets/images/scenarios/虚假高薪岗位.5.png');
+                    }
+                }
+            }
+            
+            // 如果是抵押骗局且用户选择了错误选项，替换左侧人物图片
+            if (dialogId === 'dialog5' && state.selectedWrongOption) {
+                const stage = dialog.querySelector('.scene-stage');
+                if (stage) {
+                    const userRole = stage.querySelector('.scene-role.user');
+                    if (userRole) {
+                        userRole.setAttribute('src', 'assets/images/scenarios/抵押骗局.5.png');
+                    }
+                }
+            }
+            
+            // 如果是虚假offer骗局且用户选择了错误选项，替换左侧人物图片
+            if (dialogId === 'dialog6' && state.selectedWrongOption) {
+                const stage = dialog.querySelector('.scene-stage');
+                if (stage) {
+                    const userRole = stage.querySelector('.scene-role.user');
+                    if (userRole) {
+                        userRole.setAttribute('src', 'assets/images/scenarios/虚假offer骗局.4.png');
+                    }
+                }
+            }
+            
+            // 如果是错误反馈，隐藏原对话框并显示"⚠️你被骗了"
+            if (feedback.includes('错误')) {
+                const stage = dialog.querySelector('.scene-stage');
+                if (stage) {
+                    // 隐藏原有的对话框
+                    const dialogs = stage.querySelectorAll('.dialog-floating');
+                    dialogs.forEach(d => d.style.display = 'none');
+                    
+                    // 添加新的对话框显示"⚠️你被骗了"
+                    const newDialog = document.createElement('div');
+                    newDialog.className = 'dialog-floating error-dialog';
+                    newDialog.textContent = '⚠️你被骗了';
+                    newDialog.style.cssText = `
+                        position: absolute;
+                        top: 50%;
+                        left: 50%;
+                        transform: translate(-50%, -50%);
+                        background-color: #FF4444;
+                        color: white;
+                        font-size: 24px;
+                        font-weight: bold;
+                        padding: 20px;
+                        border-radius: 10px;
+                        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+                        z-index: 1000;
+                    `;
+                    stage.appendChild(newDialog);
+                }
             }
             
             optionsContainer.innerHTML = `
