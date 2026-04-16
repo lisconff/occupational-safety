@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>用户帖子 - 职途安论坛</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", "Microsoft YaHei", sans-serif; }
+    body { background: linear-gradient(150deg, #eef6ff 0%, #dbeafe 48%, #eff6ff 100%); color: #0f172a; min-height: 100vh; }
+    .container { max-width: 980px; margin: 0 auto; padding: 28px 16px; }
+    .card { background: rgba(255,255,255,0.9); border: 1px solid #dbeafe; border-radius: 16px; box-shadow: 0 10px 24px rgba(30,64,175,0.08); }
+    .top { display: flex; justify-content: space-between; align-items: center; padding: 16px; border-bottom: 1px solid #e2e8f0; }
+    .top h1 { font-size: 20px; color: #1e3a8a; }
+    .btn { border: 1px solid #93c5fd; background: #fff; color: #1e40af; border-radius: 999px; padding: 7px 14px; cursor: pointer; }
+    .profile { padding: 16px; display: flex; gap: 14px; align-items: center; border-bottom: 1px solid #e2e8f0; }
+    .avatar { width: 56px; height: 56px; border-radius: 50%; background: linear-gradient(135deg, #1e3a8a, #3b82f6); color: #fff; font-weight: 700; display:flex; align-items:center; justify-content:center; overflow:hidden; }
+    .avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .profile-title { font-size: 16px; color: #1e3a8a; font-weight: 700; }
+    .profile-meta { font-size: 12px; color: #64748b; }
+    .list { padding: 14px; display: flex; flex-direction: column; gap: 10px; }
+    .item { border: 1px solid #e2e8f0; border-radius: 12px; background: #fff; padding: 12px; cursor: pointer; }
+    .item:hover { border-color: #93c5fd; }
+    .title { font-size: 15px; color: #1e3a8a; font-weight: 700; margin-bottom: 6px; }
+    .meta { font-size: 12px; color: #64748b; display: flex; gap: 10px; flex-wrap: wrap; }
+    .empty { color: #64748b; text-align: center; padding: 24px 0; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <div class="top">
+        <h1>用户帖子</h1>
+        <button class="btn" id="backBtn">返回论坛</button>
+      </div>
+      <div class="profile" id="profileBox">
+        <div class="avatar" id="avatarBox">U</div>
+        <div>
+          <div class="profile-title" id="profileTitle">用户</div>
+          <div class="profile-meta" id="profileMeta">正在加载用户信息...</div>
+        </div>
+      </div>
+      <div class="list" id="list"></div>
+    </div>
+  </div>
+
+  <script>
+    const API_BASE = "http://localhost:8090";
+    const AVATAR_RESET_FLAG_KEY = "avatarReset_20260415";
+    function getQuery(name) { return new URLSearchParams(window.location.search).get(name) || ""; }
+    function escapeHtml(text) { return (text || "").toString().replace(/[&<>\"]/g, (ch) => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[ch])); }
+    function formatDate(value) { if (!value) return "刚刚"; const d = new Date(value); if (Number.isNaN(d.getTime())) return value; const pad = (n) => String(n).padStart(2, "0"); return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate())+" "+pad(d.getHours())+":"+pad(d.getMinutes()); }
+    const USER_AVATAR_MAP_KEY = "userAvatarMap";
+    const USER_AVATAR_OWNER_KEY = "userAvatarOwner";
+
+    function resetAvatarStorageOnce() {
+      if (localStorage.getItem(AVATAR_RESET_FLAG_KEY) === "1") return;
+      ["userAvatar", "userAvatarMap", "userAvatarOwner"].forEach((k) => {
+        localStorage.removeItem(k);
+        sessionStorage.removeItem(k);
+      });
+      localStorage.setItem(AVATAR_RESET_FLAG_KEY, "1");
+    }
+
+    function getAvatarMap() {
+      try {
+        const raw = localStorage.getItem(USER_AVATAR_MAP_KEY);
+        if (!raw) return {};
+        const parsed = JSON.parse(raw);
+        return parsed && typeof parsed === 'object' ? parsed : {};
+      } catch (err) {
+        return {};
+      }
+    }
+
+    function getCurrentAvatar(userId) {
+      const map = getAvatarMap();
+      const key = userId || (localStorage.getItem("username") || sessionStorage.getItem("username") || "");
+      if (key && map[key]) {
+        return map[key];
+      }
+      return "";
+    }
+
+    async function loadProfile(userId) {
+      const title = document.getElementById("profileTitle");
+      const meta = document.getElementById("profileMeta");
+      const avatar = document.getElementById("avatarBox");
+      try {
+        const response = await fetch(API_BASE + "/api/users/" + encodeURIComponent(userId) + "/profile");
+        const data = await response.json();
+        if (data && data.code === 200 && data.data) {
+          const profile = data.data;
+          title.textContent = userId;
+          meta.textContent = [profile.school, profile.major, profile.expectedCity].filter(Boolean).join(" · ") || "该用户还没有完善资料";
+        } else {
+          title.textContent = userId;
+          meta.textContent = "无法加载用户资料";
+        }
+      } catch (err) {
+        title.textContent = userId;
+        meta.textContent = "网络错误，无法加载资料";
+      }
+      const avatarUrl = getCurrentAvatar(userId);
+      if (avatarUrl) {
+        avatar.innerHTML = '<img src="' + escapeHtml(avatarUrl) + '" alt="头像">';
+      } else {
+        avatar.textContent = (userId || "U").slice(0, 1).toUpperCase();
+      }
+    }
+
+    async function loadPosts(userId) {
+      const wrap = document.getElementById("list");
+      wrap.innerHTML = '<div class="empty">正在加载帖子...</div>';
+      try {
+        const response = await fetch(API_BASE + "/api/forum/users/" + encodeURIComponent(userId) + "/posts");
+        const data = await response.json();
+        if (!(data && data.code === 200 && Array.isArray(data.data))) {
+          wrap.innerHTML = '<div class="empty">加载失败</div>';
+          return;
+        }
+        if (!data.data.length) {
+          wrap.innerHTML = '<div class="empty">该用户还没有发布帖子</div>';
+          return;
+        }
+        wrap.innerHTML = data.data.map((post) => '<div class="item" data-id="' + escapeHtml(post.postId) + '">' + '<div class="title">' + escapeHtml(post.title || "未命名帖子") + '</div>' + '<div class="meta"><span>点赞：' + (post.likeCount || 0) + '</span><span>评论：' + (post.commentCount || 0) + '</span><span>收藏：' + (post.favoriteCount || 0) + '</span><span>' + escapeHtml(formatDate(post.createdAt)) + '</span></div>' + '</div>').join("");
+        document.querySelectorAll('.item').forEach((el) => { el.addEventListener('click', () => { const id = el.getAttribute('data-id'); if (id) window.location.href = 'post-detail.html?id=' + encodeURIComponent(id); }); });
+      } catch (err) {
+        wrap.innerHTML = '<div class="empty">网络错误，加载失败</div>';
+      }
+    }
+
+    const userId = getQuery("userId");
+    resetAvatarStorageOnce();
+    if (!userId) {
+      document.getElementById("profileTitle").textContent = "缺少 userId";
+      document.getElementById("profileMeta").textContent = "请从评论头像点击进入";
+      document.getElementById("list").innerHTML = '<div class="empty">缺少用户ID</div>';
+    } else {
+      loadProfile(userId);
+      loadPosts(userId);
+    }
+
+    document.getElementById("backBtn").addEventListener("click", () => window.location.href = "forum.html");
+  </script>
+</body>
+</html>

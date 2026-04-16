@@ -330,8 +330,15 @@
 
                 const data = await response.json();
                 if (data && data.code === 200 && data.data && data.data.token) {
-                    localStorage.setItem("token", data.data.token);
-                    localStorage.setItem("username", data.data.username || userData.username);
+                    [localStorage, sessionStorage].forEach((store) => {
+                        store.removeItem("token");
+                        store.removeItem("username");
+                        store.removeItem("userId");
+                        store.removeItem("userAvatarOwner");
+                        store.setItem("token", data.data.token);
+                        store.setItem("userId", data.data.userId || "");
+                        store.setItem("username", data.data.username || userData.username);
+                    });
                     window.location.href = redirectUrl;
                     return;
                 }

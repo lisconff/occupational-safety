@@ -34,10 +34,13 @@ body {
     font-weight: bold;
     font-size: 20px;
     color: #111827;
+    min-width: 110px;
 }
 
 .nav-center {
     display: flex;
+    flex: 1;
+    justify-content: center;
     gap: 30px;
 }
 
@@ -66,7 +69,10 @@ body {
 .nav-right {
     display: flex;
     align-items: center;
-    gap: 15px;
+    justify-content: flex-end;
+    gap: 10px;
+    min-width: 220px;
+    flex: 0 0 220px;
 }
 
 .nav-btn {
@@ -90,16 +96,16 @@ body {
 }
 
 .avatar-wrapper {
-    width: 32px;
-    height: 32px;
+    width: 34px;
+    height: 34px;
     border-radius: 50%;
     overflow: hidden;
-    background: #1677ff;
+    background: #1d4ed8;
     color: #fff;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-weight: 600;
+    font-weight: 700;
     cursor: pointer;
 }
 
@@ -160,6 +166,12 @@ body {
     margin-bottom: 25px;
 }
 
+.hero-actions {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
 .btn {
     position: relative;
     overflow: hidden;
@@ -204,6 +216,150 @@ body {
 
 .features {
     padding: 80px;
+}
+
+.constellation-zone {
+    background: #f0efe7;
+    padding: 48px 20px 64px;
+}
+
+.constellation-stage {
+    max-width: 1280px;
+    height: 980px;
+    margin: 0 auto;
+    border-radius: 24px;
+    background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.72), rgba(224,223,214,0.88));
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(80, 80, 80, 0.16);
+}
+
+.constellation-center {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.axis-line {
+    stroke: url(#axisGradient);
+    stroke-width: 1;
+    animation: axisPulse 4.5s ease-in-out infinite;
+}
+
+.cluster {
+    position: absolute;
+    width: min(62vw, 720px);
+    height: 420px;
+}
+
+.cluster.top {
+    top: 84px;
+    left: 20px;
+}
+
+.cluster.bottom {
+    right: 20px;
+    bottom: 84px;
+}
+
+.cluster svg {
+    width: 100%;
+    height: 100%;
+}
+
+.map-link {
+    stroke: rgba(0, 0, 0, 0.22);
+    stroke-width: 1;
+    stroke-linecap: round;
+    stroke-dasharray: 10 14;
+    animation: flowDash 12s linear infinite;
+}
+
+.map-link.light {
+    stroke: rgba(102, 102, 102, 0.34);
+    stroke-width: 1.3;
+}
+
+.map-node {
+    fill: rgba(255, 255, 255, 0.95);
+    stroke: rgba(125, 73, 41, 0.45);
+    stroke-width: 1;
+    animation: nodePulse 3.2s ease-in-out infinite;
+}
+
+.map-node.main {
+    fill: rgba(139, 94, 60, 0.12);
+    stroke: rgba(139, 94, 60, 0.68);
+    stroke-width: 1.4;
+}
+
+.map-label {
+    fill: #333333;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.map-label.main {
+    fill: #8b5e3c;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.map-card {
+    position: absolute;
+    width: 378px;
+    background: #e0dfd6;
+    border-radius: 18px;
+    padding: 22px;
+    border: 1px solid rgba(125, 73, 41, 0.12);
+    box-shadow: 0 14px 34px rgba(70, 52, 36, 0.12);
+    z-index: 2;
+}
+
+.map-card.top {
+    right: 36px;
+    top: 18%;
+    transform: translateY(-50%);
+}
+
+.map-card.bottom {
+    left: 36px;
+    bottom: 18%;
+    transform: translateY(50%);
+}
+
+.map-card h3 {
+    font-size: 24px;
+    line-height: 1.3;
+    color: #7d4929;
+    margin-bottom: 8px;
+}
+
+.map-card p {
+    font-size: 15px;
+    line-height: 1.7;
+    color: #7f7f7f;
+    margin-bottom: 16px;
+}
+
+.map-card p:last-child {
+    margin-bottom: 0;
+}
+
+@keyframes axisPulse {
+    0%, 100% { opacity: 0.35; }
+    50% { opacity: 0.95; }
+}
+
+@keyframes flowDash {
+    to { stroke-dashoffset: -240; }
+}
+
+@keyframes nodePulse {
+    0%, 100% { transform: scale(1); opacity: 0.9; }
+    50% { transform: scale(1.05); opacity: 1; }
 }
 
 .feature-card {
@@ -285,6 +441,44 @@ body {
         padding: 48px 20px;
     }
 
+    .constellation-zone {
+        padding: 30px 10px 42px;
+    }
+
+    .constellation-stage {
+        height: auto;
+        padding: 24px 8px;
+    }
+
+    .cluster {
+        position: relative;
+        width: 100%;
+        height: 320px;
+        left: auto;
+        right: auto;
+        top: auto;
+        bottom: auto;
+    }
+
+    .cluster.bottom {
+        margin-top: 24px;
+    }
+
+    .map-card {
+        position: relative;
+        width: 100%;
+        margin-top: 18px;
+        left: auto;
+        right: auto;
+        top: auto;
+        bottom: auto;
+        transform: none;
+    }
+
+    .map-card h3 {
+        font-size: 21px;
+    }
+
     .feature-card,
     .feature-card.reverse {
         flex-direction: column;
@@ -306,6 +500,7 @@ body {
     <div class="logo">职途安</div>
 
     <nav class="nav-center">
+        <a href="home.html">首页</a>
         <a href="ai-chat-test.html" data-auth-required="true">AI助手</a>
         <a href="case.html">案例模拟</a>
         <a href="forum.html">交流论坛</a>
@@ -323,7 +518,6 @@ body {
                 <span id="avatar-letter"></span>
             </div>
             <span id="user-name">用户</span>
-            <a href="#" id="logout-btn" class="nav-btn">退出</a>
         </div>
     </div>
 </header>
@@ -333,9 +527,94 @@ body {
         <h1>让每一次求职，都更安全</h1>
         <p>识别陷阱 · 模拟场景 · 真实交流</p>
 
-        <a href="register.html" class="btn primary">立即注册</a>
-        <a href="ai-chat-test.html" class="btn" data-auth-required="true">体验AI助手</a>
+        <div id="heroGuestActions" class="hero-actions">
+            <a href="login.html?redirect=case.html&action=%E7%AB%8B%E5%8D%B3%E4%BD%93%E9%AA%8C" class="btn primary">立即体验</a>
+        </div>
 
+        <div id="heroUserActions" class="hero-actions" style="display:none;"></div>
+
+    </div>
+</section>
+
+<section class="constellation-zone">
+    <div class="constellation-stage">
+        <svg class="constellation-center" viewBox="0 0 1280 980" preserveAspectRatio="none" aria-hidden="true">
+            <defs>
+                <linearGradient id="axisGradient" gradientUnits="userSpaceOnUse" x1="800" y1="760" x2="420" y2="220">
+                    <stop offset="0%" stop-color="#666666" stop-opacity="0.08"></stop>
+                    <stop offset="100%" stop-color="#505050" stop-opacity="0.46"></stop>
+                </linearGradient>
+            </defs>
+            <line class="axis-line" x1="800" y1="760" x2="420" y2="220"></line>
+        </svg>
+
+        <div class="cluster top" aria-hidden="true">
+            <svg viewBox="0 0 720 420" preserveAspectRatio="xMidYMid meet">
+                <line class="map-link light" x1="330" y1="200" x2="440" y2="268"></line>
+                <line class="map-link" x1="440" y1="268" x2="506" y2="230"></line>
+                <line class="map-link" x1="440" y1="268" x2="498" y2="320"></line>
+                <line class="map-link light" x1="330" y1="200" x2="210" y2="252"></line>
+                <line class="map-link" x1="210" y1="252" x2="148" y2="210"></line>
+                <line class="map-link" x1="210" y1="252" x2="142" y2="300"></line>
+
+                <circle class="map-node main" cx="330" cy="200" r="18"></circle>
+                <circle class="map-node main" cx="440" cy="268" r="15"></circle>
+                <circle class="map-node" cx="506" cy="230" r="12"></circle>
+                <circle class="map-node" cx="498" cy="320" r="12"></circle>
+                <circle class="map-node main" cx="210" cy="252" r="15"></circle>
+                <circle class="map-node" cx="148" cy="210" r="12"></circle>
+                <circle class="map-node" cx="142" cy="300" r="12"></circle>
+
+                <text class="map-label main" x="330" y="205" text-anchor="middle">全域工作引擎</text>
+                <text class="map-label main" x="440" y="272" text-anchor="middle">专属记忆</text>
+                <text class="map-label" x="506" y="234" text-anchor="middle">偏好</text>
+                <text class="map-label" x="498" y="324" text-anchor="middle">经验</text>
+                <text class="map-label main" x="210" y="256" text-anchor="middle">跨端行动力</text>
+                <text class="map-label" x="148" y="214" text-anchor="middle">云电脑</text>
+                <text class="map-label" x="142" y="304" text-anchor="middle">云手机</text>
+            </svg>
+        </div>
+
+        <div class="cluster bottom" aria-hidden="true">
+            <svg viewBox="0 0 720 420" preserveAspectRatio="xMidYMid meet">
+                <line class="map-link light" x1="364" y1="198" x2="464" y2="150"></line>
+                <line class="map-link" x1="464" y1="150" x2="548" y2="116"></line>
+                <line class="map-link" x1="464" y1="150" x2="540" y2="202"></line>
+                <line class="map-link light" x1="364" y1="198" x2="264" y2="262"></line>
+                <line class="map-link" x1="264" y1="262" x2="190" y2="304"></line>
+                <line class="map-link" x1="264" y1="262" x2="230" y2="344"></line>
+
+                <circle class="map-node main" cx="364" cy="198" r="18"></circle>
+                <circle class="map-node main" cx="464" cy="150" r="15"></circle>
+                <circle class="map-node" cx="548" cy="116" r="12"></circle>
+                <circle class="map-node" cx="540" cy="202" r="12"></circle>
+                <circle class="map-node main" cx="264" cy="262" r="15"></circle>
+                <circle class="map-node" cx="190" cy="304" r="12"></circle>
+                <circle class="map-node" cx="230" cy="344" r="12"></circle>
+
+                <text class="map-label main" x="364" y="202" text-anchor="middle">智能开发中枢</text>
+                <text class="map-label main" x="464" y="154" text-anchor="middle">工作流</text>
+                <text class="map-label" x="548" y="120" text-anchor="middle">审核质检</text>
+                <text class="map-label" x="540" y="206" text-anchor="middle">工单分发</text>
+                <text class="map-label main" x="264" y="266" text-anchor="middle">多端应用</text>
+                <text class="map-label" x="190" y="308" text-anchor="middle">小程序</text>
+                <text class="map-label" x="230" y="348" text-anchor="middle">APP</text>
+            </svg>
+        </div>
+
+        <div class="map-card top">
+            <h3>越用越强，也越懂你</h3>
+            <p>在反馈和探索中持续进化的专属伙伴。它会学习你的习惯，不用反复交代也能直达重点。</p>
+            <h3>跨越多端，全天运转</h3>
+            <p>可在云端并行处理多任务与多渠道，让你的效率从“单点处理”升级为“连续产出”。</p>
+        </div>
+
+        <div class="map-card bottom">
+            <h3>前后端一体化开发</h3>
+            <p>支持网页、智能体与流程能力协同搭建，从想法到可用原型一步到位。</p>
+            <h3>强大服务集成</h3>
+            <p>可快速接入模型、知识库与数据能力，让应用既能用、也能持续演进。</p>
+        </div>
     </div>
 </section>
 
@@ -393,6 +672,21 @@ function getUsername() {
     return localStorage.getItem('username') || sessionStorage.getItem('username') || '';
 }
 
+function getUserId() {
+    return localStorage.getItem('userId') || sessionStorage.getItem('userId') || '';
+}
+
+const AVATAR_RESET_FLAG_KEY = 'avatarReset_20260415';
+
+function resetAvatarStorageOnce() {
+    if (localStorage.getItem(AVATAR_RESET_FLAG_KEY) === '1') return;
+    ['userAvatar', 'userAvatarMap', 'userAvatarOwner'].forEach((k) => {
+        localStorage.removeItem(k);
+        sessionStorage.removeItem(k);
+    });
+    localStorage.setItem(AVATAR_RESET_FLAG_KEY, '1');
+}
+
 function requireLogin(targetUrl, featureName) {
     if (getToken()) {
         window.location.href = targetUrl;
@@ -412,18 +706,41 @@ const userNameEl = document.getElementById('user-name');
 const avatarLetterEl = document.getElementById('avatar-letter');
 const headerAvatarImage = document.getElementById('headerAvatarImage');
 const avatarWrapper = document.querySelector('.avatar-wrapper');
+const heroGuestActions = document.getElementById('heroGuestActions');
+const heroUserActions = document.getElementById('heroUserActions');
+
+const USER_AVATAR_MAP_KEY = 'userAvatarMap';
+
+function getAvatarMap() {
+    try {
+        const raw = localStorage.getItem(USER_AVATAR_MAP_KEY);
+        if (!raw) return {};
+        const parsed = JSON.parse(raw);
+        return parsed && typeof parsed === 'object' ? parsed : {};
+    } catch (e) {
+        return {};
+    }
+}
 
 function getAvatarDataUrl() {
-    return localStorage.getItem('userAvatar') || '';
+    const userId = getUserId();
+    const username = getUsername();
+    const map = getAvatarMap();
+    if (userId && map[userId]) return map[userId];
+    if (username && map[username]) return map[username];
+    return '';
 }
 
 window.addEventListener('load', () => {
+    resetAvatarStorageOnce();
     const token = getToken();
     const name = getUsername();
 
     if (token) {
         guestNav.style.display = 'none';
         userNav.style.display = 'flex';
+        heroGuestActions.style.display = 'none';
+        heroUserActions.style.display = 'none';
         const displayName = name || 'User';
         userNameEl.textContent = displayName;
         const avatarUrl = getAvatarDataUrl();
@@ -436,21 +753,15 @@ window.addEventListener('load', () => {
             avatarLetterEl.style.display = 'inline';
             avatarLetterEl.textContent = displayName.charAt(0).toUpperCase();
         }
+    } else {
+        heroGuestActions.style.display = 'inline-flex';
+        heroUserActions.style.display = 'none';
     }
 });
 
 avatarWrapper.addEventListener('click', () => {
     window.location.href = 'profile.html';
 });
-
-document.getElementById('logout-btn').onclick = (event) => {
-    event.preventDefault();
-    localStorage.removeItem('token');
-    localStorage.removeItem('username');
-    sessionStorage.removeItem('token');
-    sessionStorage.removeItem('username');
-    location.reload();
-};
 
 document.querySelectorAll('[data-auth-required="true"]').forEach((el) => {
     el.addEventListener('click', (event) => {

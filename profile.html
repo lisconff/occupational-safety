@@ -45,6 +45,9 @@
             display: flex;
             align-items: center;
             gap: 10px;
+            justify-content: flex-end;
+            min-width: 220px;
+            flex: 0 0 220px;
         }
 
         .nav-btn {
@@ -101,6 +104,7 @@
             font-weight: bold;
             font-size: 20px;
             color: #111827;
+            min-width: 110px;
         }
 
         .logo h1 {
@@ -110,6 +114,8 @@
 
         .nav-center {
             display: flex;
+            flex: 1;
+            justify-content: center;
             gap: 30px;
         }
 
@@ -163,8 +169,8 @@
             width: 120px;
             height: 120px;
             border-radius: 50%;
-            margin-right: 30px;
             object-fit: cover;
+            display: none;
         }
 
         .profile-avatar-box {
@@ -173,6 +179,21 @@
             align-items: center;
             margin-right: 30px;
             gap: 10px;
+            position: relative;
+        }
+
+        .profile-avatar-fallback {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+            color: #fff;
+            font-size: 40px;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            user-select: none;
         }
 
         .avatar-upload-btn {
@@ -431,6 +452,7 @@
                 <h1>职途安</h1>
             </div>
             <nav class="nav-center">
+                <a href="home.html">首页</a>
                 <a href="ai-chat-test.html" data-auth-required="true">AI助手</a>
                 <a href="case.html">案例模拟</a>
                 <a href="forum.html">交流论坛</a>
@@ -457,19 +479,20 @@
         <!-- 个人信息面板 -->
         <div class="profile-header">
             <div class="profile-avatar-box">
-                <img id="profileAvatar" src="assets/images/scenarios/1.jpg" alt="用户头像" class="profile-avatar">
+                <span id="profileAvatarLetter" class="profile-avatar-fallback">游</span>
+                <img id="profileAvatar" src="" alt="用户头像" class="profile-avatar">
                 <label for="avatarUpload" class="avatar-upload-btn">上传头像</label>
                 <input id="avatarUpload" type="file" accept="image/*" style="display:none;">
             </div>
             <div class="profile-info">
-                <h2>张三</h2>
-                <p>北京大学 · 计算机科学与技术专业</p>
+                <h2 id="profileDisplayName">游客</h2>
+                <p id="profileSummary">资料待完善</p>
                 <div class="skill-label">
                     <span>防骗能力值</span>
-                    <span>75%</span>
+                    <span id="antiFraudValue">未知</span>
                 </div>
                 <div class="skill-bar">
-                    <div class="skill-progress" style="width: 75%;"></div>
+                    <div class="skill-progress" id="antiFraudProgress" style="width: 0%;"></div>
                 </div>
             </div>
         </div>
@@ -480,70 +503,47 @@
             <div class="sidebar">
                 <div class="menu-card">
                     <h3>个人中心</h3>
-                    <a href="#" class="menu-item active">我的收藏案例</a>
-                    <a href="#" class="menu-item">学习历史</a>
-                    <a href="#" class="menu-item">风险评估报告</a>
-                    <a href="#" class="menu-item">我的发帖记录</a>
-                    <a href="#" class="menu-item">修改资料</a>
+                    <a href="#" class="menu-item active" id="profileEditTab">完善/修改资料</a>
                 </div>
                 <div class="menu-card">
                     <h3>快捷功能</h3>
                     <a href="case.html" class="menu-item">浏览案例</a>
-                    <a href="#" class="menu-item">模拟测试</a>
-                    <a href="#" class="menu-item">在线咨询</a>
+                    <a href="forum.html" class="menu-item">交流论坛</a>
                 </div>
             </div>
             
             <!-- 右侧内容展示区 -->
-            <div class="content-area">
-                <!-- 最近浏览 -->
+            <div class="content-area" id="contentArea">
                 <div class="content-card">
-                    <h3>最近浏览</h3>
-                    <div class="record-item">
-                        <div class="record-icon">📄</div>
-                        <div class="record-info">
-                            <h4>面试收费骗局</h4>
-                            <p>了解面试中常见的收费陷阱</p>
-                            <div class="record-time">2024-05-15 14:30</div>
+                    <h3>完善/修改资料</h3>
+                    <form id="profileForm" style="margin-top: 20px;">
+                        <div style="margin-bottom: 15px;">
+                            <label for="school" style="display: block; margin-bottom: 5px;">学校<span style="color:#ef4444;">*</span>：</label>
+                            <input type="text" id="school" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;" placeholder="例如：北京大学">
                         </div>
-                    </div>
-                    <div class="record-item">
-                        <div class="record-icon">📄</div>
-                        <div class="record-info">
-                            <h4>培训贷骗局</h4>
-                            <p>如何识别和避免培训贷款陷阱</p>
-                            <div class="record-time">2024-05-14 09:15</div>
+                        <div style="margin-bottom: 15px;">
+                            <label for="major" style="display: block; margin-bottom: 5px;">专业<span style="color:#ef4444;">*</span>：</label>
+                            <input type="text" id="major" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;" placeholder="例如：计算机科学与技术">
                         </div>
-                    </div>
-                    <div class="record-item">
-                        <div class="record-icon">📄</div>
-                        <div class="record-info">
-                            <h4>虚假高薪岗位</h4>
-                            <p>如何判断岗位薪资的合理性</p>
-                            <div class="record-time">2024-05-13 16:45</div>
+                        <div style="margin-bottom: 15px;">
+                            <label for="graduationYear" style="display: block; margin-bottom: 5px;">毕业年份：</label>
+                            <input type="number" id="graduationYear" min="2000" max="2100" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;" placeholder="例如：2027">
                         </div>
-                    </div>
-                </div>
-                
-                <!-- 我的收藏 -->
-                <div class="content-card">
-                    <h3>我的收藏</h3>
-                    <div class="record-item">
-                        <div class="record-icon">⭐</div>
-                        <div class="record-info">
-                            <h4>刷单兼职骗局</h4>
-                            <p>刷单兼职的危害和识别方法</p>
-                            <div class="record-time">2024-05-12 11:20</div>
+                        <div style="margin-bottom: 15px;">
+                            <label for="expectedCity" style="display: block; margin-bottom: 5px;">意向城市：</label>
+                            <input type="text" id="expectedCity" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;" placeholder="例如：北京">
                         </div>
-                    </div>
-                    <div class="record-item">
-                        <div class="record-icon">⭐</div>
-                        <div class="record-info">
-                            <h4>扣押证件骗局</h4>
-                            <p>如何保护个人证件安全</p>
-                            <div class="record-time">2024-05-11 10:00</div>
+                        <div style="margin-bottom: 15px;">
+                            <label for="expectedSalary" style="display: block; margin-bottom: 5px;">期望薪资：</label>
+                            <input type="text" id="expectedSalary" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;" placeholder="例如：10k-15k">
                         </div>
-                    </div>
+                        <div style="margin-bottom: 15px;">
+                            <label for="bio" style="display: block; margin-bottom: 5px;">个人简介：</label>
+                            <textarea id="bio" rows="4" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;" placeholder="简单介绍你的求职方向、技能或经历"></textarea>
+                        </div>
+                        <button type="submit" id="saveProfileBtn" style="background-color: #1d4ed8; color: #fff; border: none; padding: 10px 20px; border-radius: 999px; cursor: pointer;">保存资料</button>
+                        <span id="profileSaveMessage" style="margin-left:10px;font-size:13px;color:#475569;"></span>
+                    </form>
                 </div>
             </div>
         </div>
@@ -563,8 +563,10 @@
     </footer>
     
     <script>
+        const API_BASE = 'http://localhost:8090';
+
         function isLoggedIn() {
-            return Boolean(localStorage.getItem('token'));
+            return Boolean(getToken());
         }
 
         function requireLogin(actionName) {
@@ -588,12 +590,183 @@
             return localStorage.getItem('username') || sessionStorage.getItem('username') || '游客';
         }
 
-        function getAvatarDataUrl() {
-            return localStorage.getItem('userAvatar') || '';
+        function getCurrentUserId() {
+            return localStorage.getItem('userId') || sessionStorage.getItem('userId') || '';
+        }
+
+        const USER_AVATAR_MAP_KEY = 'userAvatarMap';
+        const USER_AVATAR_OWNER_KEY = 'userAvatarOwner';
+
+        function getAvatarMap() {
+            try {
+                const raw = localStorage.getItem(USER_AVATAR_MAP_KEY);
+                if (!raw) return {};
+                const parsed = JSON.parse(raw);
+                return parsed && typeof parsed === 'object' ? parsed : {};
+            } catch (e) {
+                return {};
+            }
+        }
+
+        function setAvatarMap(map) {
+            localStorage.setItem(USER_AVATAR_MAP_KEY, JSON.stringify(map || {}));
+        }
+
+        function getAvatarDataUrl(userId) {
+            const key = userId || getUsername();
+            const map = getAvatarMap();
+            if (key && map[key]) {
+                return map[key];
+            }
+            return '';
         }
 
         function setAvatarDataUrl(url) {
+            const username = getUsername();
+            const userId = getCurrentUserId();
+            const map = getAvatarMap();
+            if (username) {
+                map[username] = url;
+                if (userId) {
+                    map[userId] = url;
+                }
+                setAvatarMap(map);
+                localStorage.setItem(USER_AVATAR_OWNER_KEY, userId || username);
+            }
             localStorage.setItem('userAvatar', url);
+        }
+
+        function upsertAuthMirror() {
+            const token = getToken();
+            const userId = getCurrentUserId();
+            const username = getUsername();
+            if (!token) return;
+            [localStorage, sessionStorage].forEach((store) => {
+                if (!store.getItem('token')) store.setItem('token', token);
+                if (userId && !store.getItem('userId')) store.setItem('userId', userId);
+                if (username && username !== '游客' && !store.getItem('username')) store.setItem('username', username);
+            });
+        }
+
+        async function fetchCurrentProfile() {
+            const userId = getCurrentUserId();
+            const token = getToken();
+            if (!userId || !token) return null;
+            try {
+                const response = await fetch(API_BASE + '/api/users/' + encodeURIComponent(userId) + '/profile', {
+                    headers: { Authorization: 'Bearer ' + token }
+                });
+                const data = await response.json();
+                if (data && data.code === 200 && data.data) {
+                    return data.data;
+                }
+            } catch (e) {
+            }
+            return null;
+        }
+
+        function fillProfileForm(profile) {
+            document.getElementById('school').value = profile && profile.school ? profile.school : '';
+            document.getElementById('major').value = profile && profile.major ? profile.major : '';
+            document.getElementById('graduationYear').value = profile && profile.graduationYear ? profile.graduationYear : '';
+            document.getElementById('expectedCity').value = profile && profile.expectedCity ? profile.expectedCity : '';
+            document.getElementById('expectedSalary').value = profile && profile.expectedSalary ? profile.expectedSalary : '';
+            document.getElementById('bio').value = profile && profile.bio ? profile.bio : '';
+        }
+
+        function updateProfileHeader(profile) {
+            const username = getUsername();
+            document.getElementById('profileDisplayName').textContent = username;
+            const school = profile && profile.school ? profile.school : '';
+            const major = profile && profile.major ? profile.major : '';
+            const summary = [school, major].filter(Boolean).join(' · ');
+            document.getElementById('profileSummary').textContent = summary || '资料待完善';
+            document.getElementById('antiFraudValue').textContent = '未知';
+            document.getElementById('antiFraudProgress').style.width = '0%';
+        }
+
+        async function saveProfile() {
+            const userId = getCurrentUserId();
+            const token = getToken();
+            if (!userId || !token) {
+                throw new Error('未登录');
+            }
+
+            const payload = {
+                school: (document.getElementById('school').value || '').trim(),
+                major: (document.getElementById('major').value || '').trim(),
+                graduationYear: (() => {
+                    const value = (document.getElementById('graduationYear').value || '').trim();
+                    return value ? Number(value) : null;
+                })(),
+                expectedCity: (document.getElementById('expectedCity').value || '').trim() || null,
+                expectedSalary: (document.getElementById('expectedSalary').value || '').trim() || null,
+                bio: (document.getElementById('bio').value || '').trim() || null
+            };
+
+            if (!payload.school || !payload.major) {
+                throw new Error('学校和专业为必填项');
+            }
+
+            const response = await fetch(API_BASE + '/api/users/' + encodeURIComponent(userId) + '/profile', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + token
+                },
+                body: JSON.stringify(payload)
+            });
+            const data = await response.json();
+            if (!(data && data.code === 200 && data.data)) {
+                throw new Error((data && data.message) || '保存失败');
+            }
+            return data.data;
+        }
+
+        async function syncCurrentUserAvatarFromBackend() {
+            const userId = getCurrentUserId();
+            const token = getToken();
+            const username = getUsername();
+            if (!userId || !token) return;
+            try {
+                const response = await fetch(API_BASE + '/api/users/' + encodeURIComponent(userId) + '/profile', {
+                    headers: { Authorization: 'Bearer ' + token }
+                });
+                const data = await response.json();
+                if (!(data && data.code === 200 && data.data)) return;
+                const avatarDataUrl = data.data.avatarDataUrl || '';
+                if (avatarDataUrl) {
+                    setAvatarDataUrl(avatarDataUrl);
+                } else {
+                    const map = getAvatarMap();
+                    delete map[userId];
+                    if (username) delete map[username];
+                    setAvatarMap(map);
+                    localStorage.removeItem('userAvatar');
+                    localStorage.removeItem(USER_AVATAR_OWNER_KEY);
+                }
+            } catch (e) {
+            }
+        }
+
+        async function uploadAvatarToBackend(avatarDataUrl) {
+            const userId = getCurrentUserId();
+            const token = getToken();
+            if (!userId || !token) {
+                throw new Error('未登录');
+            }
+            const response = await fetch(API_BASE + '/api/users/' + encodeURIComponent(userId) + '/avatar', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + token
+                },
+                body: JSON.stringify({ avatarDataUrl: avatarDataUrl || null })
+            });
+            const data = await response.json();
+            if (!(data && data.code === 200)) {
+                throw new Error((data && data.message) || '头像上传失败');
+            }
         }
 
         function renderTopRightUser() {
@@ -605,7 +778,7 @@
 
             const username = getUsername();
             const token = getToken();
-            const avatarUrl = getAvatarDataUrl();
+            const avatarUrl = getAvatarDataUrl(localStorage.getItem('userId') || sessionStorage.getItem('userId') || username);
 
             if (token) {
                 guestNav.style.display = 'none';
@@ -628,42 +801,31 @@
 
         function renderProfileAvatar() {
             const avatar = document.getElementById('profileAvatar');
-            const avatarUrl = getAvatarDataUrl();
+            const avatarLetter = document.getElementById('profileAvatarLetter');
+            const username = getUsername();
+            const avatarUrl = getAvatarDataUrl(localStorage.getItem('userId') || sessionStorage.getItem('userId') || getUsername());
             if (avatarUrl) {
                 avatar.src = avatarUrl;
+                avatar.style.display = 'block';
+                avatarLetter.style.display = 'none';
             } else {
-                avatar.src = 'assets/images/scenarios/1.jpg';
+                avatar.removeAttribute('src');
+                avatar.style.display = 'none';
+                avatarLetter.style.display = 'inline-flex';
+                avatarLetter.textContent = (username || '游').charAt(0).toUpperCase();
             }
         }
 
-        // 用户数据存储
-        let userProfile = {
-            name: localStorage.getItem('username') || '游客',
-            school: '北京大学',
-            major: '计算机科学与技术',
-            email: 'zhangsan@example.com'
-        };
-        
-        // 更新个人信息面板
-        function updateProfileHeader() {
-            const profileInfo = document.querySelector('.profile-info');
-            profileInfo.innerHTML = `
-                <h2>${userProfile.name}</h2>
-                <p>${userProfile.school} · ${userProfile.major}</p>
-                <div class="skill-label">
-                    <span>防骗能力值</span>
-                    <span>75%</span>
-                </div>
-                <div class="skill-bar">
-                    <div class="skill-progress" style="width: 75%;"></div>
-                </div>
-            `;
-        }
-        
         // 页面加载时的动画效果
-        window.onload = function() {
+        window.onload = async function() {
+            upsertAuthMirror();
+            await syncCurrentUserAvatarFromBackend();
             renderTopRightUser();
             renderProfileAvatar();
+
+            const profile = await fetchCurrentProfile();
+            fillProfileForm(profile);
+            updateProfileHeader(profile);
 
             document.querySelectorAll('[data-auth-required="true"]').forEach(function (el) {
                 el.addEventListener('click', function (event) {
@@ -682,8 +844,12 @@
             document.getElementById('logoutBtn').addEventListener('click', function () {
                 localStorage.removeItem('token');
                 localStorage.removeItem('username');
+                localStorage.removeItem('userId');
+                localStorage.removeItem(USER_AVATAR_OWNER_KEY);
                 sessionStorage.removeItem('token');
                 sessionStorage.removeItem('username');
+                sessionStorage.removeItem('userId');
+                sessionStorage.removeItem(USER_AVATAR_OWNER_KEY);
                 location.reload();
             });
 
@@ -696,311 +862,47 @@
                     alert('请上传图片文件');
                     return;
                 }
+                if (file.size > 2 * 1024 * 1024) {
+                    alert('头像图片建议不超过 2MB');
+                    return;
+                }
 
                 const reader = new FileReader();
-                reader.onload = function (e) {
+                reader.onload = async function (e) {
                     const dataUrl = e.target.result;
-                    setAvatarDataUrl(dataUrl);
-                    renderProfileAvatar();
-                    renderTopRightUser();
+                    try {
+                        await uploadAvatarToBackend(dataUrl);
+                        setAvatarDataUrl(dataUrl);
+                        renderProfileAvatar();
+                        renderTopRightUser();
+                    } catch (err) {
+                        alert(err && err.message ? err.message : '头像上传失败');
+                    }
                 };
                 reader.readAsDataURL(file);
             });
-
-            // 技能条动画
-            const skillProgress = document.querySelector('.skill-progress');
-            skillProgress.style.width = '0';
-            setTimeout(() => {
-                skillProgress.style.width = '75%';
-            }, 500);
-            
-            // 绑定菜单项点击事件
-            const menuItems = document.querySelectorAll('.menu-item');
-            menuItems.forEach(item => {
-                item.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    
-                    // 移除所有菜单项的active类
-                    menuItems.forEach(menuItem => {
-                        menuItem.classList.remove('active');
-                    });
-                    
-                    // 添加当前菜单项的active类
-                    this.classList.add('active');
-                    
-                    // 根据菜单项文本内容更新右侧内容
-                    const menuText = this.textContent.trim();
-
-                    if (menuText !== '浏览案例' && !requireLogin(menuText)) {
-                        return;
-                    }
-
-                    updateContent(menuText);
-                });
+            document.getElementById('profileForm').addEventListener('submit', async function (e) {
+                e.preventDefault();
+                const messageEl = document.getElementById('profileSaveMessage');
+                const btn = document.getElementById('saveProfileBtn');
+                messageEl.textContent = '';
+                btn.disabled = true;
+                btn.textContent = '保存中...';
+                try {
+                    const saved = await saveProfile();
+                    fillProfileForm(saved);
+                    updateProfileHeader(saved);
+                    messageEl.style.color = '#15803d';
+                    messageEl.textContent = '保存成功';
+                } catch (err) {
+                    messageEl.style.color = '#b91c1c';
+                    messageEl.textContent = err && err.message ? err.message : '保存失败';
+                } finally {
+                    btn.disabled = false;
+                    btn.textContent = '保存资料';
+                }
             });
         };
-        
-        // 更新右侧内容
-        function updateContent(menuText) {
-            const contentArea = document.querySelector('.content-area');
-            
-            switch(menuText) {
-                case '我的收藏案例':
-                    contentArea.innerHTML = `
-                        <div class="content-card">
-                            <h3>我的收藏案例</h3>
-                            <div class="record-item">
-                                <div class="record-icon">⭐</div>
-                                <div class="record-info">
-                                    <h4>刷单兼职骗局</h4>
-                                    <p>刷单兼职的危害和识别方法</p>
-                                    <div class="record-time">2024-05-12 11:20</div>
-                                </div>
-                            </div>
-                            <div class="record-item">
-                                <div class="record-icon">⭐</div>
-                                <div class="record-info">
-                                    <h4>扣押证件骗局</h4>
-                                    <p>如何保护个人证件安全</p>
-                                    <div class="record-time">2024-05-11 10:00</div>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                    break;
-                case '学习历史':
-                    contentArea.innerHTML = `
-                        <div class="content-card">
-                            <h3>学习历史</h3>
-                            <div class="record-item">
-                                <div class="record-icon">📖</div>
-                                <div class="record-info">
-                                    <h4>面试收费骗局</h4>
-                                    <p>了解面试中常见的收费陷阱</p>
-                                    <div class="record-time">2024-05-15 14:30</div>
-                                </div>
-                            </div>
-                            <div class="record-item">
-                                <div class="record-icon">📖</div>
-                                <div class="record-info">
-                                    <h4>培训贷骗局</h4>
-                                    <p>如何识别和避免培训贷款陷阱</p>
-                                    <div class="record-time">2024-05-14 09:15</div>
-                                </div>
-                            </div>
-                            <div class="record-item">
-                                <div class="record-icon">📖</div>
-                                <div class="record-info">
-                                    <h4>虚假高薪岗位</h4>
-                                    <p>如何判断岗位薪资的合理性</p>
-                                    <div class="record-time">2024-05-13 16:45</div>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                    break;
-                case '风险评估报告':
-                    contentArea.innerHTML = `
-                        <div class="content-card">
-                            <h3>风险评估报告</h3>
-                            <p style="margin-bottom: 20px;">根据您的学习情况和互动记录，我们为您生成了以下风险评估报告：</p>
-                            <div style="margin-bottom: 15px;">
-                                <h4>防骗意识评估</h4>
-                                <div class="skill-label">
-                                    <span>防骗意识</span>
-                                    <span>85%</span>
-                                </div>
-                                <div class="skill-bar">
-                                    <div class="skill-progress" style="width: 85%;"></div>
-                                </div>
-                            </div>
-                            <div style="margin-bottom: 15px;">
-                                <h4>风险识别能力</h4>
-                                <div class="skill-label">
-                                    <span>风险识别</span>
-                                    <span>75%</span>
-                                </div>
-                                <div class="skill-bar">
-                                    <div class="skill-progress" style="width: 75%;"></div>
-                                </div>
-                            </div>
-                            <div style="margin-bottom: 15px;">
-                                <h4>应对能力</h4>
-                                <div class="skill-label">
-                                    <span>应对能力</span>
-                                    <span>70%</span>
-                                </div>
-                                <div class="skill-bar">
-                                    <div class="skill-progress" style="width: 70%;"></div>
-                                </div>
-                            </div>
-                            <p style="margin-top: 20px;"><strong>建议：</strong>继续学习培训贷和虚假offer相关内容，提高风险识别能力。</p>
-                        </div>
-                    `;
-                    break;
-                case '修改资料':
-                    contentArea.innerHTML = `
-                        <div class="content-card">
-                            <h3>修改资料</h3>
-                            <form id="profileForm" style="margin-top: 20px;">
-                                <div style="margin-bottom: 15px;">
-                                    <label for="name" style="display: block; margin-bottom: 5px;">姓名：</label>
-                                    <input type="text" id="name" value="${userProfile.name}" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
-                                </div>
-                                <div style="margin-bottom: 15px;">
-                                    <label for="school" style="display: block; margin-bottom: 5px;">学校：</label>
-                                    <input type="text" id="school" value="${userProfile.school}" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
-                                </div>
-                                <div style="margin-bottom: 15px;">
-                                    <label for="major" style="display: block; margin-bottom: 5px;">专业：</label>
-                                    <input type="text" id="major" value="${userProfile.major}" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
-                                </div>
-                                <div style="margin-bottom: 15px;">
-                                    <label for="email" style="display: block; margin-bottom: 5px;">邮箱：</label>
-                                    <input type="email" id="email" value="${userProfile.email}" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
-                                </div>
-                                <button type="submit" style="background-color: #BFDEFF; color: #333; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; transition: background-color 0.3s ease;">保存修改</button>
-                            </form>
-                        </div>
-                    `;
-                    
-                    // 绑定表单提交事件
-                    document.getElementById('profileForm').addEventListener('submit', function(e) {
-                        e.preventDefault();
-                        
-                        // 获取表单数据
-                        userProfile.name = document.getElementById('name').value;
-                        userProfile.school = document.getElementById('school').value;
-                        userProfile.major = document.getElementById('major').value;
-                        userProfile.email = document.getElementById('email').value;
-                        
-                        // 更新个人信息面板
-                        updateProfileHeader();
-                        
-                        // 显示保存成功提示
-                        alert('资料保存成功！');
-                    });
-                    break;
-                case '浏览案例':
-                    window.location.href = 'case.html';
-                    break;
-                case '模拟测试':
-                    window.location.href = 'case.html#scenarios';
-                    break;
-                case '我的发帖记录':
-                    contentArea.innerHTML = `
-                        <div class="content-card">
-                            <h3>我的发帖记录</h3>
-                            <div class="record-item">
-                                <div class="record-icon">📝</div>
-                                <div class="record-info">
-                                    <h4>分享面试收费骗局经历</h4>
-                                    <p>我在某招聘平台面试时遇到了要求缴纳体检费的情况，幸好提前了解过相关知识，及时识破了骗局。</p>
-                                    <div class="record-time">2024-05-10 15:30</div>
-                                </div>
-                            </div>
-                            <div class="record-item">
-                                <div class="record-icon">📝</div>
-                                <div class="record-info">
-                                    <h4>培训贷骗局的警示</h4>
-                                    <p>朋友差点被培训贷骗局坑了，分享给大家一些识别方法：1. 要求先交费的培训要谨慎；2. 承诺高薪包就业的要核实；3. 签订合同时要仔细阅读条款。</p>
-                                    <div class="record-time">2024-05-08 10:15</div>
-                                </div>
-                            </div>
-                            <div class="record-item">
-                                <div class="record-icon">📝</div>
-                                <div class="record-info">
-                                    <h4>关于虚假offer的疑问</h4>
-                                    <p>收到一个offer要求缴纳保证金，这个靠谱吗？大家有没有遇到过类似情况？</p>
-                                    <div class="record-time">2024-05-05 09:45</div>
-                                </div>
-                            </div>
-                            <div class="record-item">
-                                <div class="record-icon">💬</div>
-                                <div class="record-info">
-                                    <h4>回复：扣押证件骗局的应对方法</h4>
-                                    <p>感谢大家的建议，我已经成功要回了证件，并且向相关部门举报了这家公司。</p>
-                                    <div class="record-time">2024-05-03 14:20</div>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                    break;
-                case '在线咨询':
-                    contentArea.innerHTML = `
-                        <div class="content-card">
-                            <h3>在线咨询</h3>
-                            <p style="margin-bottom: 20px;">如有任何关于就业防坑的问题，您可以通过以下方式咨询：</p>
-                            <div style="margin-bottom: 15px;">
-                                <h4>在线客服</h4>
-                                <p>工作时间：周一至周五 9:00-18:00</p>
-                                <button style="background-color: #BFDEFF; color: #333; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; transition: background-color 0.3s ease;">立即咨询</button>
-                            </div>
-                            <div style="margin-bottom: 15px;">
-                                <h4>电话咨询</h4>
-                                <p>热线电话：400-123-4567</p>
-                                <p>工作时间：周一至周日 9:00-21:00</p>
-                            </div>
-                            <div style="margin-bottom: 15px;">
-                                <h4>邮箱咨询</h4>
-                                <p>邮箱：contact@job-safety.com</p>
-                                <p>我们会在24小时内回复您的邮件</p>
-                            </div>
-                        </div>
-                    `;
-                    break;
-                default:
-                    // 默认显示最近浏览和收藏
-                    contentArea.innerHTML = `
-                        <div class="content-card">
-                            <h3>最近浏览</h3>
-                            <div class="record-item">
-                                <div class="record-icon">📄</div>
-                                <div class="record-info">
-                                    <h4>面试收费骗局</h4>
-                                    <p>了解面试中常见的收费陷阱</p>
-                                    <div class="record-time">2024-05-15 14:30</div>
-                                </div>
-                            </div>
-                            <div class="record-item">
-                                <div class="record-icon">📄</div>
-                                <div class="record-info">
-                                    <h4>培训贷骗局</h4>
-                                    <p>如何识别和避免培训贷款陷阱</p>
-                                    <div class="record-time">2024-05-14 09:15</div>
-                                </div>
-                            </div>
-                            <div class="record-item">
-                                <div class="record-icon">📄</div>
-                                <div class="record-info">
-                                    <h4>虚假高薪岗位</h4>
-                                    <p>如何判断岗位薪资的合理性</p>
-                                    <div class="record-time">2024-05-13 16:45</div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="content-card">
-                            <h3>我的收藏</h3>
-                            <div class="record-item">
-                                <div class="record-icon">⭐</div>
-                                <div class="record-info">
-                                    <h4>刷单兼职骗局</h4>
-                                    <p>刷单兼职的危害和识别方法</p>
-                                    <div class="record-time">2024-05-12 11:20</div>
-                                </div>
-                            </div>
-                            <div class="record-item">
-                                <div class="record-icon">⭐</div>
-                                <div class="record-info">
-                                    <h4>扣押证件骗局</h4>
-                                    <p>如何保护个人证件安全</p>
-                                    <div class="record-time">2024-05-11 10:00</div>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-            }
-        }
     </script>
 </body>
 </html>
