@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI 助手</title>
+    
+<link rel="icon" type="image/png" href="assets/images/scenarios/AI头像-圆形.png">
+<title>职途安</title>
     <style>
         :root {
             --bg-1: #F0F9FF;
@@ -83,6 +85,15 @@
         }
 
         .nav-center a:hover::after {
+            width: 100%;
+        }
+
+        .nav-center a.active {
+            color: #1d4ed8;
+            font-weight: 600;
+        }
+
+        .nav-center a.active::after {
             width: 100%;
         }
 
@@ -202,11 +213,36 @@
         .session-list {
             padding: 10px;
             overflow-y: auto;
+            scrollbar-width: none;
             display: flex;
             flex-direction: column;
             gap: 8px;
             min-height: 0;
             flex: 1;
+        }
+
+        .session-list::-webkit-scrollbar {
+            width: 0;
+            height: 0;
+        }
+
+        .session-list.is-scrolling {
+            scrollbar-width: thin;
+            scrollbar-color: rgba(29, 78, 216, 0.45) transparent;
+        }
+
+        .session-list.is-scrolling::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        .session-list.is-scrolling::-webkit-scrollbar-thumb {
+            background: rgba(29, 78, 216, 0.45);
+            border-radius: 999px;
+        }
+
+        .session-list.is-scrolling::-webkit-scrollbar-track {
+            background: transparent;
         }
 
         .session-item {
@@ -360,11 +396,36 @@
             flex: 1;
             min-height: 0;
             overflow-y: auto;
+            scrollbar-width: none;
             padding: 18px 16px;
             display: flex;
             flex-direction: column;
             gap: 14px;
             background: linear-gradient(180deg, rgba(255, 255, 255, 0.42) 0%, rgba(255, 255, 255, 0.22) 100%);
+        }
+
+        .messages::-webkit-scrollbar {
+            width: 0;
+            height: 0;
+        }
+
+        .messages.is-scrolling {
+            scrollbar-width: thin;
+            scrollbar-color: rgba(29, 78, 216, 0.45) transparent;
+        }
+
+        .messages.is-scrolling::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        .messages.is-scrolling::-webkit-scrollbar-thumb {
+            background: rgba(29, 78, 216, 0.45);
+            border-radius: 999px;
+        }
+
+        .messages.is-scrolling::-webkit-scrollbar-track {
+            background: transparent;
         }
 
         .message-row {
@@ -635,7 +696,7 @@
     <div class="logo">职途安</div>
     <nav class="nav-center">
         <a href="home.html">首页</a>
-        <a href="ai-chat-test.html" data-auth-required="true">AI助手</a>
+        <a href="ai-chat-test.html" data-auth-required="true" class="active">AI助手</a>
         <a href="case.html">案例模拟</a>
         <a href="forum.html">交流论坛</a>
     </nav>
@@ -730,6 +791,45 @@
 
     function getCurrentUserId() {
         return localStorage.getItem('userId') || sessionStorage.getItem('userId') || '';
+    }
+
+    function getOnlineTimerStart() {
+        const raw = sessionStorage.getItem('onlineTimerStartAt') || '';
+        const value = Number(raw);
+        if (Number.isFinite(value) && value > 0) {
+            return value;
+        }
+        const now = Date.now();
+        sessionStorage.setItem('onlineTimerStartAt', String(now));
+        return now;
+    }
+
+    function flushOnlineSeconds() {
+        const now = Date.now();
+        const start = getOnlineTimerStart();
+        const seconds = Math.max(0, Math.floor((now - start) / 1000));
+        sessionStorage.setItem('onlineTimerStartAt', String(now));
+        return seconds;
+    }
+
+    async function reportUserActivity(payload) {
+        const token = getToken();
+        const userId = getCurrentUserId();
+        if (!token || !userId || !payload) {
+            return;
+        }
+        try {
+            await fetch(API_BASE + '/api/users/' + encodeURIComponent(userId) + '/activity', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + token
+                },
+                body: JSON.stringify(payload)
+            });
+        } catch (err) {
+            // ignore network errors
+        }
     }
 
     function getAvatarDataUrl() {
@@ -1107,6 +1207,21 @@
         statusEl.textContent = safeText;
         statusEl.classList.toggle('error', isError);
         statusEl.style.display = safeText ? 'block' : 'none';
+    }
+
+    function bindAutoHideScrollbar(el) {
+        if (!el) return;
+        let hideTimer = null;
+        const showScrollbar = () => {
+            el.classList.add('is-scrolling');
+            if (hideTimer) {
+                window.clearTimeout(hideTimer);
+            }
+            hideTimer = window.setTimeout(() => {
+                el.classList.remove('is-scrolling');
+            }, 520);
+        };
+        el.addEventListener('scroll', showScrollbar, { passive: true });
     }
 
     function escapeHtml(text) {
@@ -1727,6 +1842,10 @@
 
         const userText = selectedFile ? `${prompt || '（仅文件）'}\n[文件] ${selectedFile.name}` : prompt;
         appendMessage(userText, 'user');
+        reportUserActivity({
+            onlineSeconds: flushOnlineSeconds(),
+            aiQueryCount: 1
+        });
         const inferredTitle = selectedFile && !prompt
             ? '[文件] ' + selectedFile.name
             : (prompt || '新对话');
@@ -1812,6 +1931,12 @@
         window.location.href = 'profile.html';
     });
 
+    document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'hidden') {
+            reportUserActivity({ onlineSeconds: flushOnlineSeconds() });
+        }
+    });
+
     document.querySelectorAll('[data-auth-required="true"]').forEach((el) => {
         el.addEventListener('click', (event) => {
             event.preventDefault();
@@ -1823,6 +1948,8 @@
     });
 
     (async () => {
+        bindAutoHideScrollbar(sessionListEl);
+        bindAutoHideScrollbar(messagesEl);
         await syncCurrentUserAvatarFromBackend();
         renderTopRightUser();
         sessionList = loadSessionList();
@@ -1851,3 +1978,5 @@
 </script>
 </body>
 </html>
+
+

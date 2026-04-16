@@ -14,6 +14,30 @@ public class UserDtos {
     ) {
     }
 
+        public record ActivityUpdateRequest(
+            Long onlineSeconds,
+            Integer aiQueryCount,
+            Integer caseStudyCount,
+            Integer simulationCount,
+            Integer forumViewCount
+        ) {
+        }
+
+        public record RiskAssessmentView(
+            long onlineSeconds,
+            int aiQueryCount,
+            int caseStudyCount,
+            int simulationCount,
+            int forumViewCount,
+            int onlineScore,
+            int aiScore,
+            int caseScore,
+            int simulationScore,
+            int forumScore,
+            int antiFraudValue
+        ) {
+        }
+
         public record UpdateAvatarRequest(
             String avatarDataUrl
         ) {

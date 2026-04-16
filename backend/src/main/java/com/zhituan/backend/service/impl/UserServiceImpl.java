@@ -57,4 +57,63 @@ public class UserServiceImpl implements UserService {
         profile.setAvatarDataUrl(avatarDataUrl);
         return userProfileRepository.save(profile);
     }
+
+    @Override
+    public UserProfile updateActivity(String userId, UserDtos.ActivityUpdateRequest request) {
+        UserProfile profile = userProfileRepository.findById(userId).orElse(UserProfile.builder().userId(userId).build());
+        profile.setOnlineSeconds(safeLong(profile.getOnlineSeconds()) + safeLong(request == null ? null : request.onlineSeconds()));
+        profile.setAiQueryCount(safeInt(profile.getAiQueryCount()) + safeInt(request == null ? null : request.aiQueryCount()));
+        profile.setCaseStudyCount(safeInt(profile.getCaseStudyCount()) + safeInt(request == null ? null : request.caseStudyCount()));
+        profile.setSimulationCount(safeInt(profile.getSimulationCount()) + safeInt(request == null ? null : request.simulationCount()));
+        profile.setForumViewCount(safeInt(profile.getForumViewCount()) + safeInt(request == null ? null : request.forumViewCount()));
+        return userProfileRepository.save(profile);
+    }
+
+    @Override
+    public UserDtos.RiskAssessmentView getRiskAssessment(String userId) {
+        UserProfile profile = userProfileRepository.findById(userId).orElse(UserProfile.builder().userId(userId).build());
+
+        long onlineSeconds = safeLong(profile.getOnlineSeconds());
+        int aiCount = safeInt(profile.getAiQueryCount());
+        int caseCount = safeInt(profile.getCaseStudyCount());
+        int simulationCount = safeInt(profile.getSimulationCount());
+        int forumCount = safeInt(profile.getForumViewCount());
+
+        int onlineScore = toDimensionScore(onlineSeconds / 60.0, 600.0);
+        int aiScore = toDimensionScore(aiCount, 220.0);
+        int caseScore = toDimensionScore(caseCount, 80.0);
+        int simulationScore = toDimensionScore(simulationCount, 60.0);
+        int forumScore = toDimensionScore(forumCount, 180.0);
+
+        double weighted = onlineScore * 0.24 + aiScore * 0.24 + caseScore * 0.20 + simulationScore * 0.20 + forumScore * 0.12;
+        int antiFraudValue = 60 + (int) Math.round(40 * Math.pow(Math.max(0.0, Math.min(1.0, weighted / 100.0)), 1.85));
+
+        return new UserDtos.RiskAssessmentView(
+                onlineSeconds,
+                aiCount,
+                caseCount,
+                simulationCount,
+                forumCount,
+                onlineScore,
+                aiScore,
+                caseScore,
+                simulationScore,
+                forumScore,
+                Math.max(60, Math.min(100, antiFraudValue))
+        );
+    }
+
+    private int toDimensionScore(double value, double maxForFull) {
+        if (value <= 0) return 0;
+        double ratio = Math.log1p(value) / Math.log1p(maxForFull);
+        return (int) Math.round(Math.max(0.0, Math.min(1.0, ratio)) * 100);
+    }
+
+    private int safeInt(Integer value) {
+        return Math.max(0, value == null ? 0 : value);
+    }
+
+    private long safeLong(Long value) {
+        return Math.max(0L, value == null ? 0L : value);
+    }
 }

@@ -9,4 +9,8 @@ public interface UserService {
     UserProfile updateProfile(String userId, UserDtos.UpdateProfileRequest request);
 
     UserProfile updateAvatar(String userId, UserDtos.UpdateAvatarRequest request);
+
+    UserProfile updateActivity(String userId, UserDtos.ActivityUpdateRequest request);
+
+    UserDtos.RiskAssessmentView getRiskAssessment(String userId);
 }

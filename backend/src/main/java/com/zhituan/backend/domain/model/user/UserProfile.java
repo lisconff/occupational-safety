@@ -28,6 +28,26 @@ public class UserProfile {
     @Column(name = "avatar_data_url", columnDefinition = "LONGTEXT")
     private String avatarDataUrl;
 
+    @Column(nullable = false)
+    @Builder.Default
+    private Long onlineSeconds = 0L;
+
+    @Column(nullable = false)
+    @Builder.Default
+    private Integer aiQueryCount = 0;
+
+    @Column(nullable = false)
+    @Builder.Default
+    private Integer caseStudyCount = 0;
+
+    @Column(nullable = false)
+    @Builder.Default
+    private Integer simulationCount = 0;
+
+    @Column(nullable = false)
+    @Builder.Default
+    private Integer forumViewCount = 0;
+
     // --- 领域行为方法 (Rich Domain Model) ---
 
     /**

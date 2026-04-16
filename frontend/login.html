@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>登录 - 职途安</title>
+    
+<link rel="icon" type="image/png" href="assets/images/scenarios/AI头像-圆形.png">
+<title>职途安</title>
     <style>
         * {
             margin: 0;
@@ -171,7 +173,7 @@
             </div>
 
             <label class="remember-row">
-                <input type="checkbox" id="rememberMe" checked>
+                <input type="checkbox" id="rememberMe">
                 <span>记住我</span>
             </label>
 
@@ -295,11 +297,15 @@
                     sessionStorage.removeItem("username");
                     sessionStorage.removeItem("userId");
                     sessionStorage.removeItem("userAvatarOwner");
-                    [localStorage, sessionStorage].forEach((store) => {
-                        store.setItem("token", data.data.token);
-                        store.setItem("userId", data.data.userId || "");
-                        store.setItem("username", data.data.username || username);
-                    });
+                    sessionStorage.setItem("token", data.data.token);
+                    sessionStorage.setItem("userId", data.data.userId || "");
+                    sessionStorage.setItem("username", data.data.username || username);
+                    sessionStorage.setItem("onlineTimerStartAt", String(Date.now()));
+                    if (rememberMe.checked) {
+                        localStorage.setItem("token", data.data.token);
+                        localStorage.setItem("userId", data.data.userId || "");
+                        localStorage.setItem("username", data.data.username || username);
+                    }
                     await syncCurrentUserAvatar(data.data.userId || "", data.data.username || username, data.data.token);
                     window.location.href = redirectUrl;
                     return;
@@ -315,3 +321,5 @@
     </script>
 </body>
 </html>
+
+

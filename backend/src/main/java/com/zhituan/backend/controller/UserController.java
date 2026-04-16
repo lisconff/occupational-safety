@@ -37,4 +37,17 @@ public class UserController {
     ) {
         return ApiResponse.ok("头像更新成功", userService.updateAvatar(userId, request));
     }
+
+    @PutMapping("/{userId}/activity")
+    public ApiResponse<UserProfile> updateActivity(
+            @PathVariable String userId,
+            @RequestBody UserDtos.ActivityUpdateRequest request
+    ) {
+        return ApiResponse.ok("行为数据记录成功", userService.updateActivity(userId, request));
+    }
+
+    @GetMapping("/{userId}/risk-assessment")
+    public ApiResponse<UserDtos.RiskAssessmentView> getRiskAssessment(@PathVariable String userId) {
+        return ApiResponse.ok(userService.getRiskAssessment(userId));
+    }
 }

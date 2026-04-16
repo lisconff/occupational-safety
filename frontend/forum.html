@@ -3,7 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>职途安论坛</title>
+  
+<link rel="icon" type="image/png" href="assets/images/scenarios/AI头像-圆形.png">
+<title>职途安</title>
   <style>
     * {
       margin: 0;
@@ -81,6 +83,15 @@
     }
 
     .nav-center a:hover::after {
+      width: 100%;
+    }
+
+    .nav-center a.active {
+      color: #1d4ed8;
+      font-weight: 600;
+    }
+
+    .nav-center a.active::after {
       width: 100%;
     }
 
@@ -371,11 +382,36 @@
       height: 100%;
       min-height: 0;
       overflow-y: auto;
+      scrollbar-width: none;
       padding-right: 2px;
       background: rgba(255, 255, 255, 0.82);
       border: 1px solid #dbeafe;
       border-radius: 18px;
       box-shadow: 0 10px 24px rgba(30, 64, 175, 0.06);
+    }
+
+    .sidebar::-webkit-scrollbar {
+      width: 0;
+      height: 0;
+    }
+
+    .sidebar.is-scrolling {
+      scrollbar-width: thin;
+      scrollbar-color: rgba(30, 64, 175, 0.45) transparent;
+    }
+
+    .sidebar.is-scrolling::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+
+    .sidebar.is-scrolling::-webkit-scrollbar-thumb {
+      background: rgba(30, 64, 175, 0.45);
+      border-radius: 999px;
+    }
+
+    .sidebar.is-scrolling::-webkit-scrollbar-track {
+      background: transparent;
     }
 
     .widget {
@@ -648,7 +684,7 @@
       <a href="home.html">首页</a>
       <a href="ai-chat-test.html" data-auth-required="true">AI助手</a>
       <a href="case.html">案例模拟</a>
-      <a href="forum.html">交流论坛</a>
+      <a href="forum.html" class="active">交流论坛</a>
     </nav>
     <div class="nav-right">
       <div id="guest-nav">
@@ -784,6 +820,45 @@
 
   function getUserId() {
     return localStorage.getItem("userId") || sessionStorage.getItem("userId") || getUsername();
+  }
+
+  function getOnlineTimerStart() {
+    const raw = sessionStorage.getItem('onlineTimerStartAt') || '';
+    const value = Number(raw);
+    if (Number.isFinite(value) && value > 0) {
+      return value;
+    }
+    const now = Date.now();
+    sessionStorage.setItem('onlineTimerStartAt', String(now));
+    return now;
+  }
+
+  function flushOnlineSeconds() {
+    const now = Date.now();
+    const start = getOnlineTimerStart();
+    const seconds = Math.max(0, Math.floor((now - start) / 1000));
+    sessionStorage.setItem('onlineTimerStartAt', String(now));
+    return seconds;
+  }
+
+  async function reportUserActivity(payload) {
+    const token = getToken();
+    const userId = getUserId();
+    if (!token || !userId || !payload) {
+      return;
+    }
+    try {
+      await fetch(API_BASE + '/api/users/' + encodeURIComponent(userId) + '/activity', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + token
+        },
+        body: JSON.stringify(payload)
+      });
+    } catch (err) {
+      // ignore network errors
+    }
   }
 
   function getAvatarMap() {
@@ -1438,11 +1513,42 @@
     feed.addEventListener('scroll', showScrollbar, { passive: true });
   }
 
+  function bindSidebarScrollbarBehavior() {
+    const sidebar = document.querySelector('.sidebar');
+    if (!sidebar) return;
+
+    let hideTimer = null;
+    const showScrollbar = () => {
+      sidebar.classList.add('is-scrolling');
+      if (hideTimer) {
+        window.clearTimeout(hideTimer);
+      }
+      hideTimer = window.setTimeout(() => {
+        sidebar.classList.remove('is-scrolling');
+      }, 480);
+    };
+
+    sidebar.addEventListener('scroll', showScrollbar, { passive: true });
+  }
+
   renderTopRightUser();
   updateUserPanel();
+  reportUserActivity({
+    onlineSeconds: flushOnlineSeconds(),
+    forumViewCount: 1
+  });
   bindEvents();
   bindPostsFeedScrollbarBehavior();
+  bindSidebarScrollbarBehavior();
   loadPosts();
+
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'hidden') {
+      reportUserActivity({ onlineSeconds: flushOnlineSeconds() });
+    }
+  });
 </script>
 </body>
 </html>
+
+
