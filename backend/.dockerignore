@@ -1,0 +1,6 @@
+target
+.git
+.idea
+*.iml
+backend-run.log
+uploads
