@@ -429,6 +429,15 @@ body.is-scrolling::-webkit-scrollbar-track {
 
 .feature-text {
     width: 50%;
+    text-align: left;
+}
+
+.feature-card.reverse .feature-text {
+    text-align: right;
+}
+
+.feature-card.reverse .feature-text .btn.small {
+    margin-left: auto;
 }
 
 .feature-text h2 {
@@ -443,6 +452,7 @@ body.is-scrolling::-webkit-scrollbar-track {
 }
 
 .btn.small {
+    display: inline-block;
     padding: 8px 18px;
     background: #1677ff;
     border: none;

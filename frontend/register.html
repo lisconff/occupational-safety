@@ -212,6 +212,44 @@
             el.textContent = msg;
         }
 
+        async function wait(ms) {
+            return new Promise((resolve) => setTimeout(resolve, ms));
+        }
+
+        async function wakeBackend() {
+            try {
+                await fetch(API_BASE + "/api/health", { cache: "no-store" });
+            } catch (e) {
+                // Best-effort warm-up only.
+            }
+        }
+
+        async function postJsonWithRetry(url, payload) {
+            const maxAttempts = 2;
+            for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+                const controller = new AbortController();
+                const timer = setTimeout(() => controller.abort(), 20000);
+                try {
+                    const response = await fetch(url, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(payload),
+                        signal: controller.signal
+                    });
+                    clearTimeout(timer);
+                    return response;
+                } catch (err) {
+                    clearTimeout(timer);
+                    if (attempt === maxAttempts) {
+                        throw err;
+                    }
+                    await wakeBackend();
+                    await wait(1200);
+                }
+            }
+            throw new Error("unexpected register retry state");
+        }
+
         togglePassword.addEventListener("click", () => {
             const nextType = passwordInput.type === "password" ? "text" : "password";
             passwordInput.type = nextType;
@@ -245,11 +283,8 @@
             registerBtn.textContent = "注册中...";
 
             try {
-                const response = await fetch(API_BASE + "/api/auth/register", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ username, password })
-                });
+                await wakeBackend();
+                const response = await postJsonWithRetry(API_BASE + "/api/auth/register", { username, password });
 
                 const data = await response.json();
                 if (data && data.code === 200 && data.data && data.data.token) {
@@ -260,12 +295,13 @@
                     sessionStorage.setItem("token", data.data.token);
                     sessionStorage.setItem("userId", data.data.userId || "");
                     sessionStorage.setItem("username", data.data.username || username);
+                    sessionStorage.setItem("onlineTimerStartAt", String(Date.now()));
                     window.location.href = redirectUrl;
                     return;
                 }
                 showError(registerError, data && data.message ? data.message : "注册失败，请稍后重试");
             } catch (err) {
-                showError(registerError, "网络错误，请确认后端服务已启动");
+                showError(registerError, "网络连接后端失败，请稍后再试（服务器可能在冷启动）");
             } finally {
                 registerBtn.disabled = false;
                 registerBtn.classList.remove("loading");
