@@ -3,12 +3,12 @@ WORKDIR /app
 
 # Cache dependencies first for faster rebuilds
 COPY pom.xml .
-COPY .mvn .mvn
-COPY mvnw .
-RUN chmod +x mvnw
+
+# Render may inject MAVEN_CONFIG=/root/.m2, which can confuse mvnw; use mvn directly.
+RUN mvn -q -DskipTests dependency:go-offline
 
 COPY src src
-RUN ./mvnw -DskipTests package
+RUN mvn -DskipTests package
 
 FROM eclipse-temurin:17-jre
 WORKDIR /app
