@@ -532,10 +532,10 @@
                 <p id="profileSummary">资料待完善</p>
                 <div class="skill-label">
                     <span>防骗能力值</span>
-                    <span id="antiFraudValue">未知</span>
+                    <span id="antiFraudValue">60</span>
                 </div>
                 <div class="skill-bar">
-                    <div class="skill-progress" id="antiFraudProgress" style="width: 0%;"></div>
+                    <div class="skill-progress" id="antiFraudProgress" style="width: 60%;"></div>
                 </div>
             </div>
         </div>
@@ -703,7 +703,6 @@
         }
 
         const USER_AVATAR_MAP_KEY = 'userAvatarMap';
-        const USER_AVATAR_OWNER_KEY = 'userAvatarOwner';
 
         function getAvatarMap() {
             try {
@@ -739,9 +738,9 @@
                     map[userId] = url;
                 }
                 setAvatarMap(map);
-                localStorage.setItem(USER_AVATAR_OWNER_KEY, userId || username);
             }
             localStorage.setItem('userAvatar', url);
+            sessionStorage.setItem('userAvatar', url);
         }
 
         function upsertAuthMirror() {
@@ -953,7 +952,7 @@
                     if (username) delete map[username];
                     setAvatarMap(map);
                     localStorage.removeItem('userAvatar');
-                    localStorage.removeItem(USER_AVATAR_OWNER_KEY);
+                    sessionStorage.removeItem('userAvatar');
                 }
             } catch (e) {
             }
@@ -995,6 +994,10 @@
                 userNav.style.display = 'flex';
                 nameEl.textContent = username;
                 if (avatarUrl) {
+                    avatarImg.onerror = function () {
+                        avatarImg.style.display = 'none';
+                        avatarLetter.style.display = 'inline';
+                    };
                     avatarImg.src = avatarUrl;
                     avatarImg.style.display = 'block';
                     avatarLetter.style.display = 'none';
@@ -1015,6 +1018,11 @@
             const username = getUsername();
             const avatarUrl = getAvatarDataUrl(localStorage.getItem('userId') || sessionStorage.getItem('userId') || getUsername());
             if (avatarUrl) {
+                avatar.onerror = function () {
+                    avatar.style.display = 'none';
+                    avatarLetter.style.display = 'inline-flex';
+                    avatarLetter.textContent = (username || '游').charAt(0).toUpperCase();
+                };
                 avatar.src = avatarUrl;
                 avatar.style.display = 'block';
                 avatarLetter.style.display = 'none';
@@ -1026,9 +1034,19 @@
             }
         }
 
-        // 页面加载时的动画效果
-        window.onload = async function() {
+        function renderInitialProfileState() {
             upsertAuthMirror();
+            renderTopRightUser();
+            renderProfileAvatar();
+
+            updateProfileHeader(null, null);
+            renderRiskMetrics(null);
+        }
+
+        // 页面初始化
+        document.addEventListener('DOMContentLoaded', async function() {
+            renderInitialProfileState();
+
             await syncCurrentUserAvatarFromBackend();
             renderTopRightUser();
             renderProfileAvatar();
@@ -1082,11 +1100,11 @@
                 localStorage.removeItem('token');
                 localStorage.removeItem('username');
                 localStorage.removeItem('userId');
-                localStorage.removeItem(USER_AVATAR_OWNER_KEY);
+                localStorage.removeItem('userAvatar');
                 sessionStorage.removeItem('token');
                 sessionStorage.removeItem('username');
                 sessionStorage.removeItem('userId');
-                sessionStorage.removeItem(USER_AVATAR_OWNER_KEY);
+                sessionStorage.removeItem('userAvatar');
                 location.reload();
             });
 
@@ -1147,7 +1165,7 @@
                     reportUserActivity({ onlineSeconds: flushOnlineSeconds() });
                 }
             });
-        };
+        });
     </script>
 </body>
 </html>

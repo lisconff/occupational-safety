@@ -352,17 +352,6 @@
         return localStorage.getItem("userId") || sessionStorage.getItem("userId") || "";
     }
 
-    const AVATAR_RESET_FLAG_KEY = "avatarReset_20260415";
-
-    function resetAvatarStorageOnce() {
-        if (localStorage.getItem(AVATAR_RESET_FLAG_KEY) === "1") return;
-        ["userAvatar", "userAvatarMap", "userAvatarOwner"].forEach((k) => {
-            localStorage.removeItem(k);
-            sessionStorage.removeItem(k);
-        });
-        localStorage.setItem(AVATAR_RESET_FLAG_KEY, "1");
-    }
-
     const USER_AVATAR_MAP_KEY = "userAvatarMap";
 
     function getAvatarMap() {
@@ -535,7 +524,6 @@
         });
     });
 
-    resetAvatarStorageOnce();
     renderTopRightUser();
 
 </script>

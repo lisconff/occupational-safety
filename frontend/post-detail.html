@@ -713,6 +713,7 @@
     });
 
     (async () => {
+        renderTopRightUser();
         await syncCurrentUserAvatarFromBackend();
         renderTopRightUser();
         loadDetail();

@@ -1950,6 +1950,7 @@
     (async () => {
         bindAutoHideScrollbar(sessionListEl);
         bindAutoHideScrollbar(messagesEl);
+        renderTopRightUser();
         await syncCurrentUserAvatarFromBackend();
         renderTopRightUser();
         sessionList = loadSessionList();

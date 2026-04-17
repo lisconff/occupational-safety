@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>职途安 - 前后端调用逻辑图</title>
+  <style>
+    :root {
+      --bg-1: #eef6ff;
+      --bg-2: #dbeafe;
+      --card: #ffffff;
+      --line: #2563eb;
+      --line-soft: #93c5fd;
+      --text-main: #0f172a;
+      --text-sub: #334155;
+      --glow: rgba(37, 99, 235, 0.18);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background: radial-gradient(circle at 15% 20%, #f8fbff, var(--bg-1) 48%, var(--bg-2) 100%);
+      color: var(--text-main);
+      padding: 32px 20px 48px;
+    }
+
+    .wrap {
+      max-width: 1280px;
+      margin: 0 auto;
+    }
+
+    .head {
+      text-align: center;
+      margin-bottom: 22px;
+    }
+
+    .head h1 {
+      font-size: 34px;
+      letter-spacing: 1px;
+      color: #1e3a8a;
+    }
+
+    .head p {
+      margin-top: 8px;
+      color: var(--text-sub);
+      font-size: 15px;
+    }
+
+    .canvas {
+      border: 1px solid #bfdbfe;
+      border-radius: 24px;
+      padding: 24px 18px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.96), rgba(239,246,255,0.96));
+      box-shadow: 0 24px 60px var(--glow);
+      overflow-x: auto;
+    }
+
+    .row {
+      display: grid;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .row.front {
+      grid-template-columns: repeat(5, minmax(170px, 1fr));
+    }
+
+    .row.api {
+      grid-template-columns: repeat(4, minmax(190px, 1fr));
+    }
+
+    .row.svc {
+      grid-template-columns: repeat(3, minmax(220px, 1fr));
+    }
+
+    .row.dep {
+      grid-template-columns: repeat(3, minmax(220px, 1fr));
+      margin-bottom: 0;
+    }
+
+    .node {
+      background: var(--card);
+      border: 1px solid #bfdbfe;
+      border-radius: 16px;
+      padding: 12px 14px;
+      box-shadow: 0 10px 24px rgba(37, 99, 235, 0.12);
+      position: relative;
+      min-height: 94px;
+    }
+
+    .node h3 {
+      font-size: 16px;
+      color: #1d4ed8;
+      margin-bottom: 6px;
+    }
+
+    .node p {
+      font-size: 13px;
+      line-height: 1.5;
+      color: #334155;
+    }
+
+    .lane-title {
+      margin: 6px 0 10px;
+      font-size: 14px;
+      color: #1e40af;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
+    .connector {
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .connector::before {
+      content: "";
+      width: 100%;
+      max-width: 1040px;
+      height: 2px;
+      background: repeating-linear-gradient(90deg, var(--line), var(--line) 10px, transparent 10px, transparent 18px);
+      animation: dashMove 6s linear infinite;
+      opacity: 0.8;
+    }
+
+    .connector::after {
+      content: "";
+      position: absolute;
+      right: calc(50% - 520px);
+      border-left: 8px solid var(--line);
+      border-top: 6px solid transparent;
+      border-bottom: 6px solid transparent;
+    }
+
+    .legend {
+      margin-top: 16px;
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      font-size: 13px;
+      color: #334155;
+    }
+
+    .legend span {
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      border-radius: 999px;
+      padding: 6px 12px;
+    }
+
+    .tips {
+      margin-top: 14px;
+      font-size: 13px;
+      color: #475569;
+      line-height: 1.6;
+    }
+
+    @keyframes dashMove {
+      to {
+        background-position: 140px 0;
+      }
+    }
+
+    @media (max-width: 1080px) {
+      .row.front,
+      .row.api,
+      .row.svc,
+      .row.dep {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .connector::after {
+        display: none;
+      }
+    }
+
+    @media (max-width: 680px) {
+      .row.front,
+      .row.api,
+      .row.svc,
+      .row.dep {
+        grid-template-columns: 1fr;
+      }
+
+      .head h1 {
+        font-size: 26px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="head">
+      <h1>职途安前后端调用逻辑图</h1>
+      <p>从页面交互到后端服务再到数据与AI依赖的完整链路</p>
+    </div>
+
+    <div class="canvas">
+      <div class="lane-title">前端页面层（Render Static Site）</div>
+      <div class="row front">
+        <div class="node"><h3>home.html</h3><p>导航与入口路由，统一登录态展示。</p></div>
+        <div class="node"><h3>login/register</h3><p>登录注册接口调用，获取 token/userId 并缓存。</p></div>
+        <div class="node"><h3>case.html</h3><p>案例与场景模拟，行为埋点上报。</p></div>
+        <div class="node"><h3>ai-chat-test</h3><p>AI问答/文件问答，记录提问行为。</p></div>
+        <div class="node"><h3>forum/profile</h3><p>论坛互动、个人资料、头像和雷达图展示。</p></div>
+      </div>
+
+      <div class="connector"></div>
+
+      <div class="lane-title">接口层（Spring Boot Controller）</div>
+      <div class="row api">
+        <div class="node"><h3>AuthController</h3><p>/api/auth/register<br>/api/auth/login</p></div>
+        <div class="node"><h3>UserController</h3><p>/profile /avatar /activity /risk-assessment</p></div>
+        <div class="node"><h3>ForumController</h3><p>帖子、点赞、收藏、评论及附件接口。</p></div>
+        <div class="node"><h3>AiAssistantController</h3><p>AI问答、流式响应、历史记录接口。</p></div>
+      </div>
+
+      <div class="connector"></div>
+
+      <div class="lane-title">业务层（Service）</div>
+      <div class="row svc">
+        <div class="node"><h3>AuthService / JwtUtils</h3><p>密码校验、JWT签发、会话写入。</p></div>
+        <div class="node"><h3>UserService</h3><p>资料/头像维护，行为累计，风险分计算与雷达维度生成。</p></div>
+        <div class="node"><h3>ForumService / AiService</h3><p>社区业务编排、AI请求中转与结果封装。</p></div>
+      </div>
+
+      <div class="connector"></div>
+
+      <div class="lane-title">依赖与存储层</div>
+      <div class="row dep">
+        <div class="node"><h3>TiDB Cloud</h3><p>users、user_profiles、auth_sessions、forum_* 等持久化数据。</p></div>
+        <div class="node"><h3>Coze API</h3><p>AI模型能力接入（通过后端统一调用）。</p></div>
+        <div class="node"><h3>Render</h3><p>前端静态托管 + 后端容器化部署 + 健康检查。</p></div>
+      </div>
+
+      <div class="legend">
+        <span>蓝色实线节点：核心执行单元</span>
+        <span>虚线箭头：请求流向（前端 -> 后端 -> 依赖）</span>
+        <span>结果回流：统一 JSON 响应并更新页面状态</span>
+      </div>
+
+      <div class="tips">
+        建议演示顺序：登录 -> 案例学习 -> AI提问 -> 论坛浏览 -> 个人中心雷达图，能完整体现行为数据上报与风险评估闭环。
+      </div>
+    </div>
+  </div>
+</body>
+</html>

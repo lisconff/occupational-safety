@@ -3657,6 +3657,7 @@
         };
 
         (async () => {
+            renderTopRightUser();
             await syncCurrentUserAvatarFromBackend();
             renderTopRightUser();
         })();
