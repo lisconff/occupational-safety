@@ -809,6 +809,19 @@
   const PAGE_SIZE = 10;
   const USER_AVATAR_MAP_KEY = "userAvatarMap";
   const USER_AVATAR_OWNER_KEY = "userAvatarOwner";
+  const FORUM_POSTS_CACHE_KEY = "forum_posts_cache_v1";
+  const FORUM_POSTS_CACHE_TTL = 120000;
+
+  async function fetchJsonWithTimeout(url, options, timeoutMs) {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), timeoutMs || 12000);
+    try {
+      const response = await fetch(url, Object.assign({}, options || {}, { signal: controller.signal }));
+      return await response.json();
+    } finally {
+      clearTimeout(timer);
+    }
+  }
 
   function getToken() {
     return localStorage.getItem("token") || sessionStorage.getItem("token") || "";
@@ -1226,12 +1239,12 @@
 
   function renderMyPosts() {
     const myPostsList = document.getElementById("myPostsList");
-    const username = getUsername();
-    if (!username) {
+    const userId = getUserId();
+    if (!userId) {
       myPostsList.innerHTML = '<div class="empty-message">登录后可查看我的帖子</div>';
       return;
     }
-    const mine = allPosts.filter((p) => p.userId === username).slice(0, 2);
+    const mine = allPosts.filter((p) => p.userId === userId).slice(0, 2);
     if (!mine.length) {
       myPostsList.innerHTML = '<div class="empty-message">你还没有发布帖子</div>';
       return;
@@ -1247,13 +1260,13 @@
 
   async function renderUserPostList(endpoint, targetListId) {
     const wrap = document.getElementById(targetListId);
-    const username = getUsername();
-    if (!username) {
+    const userId = getUserId();
+    if (!userId) {
       wrap.innerHTML = '<div class="empty-message">登录后可查看</div>';
       return;
     }
     try {
-      const response = await fetch(API_BASE + endpoint.replace("{userId}", encodeURIComponent(username)), {
+      const response = await fetch(API_BASE + endpoint.replace("{userId}", encodeURIComponent(userId)), {
         headers: getToken() ? { "Authorization": "Bearer " + getToken() } : {}
       });
       const data = await response.json();
@@ -1282,19 +1295,36 @@
     const postsFeed = document.getElementById("postsFeed");
     postsFeed.innerHTML = '<div class="empty-message">正在加载帖子...</div>';
     try {
+      const cachedRaw = localStorage.getItem(FORUM_POSTS_CACHE_KEY);
+      if (cachedRaw) {
+        const cached = JSON.parse(cachedRaw);
+        if (cached && Array.isArray(cached.posts) && (Date.now() - (cached.savedAt || 0)) < FORUM_POSTS_CACHE_TTL) {
+          allPosts = cached.posts;
+          currentPage = 1;
+          renderPosts();
+          renderMyPosts();
+          renderHistory();
+        }
+      }
+    } catch (err) {
+      // ignore cache parsing errors
+    }
+    try {
       const token = getToken();
-      const response = await fetch(API_BASE + "/api/forum/posts", {
+      const data = await fetchJsonWithTimeout(API_BASE + "/api/forum/posts", {
         headers: token ? { "Authorization": "Bearer " + token } : {}
-      });
-      const data = await response.json();
+      }, 12000);
       if (data && data.code === 200 && Array.isArray(data.data)) {
         allPosts = data.data;
+        localStorage.setItem(FORUM_POSTS_CACHE_KEY, JSON.stringify({ posts: allPosts, savedAt: Date.now() }));
         currentPage = 1;
         renderPosts();
         renderMyPosts();
         renderHistory();
-        renderUserPostList("/api/forum/users/{userId}/favorites", "myFavoritesList");
-        renderUserPostList("/api/forum/users/{userId}/likes", "myLikesList");
+        setTimeout(() => {
+          renderUserPostList("/api/forum/users/{userId}/favorites", "myFavoritesList");
+          renderUserPostList("/api/forum/users/{userId}/likes", "myLikesList");
+        }, 0);
         return;
       }
       postsFeed.innerHTML = '<div class="empty-message">加载失败：' + escapeHtml(data && data.message ? data.message : "未知错误") + '</div>';

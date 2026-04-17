@@ -921,7 +921,7 @@
 
     const SESSION_LIST_KEY = 'coze-chat-session-list-v1';
     const ACTIVE_SESSION_ID_KEY = 'coze-chat-active-session-id-v1';
-    const LOGIN_MARKER_KEY = 'coze-chat-login-marker-v1';
+    const SESSION_HISTORY_CACHE_PREFIX = 'coze-chat-history-cache-v1:';
     const SESSION_LIST_LIMIT = 30;
     const CHAT_HISTORY_LIMIT = 30;
     let chatHistory = [];
@@ -1031,15 +1031,6 @@
         } catch (_) {
             return [];
         }
-    }
-
-    function getCurrentLoginMarker() {
-        const userId = getCurrentUserId();
-        const token = getToken();
-        if (!userId || !token) {
-            return '';
-        }
-        return `${userId}:${token.slice(0, 24)}`;
     }
 
     function saveActiveSessionId() {
@@ -1183,6 +1174,75 @@
         if (chatHistory.length > CHAT_HISTORY_LIMIT) {
             chatHistory = chatHistory.slice(-CHAT_HISTORY_LIMIT);
         }
+        if (activeSessionId) {
+            const messages = chatHistory.map(item => ({
+                id: item.id,
+                role: item.role,
+                content: item.text
+            }));
+            saveHistoryCache(activeSessionId, messages);
+        }
+    }
+
+    function getHistoryCacheKey(sessionId) {
+        return SESSION_HISTORY_CACHE_PREFIX + sessionId;
+    }
+
+    function loadHistoryCache(sessionId) {
+        if (!sessionId) {
+            return [];
+        }
+        try {
+            const raw = localStorage.getItem(getHistoryCacheKey(sessionId));
+            if (!raw) {
+                return [];
+            }
+            const parsed = JSON.parse(raw);
+            if (!Array.isArray(parsed)) {
+                return [];
+            }
+            return parsed.slice(-CHAT_HISTORY_LIMIT);
+        } catch (_) {
+            return [];
+        }
+    }
+
+    function saveHistoryCache(sessionId, messages) {
+        if (!sessionId) {
+            return;
+        }
+        try {
+            localStorage.setItem(getHistoryCacheKey(sessionId), JSON.stringify((messages || []).slice(-CHAT_HISTORY_LIMIT)));
+        } catch (_) {
+            // ignore storage errors
+        }
+    }
+
+    function applyMessagesToView(messages) {
+        messagesEl.innerHTML = '';
+        chatHistory = [];
+
+        if (!Array.isArray(messages) || messages.length === 0) {
+            appendMessage('你好，我是AI助手。', 'bot', false, false);
+            return;
+        }
+
+        messages.forEach(item => {
+            const text = item && typeof item.content === 'string' ? item.content : '';
+            const role = item && item.role === 'user' ? 'user' : 'bot';
+            const renderMarkdown = role === 'bot';
+            const messageEl = appendMessage(text, role, renderMarkdown, false);
+            const historyId = item && item.id ? String(item.id) : createHistoryId();
+            messageEl.dataset.historyId = historyId;
+            chatHistory.push({
+                id: historyId,
+                role,
+                text,
+                renderMarkdown,
+                ts: Date.now()
+            });
+        });
+        saveChatHistory();
     }
 
     function addHistoryEntry(role, text, renderMarkdown) {
@@ -1446,14 +1506,24 @@
             return;
         }
 
+        const cachedMessages = loadHistoryCache(activeSessionId);
+        if (cachedMessages.length > 0) {
+            applyMessagesToView(cachedMessages);
+        } else {
+            appendMessage('你好，我是AI助手。', 'bot', false, false);
+        }
+
         const token = getAuthToken();
         const url = CHAT_HISTORY_API_URL + '?sessionId=' + encodeURIComponent(activeSessionId) + '&limit=' + CHAT_HISTORY_LIMIT;
+        const controller = new AbortController();
+        const timer = window.setTimeout(() => controller.abort(), 12000);
 
         fetch(url, {
             method: 'GET',
             headers: {
                 'Authorization': 'Bearer ' + token
-            }
+            },
+            signal: controller.signal
         }).then(resp => {
             if (!resp.ok) {
                 throw new Error('HTTP ' + resp.status);
@@ -1464,35 +1534,17 @@
                 ? payload.data.messages
                 : [];
 
-            messagesEl.innerHTML = '';
-            chatHistory = [];
-
-            if (messages.length === 0) {
-                appendMessage('你好，我是AI助手。', 'bot', false, false);
-                return;
-            }
-
-            messages.forEach(item => {
-                const text = item && typeof item.content === 'string' ? item.content : '';
-                const role = item && item.role === 'user' ? 'user' : 'bot';
-                const renderMarkdown = role === 'bot';
-                const messageEl = appendMessage(text, role, renderMarkdown, false);
-                const historyId = item && item.id ? String(item.id) : createHistoryId();
-                messageEl.dataset.historyId = historyId;
-                chatHistory.push({
-                    id: historyId,
-                    role,
-                    text,
-                    renderMarkdown,
-                    ts: Date.now()
-                });
-            });
-            saveChatHistory();
+            applyMessagesToView(messages);
+            saveHistoryCache(activeSessionId, messages);
             touchSession(activeSessionId);
         }).catch(() => {
-            messagesEl.innerHTML = '';
-            chatHistory = [];
-            appendMessage('你好，我是AI助手。', 'bot', false, false);
+            if (cachedMessages.length === 0) {
+                messagesEl.innerHTML = '';
+                chatHistory = [];
+                appendMessage('你好，我是AI助手。', 'bot', false, false);
+            }
+        }).finally(() => {
+            window.clearTimeout(timer);
         });
     }
 
@@ -1964,19 +2016,18 @@
         renderTopRightUser();
         sessionList = loadSessionList();
         renderSessionList();
-
-        const currentLoginMarker = getCurrentLoginMarker();
-        const previousLoginMarker = localStorage.getItem(LOGIN_MARKER_KEY) || '';
-        const isNewLogin = Boolean(currentLoginMarker) && currentLoginMarker !== previousLoginMarker;
-
-        if (currentLoginMarker) {
-            localStorage.setItem(LOGIN_MARKER_KEY, currentLoginMarker);
-        }
-
         const storedActiveSessionId = localStorage.getItem(ACTIVE_SESSION_ID_KEY) || '';
 
-        if (!isNewLogin && isSessionInList(storedActiveSessionId)) {
+        if (isSessionInList(storedActiveSessionId)) {
             activeSessionId = storedActiveSessionId;
+            saveActiveSessionId();
+            renderSessionList();
+            restoreHistoryToView();
+            return;
+        }
+
+        if (sessionList.length > 0) {
+            activeSessionId = sessionList[0].id;
             saveActiveSessionId();
             renderSessionList();
             restoreHistoryToView();

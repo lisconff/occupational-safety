@@ -27,11 +27,13 @@ public class ForumDtos {
             String commentId,
             String postId,
             String userId,
+            String username,
             String avatarDataUrl,
             String content,
             java.time.LocalDateTime createdAt,
             String parentCommentId,
             String replyToUserId,
+            String replyToUsername,
             java.util.List<ForumCommentResponse> replies
     ) {
     }

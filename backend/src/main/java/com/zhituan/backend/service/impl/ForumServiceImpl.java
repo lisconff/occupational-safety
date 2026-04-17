@@ -33,7 +33,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 public class ForumServiceImpl implements ForumService {
@@ -75,7 +78,7 @@ public class ForumServiceImpl implements ForumService {
     @Override
     public ForumPost createPost(ForumDtos.CreatePostRequest request) {
         ForumPost post = ForumPost.builder()
-                .userId(request.userId())
+                .userId(normalizeUserId(request.userId()))
                 .title(request.title())
                 .content(request.content())
                 .likeCount(0)
@@ -103,15 +106,26 @@ public class ForumServiceImpl implements ForumService {
 
     @Override
     public List<ForumPost> listPostsByUser(String userId) {
-        return forumPostRepository.findByUserIdOrderByCreatedAtDesc(userId).stream()
+        String normalizedUserId = normalizeUserId(userId);
+        return forumPostRepository.findByUserIdOrderByCreatedAtDesc(normalizedUserId).stream()
                 .peek(post -> post.setAttachments(loadAttachmentViews(post.getPostId())))
                 .toList();
     }
 
     @Override
     public List<ForumPost> listLikedPostsByUser(String userId) {
-        return forumPostLikeRepository.findByUserIdOrderByCreatedAtDesc(userId).stream()
-                .map(item -> forumPostRepository.findById(item.getPostId()).orElse(null))
+        String normalizedUserId = normalizeUserId(userId);
+        List<ForumPostLike> likes = forumPostLikeRepository.findByUserIdOrderByCreatedAtDesc(normalizedUserId);
+        if (likes.isEmpty()) {
+            return List.of();
+        }
+        Map<String, ForumPost> postById = forumPostRepository.findAllById(
+                likes.stream().map(ForumPostLike::getPostId).toList()
+            ).stream()
+            .collect(Collectors.toMap(ForumPost::getPostId, Function.identity()));
+
+        return likes.stream()
+            .map(item -> postById.get(item.getPostId()))
                 .filter(post -> post != null)
                 .peek(post -> post.setAttachments(loadAttachmentViews(post.getPostId())))
                 .toList();
@@ -119,8 +133,18 @@ public class ForumServiceImpl implements ForumService {
 
     @Override
     public List<ForumPost> listFavoritedPostsByUser(String userId) {
-        return forumPostFavoriteRepository.findByUserIdOrderByCreatedAtDesc(userId).stream()
-                .map(item -> forumPostRepository.findById(item.getPostId()).orElse(null))
+        String normalizedUserId = normalizeUserId(userId);
+        List<ForumPostFavorite> favorites = forumPostFavoriteRepository.findByUserIdOrderByCreatedAtDesc(normalizedUserId);
+        if (favorites.isEmpty()) {
+            return List.of();
+        }
+        Map<String, ForumPost> postById = forumPostRepository.findAllById(
+                favorites.stream().map(ForumPostFavorite::getPostId).toList()
+            ).stream()
+            .collect(Collectors.toMap(ForumPost::getPostId, Function.identity()));
+
+        return favorites.stream()
+            .map(item -> postById.get(item.getPostId()))
                 .filter(post -> post != null)
                 .peek(post -> post.setAttachments(loadAttachmentViews(post.getPostId())))
                 .toList();
@@ -138,7 +162,7 @@ public class ForumServiceImpl implements ForumService {
     @Transactional
     public ForumDtos.PostInteractionResponse toggleLike(String postId, ForumDtos.PostActionRequest request) {
         ForumPost post = getExistingPost(postId);
-        String userId = request.userId().trim();
+        String userId = normalizeUserId(request.userId());
 
         boolean liked;
         if (forumPostLikeRepository.existsByPostIdAndUserId(postId, userId)) {
@@ -161,7 +185,7 @@ public class ForumServiceImpl implements ForumService {
     @Transactional
     public ForumDtos.PostInteractionResponse toggleFavorite(String postId, ForumDtos.PostActionRequest request) {
         ForumPost post = getExistingPost(postId);
-        String userId = request.userId().trim();
+        String userId = normalizeUserId(request.userId());
 
         boolean favorited;
         if (forumPostFavoriteRepository.existsByPostIdAndUserId(postId, userId)) {
@@ -184,9 +208,9 @@ public class ForumServiceImpl implements ForumService {
     @Transactional
     public ForumDtos.ForumCommentResponse createComment(String postId, ForumDtos.CreateCommentRequest request) {
         ForumPost post = getExistingPost(postId);
-        String userId = request.userId().trim();
+        String userId = normalizeUserId(request.userId());
         String parentCommentId = normalizeCommentId(request.parentCommentId());
-        String replyToUserId = normalizeText(request.replyToUserId());
+        String replyToUserId = normalizeUserIdOrNull(request.replyToUserId());
         if (StringUtils.hasText(parentCommentId)) {
             ForumPostComment parent = forumPostCommentRepository.findById(parentCommentId)
                     .orElseThrow(() -> new IllegalArgumentException("父评论不存在"));
@@ -207,15 +231,18 @@ public class ForumServiceImpl implements ForumService {
                 .createdAt(LocalDateTime.now())
                 .build());
         refreshCounters(post);
-        return toCommentResponse(comment);
+            Map<String, UserIdentity> identityMap = loadUserIdentityMap(List.of(comment));
+            return toCommentResponse(comment, identityMap);
     }
 
     @Override
     @Transactional
     public void deleteComment(String commentId, String userId) {
+        String normalizedUserId = normalizeUserId(userId);
         ForumPostComment comment = forumPostCommentRepository.findById(commentId)
                 .orElseThrow(() -> new IllegalArgumentException("评论不存在"));
-        if (!comment.getUserId().equals(userId)) {
+        String commentOwnerId = normalizeUserId(comment.getUserId());
+        if (!commentOwnerId.equals(normalizedUserId)) {
             throw new IllegalArgumentException("只能删除自己的评论");
         }
         if (!StringUtils.hasText(comment.getParentCommentId())) {
@@ -228,8 +255,10 @@ public class ForumServiceImpl implements ForumService {
     @Override
     @Transactional
     public void deletePost(String postId, String userId) {
+        String normalizedUserId = normalizeUserId(userId);
         ForumPost post = getExistingPost(postId);
-        if (!post.getUserId().equals(userId)) {
+        String postOwnerId = normalizeUserId(post.getUserId());
+        if (!postOwnerId.equals(normalizedUserId)) {
             throw new IllegalArgumentException("只能删除自己的帖子");
         }
         deleteAttachmentFiles(postId);
@@ -271,16 +300,20 @@ public class ForumServiceImpl implements ForumService {
         );
     }
 
-    private ForumDtos.ForumCommentResponse toCommentResponse(ForumPostComment comment) {
+    private ForumDtos.ForumCommentResponse toCommentResponse(ForumPostComment comment, Map<String, UserIdentity> identityMap) {
+        UserIdentity author = identityMap.getOrDefault(comment.getUserId(), UserIdentity.anonymous(comment.getUserId()));
+        UserIdentity replyTo = identityMap.getOrDefault(comment.getReplyToUserId(), UserIdentity.anonymous(comment.getReplyToUserId()));
         return new ForumDtos.ForumCommentResponse(
                 comment.getCommentId(),
                 comment.getPostId(),
                 comment.getUserId(),
-                loadUserAvatar(comment.getUserId()),
+                author.displayName(),
+                author.avatarDataUrl(),
                 comment.getContent(),
                 comment.getCreatedAt(),
                 comment.getParentCommentId(),
                 comment.getReplyToUserId(),
+                replyTo.displayName(),
                 List.of()
         );
     }
@@ -292,8 +325,11 @@ public class ForumServiceImpl implements ForumService {
 
     private List<ForumDtos.ForumCommentResponse> buildCommentTree(String postId) {
         getExistingPost(postId);
-        List<ForumCommentRow> rows = forumPostCommentRepository.findByPostIdOrderByCreatedAtAsc(postId).stream()
-                .map(comment -> new ForumCommentRow(comment, toCommentResponse(comment)))
+        List<ForumPostComment> comments = forumPostCommentRepository.findByPostIdOrderByCreatedAtAsc(postId);
+        Map<String, UserIdentity> identityMap = loadUserIdentityMap(comments);
+
+        List<ForumCommentRow> rows = comments.stream()
+            .map(comment -> new ForumCommentRow(comment, toCommentResponse(comment, identityMap)))
                 .toList();
         Map<String, ForumDtos.ForumCommentResponse> roots = new HashMap<>();
         Map<String, List<ForumDtos.ForumCommentResponse>> repliesByRoot = new HashMap<>();
@@ -303,14 +339,14 @@ public class ForumServiceImpl implements ForumService {
             ForumDtos.ForumCommentResponse response = row.response();
             if (!StringUtils.hasText(comment.getParentCommentId())) {
                 roots.put(comment.getCommentId(), new ForumDtos.ForumCommentResponse(
-                    response.commentId(), response.postId(), response.userId(), response.avatarDataUrl(), response.content(), response.createdAt(),
-                        null, response.replyToUserId(), new ArrayList<>()
+                    response.commentId(), response.postId(), response.userId(), response.username(), response.avatarDataUrl(), response.content(), response.createdAt(),
+                        null, response.replyToUserId(), response.replyToUsername(), new ArrayList<>()
                 ));
             } else {
                 String rootId = comment.getParentCommentId();
                 repliesByRoot.computeIfAbsent(rootId, key -> new ArrayList<>()).add(new ForumDtos.ForumCommentResponse(
-                    response.commentId(), response.postId(), response.userId(), response.avatarDataUrl(), response.content(), response.createdAt(),
-                        rootId, response.replyToUserId(), new ArrayList<>()
+                    response.commentId(), response.postId(), response.userId(), response.username(), response.avatarDataUrl(), response.content(), response.createdAt(),
+                        rootId, response.replyToUserId(), response.replyToUsername(), new ArrayList<>()
                 ));
             }
         }
@@ -322,11 +358,13 @@ public class ForumServiceImpl implements ForumService {
                     entry.getValue().commentId(),
                     entry.getValue().postId(),
                     entry.getValue().userId(),
-                        entry.getValue().avatarDataUrl(),
+                    entry.getValue().username(),
+                    entry.getValue().avatarDataUrl(),
                     entry.getValue().content(),
                     entry.getValue().createdAt(),
                     null,
                     entry.getValue().replyToUserId(),
+                    entry.getValue().replyToUsername(),
                     replies
             ));
         }
@@ -358,6 +396,73 @@ public class ForumServiceImpl implements ForumService {
             return null;
         }
         return value.trim();
+    }
+
+    private String normalizeUserIdOrNull(String value) {
+        if (!StringUtils.hasText(value)) {
+            return null;
+        }
+        return normalizeUserId(value);
+    }
+
+    private String normalizeUserId(String value) {
+        if (!StringUtils.hasText(value)) {
+            throw new IllegalArgumentException("userId 不能为空");
+        }
+        String candidate = value.trim();
+        if (userRepository.existsById(candidate)) {
+            return candidate;
+        }
+        User user = userRepository.findByUsername(candidate).orElse(null);
+        if (user != null) {
+            return user.getUserId();
+        }
+        return candidate;
+    }
+
+    private Map<String, UserIdentity> loadUserIdentityMap(List<ForumPostComment> comments) {
+        Set<String> keys = comments.stream()
+                .flatMap(comment -> java.util.stream.Stream.of(comment.getUserId(), comment.getReplyToUserId()))
+                .filter(StringUtils::hasText)
+                .map(String::trim)
+                .collect(Collectors.toSet());
+
+        Map<String, UserIdentity> map = new HashMap<>();
+        for (String key : keys) {
+            map.put(key, resolveUserIdentity(key));
+        }
+        return map;
+    }
+
+    private UserIdentity resolveUserIdentity(String rawUserKey) {
+        if (!StringUtils.hasText(rawUserKey)) {
+            return UserIdentity.anonymous(rawUserKey);
+        }
+
+        String key = rawUserKey.trim();
+        User byId = userRepository.findById(key).orElse(null);
+        if (byId != null) {
+            return new UserIdentity(byId.getUserId(), byId.getUsername(), loadUserAvatarByUserId(byId.getUserId()));
+        }
+
+        User byUsername = userRepository.findByUsername(key).orElse(null);
+        if (byUsername != null) {
+            return new UserIdentity(byUsername.getUserId(), byUsername.getUsername(), loadUserAvatarByUserId(byUsername.getUserId()));
+        }
+
+        UserProfile profile = userProfileRepository.findById(key).orElse(null);
+        return new UserIdentity(key, key, profile == null ? null : profile.getAvatarDataUrl());
+    }
+
+    private String loadUserAvatarByUserId(String userId) {
+        if (!StringUtils.hasText(userId)) {
+            return null;
+        }
+        UserProfile profile = userProfileRepository.findById(userId).orElse(null);
+        if (profile == null) {
+            return null;
+        }
+        return StringUtils.hasText(profile.getAvatarDataUrl()) ? profile.getAvatarDataUrl() : null;
     }
 
     private void saveAttachments(String postId, List<MultipartFile> attachments) {
@@ -460,23 +565,9 @@ public class ForumServiceImpl implements ForumService {
         });
     }
 
-    private String loadUserAvatar(String userId) {
-        if (!StringUtils.hasText(userId)) {
-            return null;
+    private record UserIdentity(String userId, String displayName, String avatarDataUrl) {
+        static UserIdentity anonymous(String raw) {
+            return new UserIdentity(raw, raw, null);
         }
-        UserProfile profile = userProfileRepository.findById(userId).orElse(null);
-        if (profile != null && StringUtils.hasText(profile.getAvatarDataUrl())) {
-            return profile.getAvatarDataUrl();
-        }
-
-        User matchedUser = userRepository.findByUsername(userId).orElse(null);
-        if (matchedUser != null) {
-            UserProfile matchedProfile = userProfileRepository.findById(matchedUser.getUserId()).orElse(null);
-            if (matchedProfile != null && StringUtils.hasText(matchedProfile.getAvatarDataUrl())) {
-                return matchedProfile.getAvatarDataUrl();
-            }
-        }
-
-        return profile == null ? null : profile.getAvatarDataUrl();
     }
 }

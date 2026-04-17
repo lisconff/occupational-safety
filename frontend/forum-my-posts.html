@@ -38,8 +38,8 @@
   <script>
     const API_BASE = "https://occupational-safety.onrender.com";
 
-    function getUsername() {
-      return localStorage.getItem("username") || sessionStorage.getItem("username") || "";
+    function getUserId() {
+      return localStorage.getItem("userId") || sessionStorage.getItem("userId") || "";
     }
 
     function getToken() {
@@ -66,15 +66,15 @@
 
     async function loadMyPosts() {
       const wrap = document.getElementById("myPostsList");
-      const username = getUsername();
-      if (!username || !getToken()) {
+      const userId = getUserId();
+      if (!userId || !getToken()) {
         wrap.innerHTML = '<div class="empty">请先登录后查看我的帖子</div>';
         return;
       }
 
       wrap.innerHTML = '<div class="empty">正在加载...</div>';
       try {
-        const response = await fetch(API_BASE + "/api/forum/users/" + encodeURIComponent(username) + "/posts", {
+        const response = await fetch(API_BASE + "/api/forum/users/" + encodeURIComponent(userId) + "/posts", {
           headers: { Authorization: "Bearer " + getToken() }
         });
         const data = await response.json();
@@ -120,7 +120,7 @@
             if (!postId) return;
             if (!window.confirm("确定删除这篇帖子吗？删除后无法恢复。")) return;
             try {
-              const response = await fetch(API_BASE + "/api/forum/posts/" + encodeURIComponent(postId) + "?userId=" + encodeURIComponent(username), {
+              const response = await fetch(API_BASE + "/api/forum/posts/" + encodeURIComponent(postId) + "?userId=" + encodeURIComponent(userId), {
                 method: "DELETE",
                 headers: { Authorization: "Bearer " + getToken() }
               });

@@ -35,18 +35,18 @@
 
   <script>
     const API_BASE = "https://occupational-safety.onrender.com";
-    function getUsername() { return localStorage.getItem("username") || sessionStorage.getItem("username") || ""; }
+    function getUserId() { return localStorage.getItem("userId") || sessionStorage.getItem("userId") || ""; }
     function getToken() { return localStorage.getItem("token") || sessionStorage.getItem("token") || ""; }
     function escapeHtml(text) { return (text || "").toString().replace(/[&<>\"]/g, (ch) => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[ch])); }
     function formatDate(value) { if (!value) return "刚刚"; const d = new Date(value); if (Number.isNaN(d.getTime())) return value; const pad = (n) => String(n).padStart(2, "0"); return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate())+" "+pad(d.getHours())+":"+pad(d.getMinutes()); }
 
     async function load() {
       const wrap = document.getElementById("list");
-      const username = getUsername();
-      if (!username || !getToken()) { wrap.innerHTML = '<div class="empty">请先登录后查看点赞</div>'; return; }
+      const userId = getUserId();
+      if (!userId || !getToken()) { wrap.innerHTML = '<div class="empty">请先登录后查看点赞</div>'; return; }
       wrap.innerHTML = '<div class="empty">正在加载...</div>';
       try {
-        const response = await fetch(API_BASE + "/api/forum/users/" + encodeURIComponent(username) + "/likes", { headers: { Authorization: "Bearer " + getToken() } });
+        const response = await fetch(API_BASE + "/api/forum/users/" + encodeURIComponent(userId) + "/likes", { headers: { Authorization: "Bearer " + getToken() } });
         const data = await response.json();
         if (!(data && data.code === 200 && Array.isArray(data.data))) { wrap.innerHTML = '<div class="empty">加载失败</div>'; return; }
         if (!data.data.length) { wrap.innerHTML = '<div class="empty">暂无点赞帖子</div>'; return; }

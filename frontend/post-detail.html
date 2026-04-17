@@ -162,41 +162,6 @@
         return "用户";
     }
 
-    async function hydrateCommentAvatars(comments) {
-        const items = Array.isArray(comments) ? comments : [];
-        const idsToFetch = new Set();
-
-        const collect = (entry) => {
-            if (!entry) return;
-            if (entry.userId && !entry.avatarDataUrl) idsToFetch.add(entry.userId);
-            if (Array.isArray(entry.replies)) {
-                entry.replies.forEach(collect);
-            }
-        };
-
-        items.forEach(collect);
-        if (!idsToFetch.size) return items;
-
-        const avatarCache = {};
-        await Promise.all([...idsToFetch].map(async (userId) => {
-            try {
-                const response = await fetch(API_BASE + "/api/users/" + encodeURIComponent(userId) + "/profile");
-                const data = await response.json();
-                avatarCache[userId] = data && data.code === 200 && data.data ? (data.data.avatarDataUrl || "") : "";
-            } catch (err) {
-                avatarCache[userId] = "";
-            }
-        }));
-
-        const fill = (entry) => ({
-            ...entry,
-            avatarDataUrl: entry.avatarDataUrl || avatarCache[entry.userId] || "",
-            replies: Array.isArray(entry.replies) ? entry.replies.map(fill) : []
-        });
-
-        return items.map(fill);
-    }
-
     async function syncCurrentUserAvatarFromBackend() {
         const token = getToken();
         const userId = getCurrentUserId();
@@ -302,14 +267,14 @@
 
     async function toggleLike() {
         const response = await fetch(API_BASE + "/api/forum/posts/" + encodeURIComponent(getPostId()) + "/like", {
-            method: "POST", headers: getAuthHeaders(), body: JSON.stringify({ userId: getCurrentUserId() || getUsername() })
+            method: "POST", headers: getAuthHeaders(), body: JSON.stringify({ userId: getCurrentUserId() })
         });
         return response.json();
     }
 
     async function toggleFavorite() {
         const response = await fetch(API_BASE + "/api/forum/posts/" + encodeURIComponent(getPostId()) + "/favorite", {
-            method: "POST", headers: getAuthHeaders(), body: JSON.stringify({ userId: getCurrentUserId() || getUsername() })
+            method: "POST", headers: getAuthHeaders(), body: JSON.stringify({ userId: getCurrentUserId() })
         });
         return response.json();
     }
@@ -319,7 +284,7 @@
             method: "POST",
             headers: getAuthHeaders(),
             body: JSON.stringify({
-                userId: getCurrentUserId() || getUsername(),
+                userId: getCurrentUserId(),
                 content,
                 parentCommentId: activeReplyRootId || null,
                 replyToUserId: activeReplyToUserId || null
@@ -329,7 +294,7 @@
     }
 
     async function deleteComment(commentId) {
-        const response = await fetch(API_BASE + "/api/forum/comments/" + encodeURIComponent(commentId) + "?userId=" + encodeURIComponent(getUsername()), {
+        const response = await fetch(API_BASE + "/api/forum/comments/" + encodeURIComponent(commentId) + "?userId=" + encodeURIComponent(getCurrentUserId() || getUsername()), {
             method: "DELETE", headers: getAuthHeaders()
         });
         return response.json();
@@ -437,16 +402,20 @@
     }
 
     function renderCommentReply(reply) {
-        const isMine = (reply.userId || "") === getUsername();
-        const prefix = reply.replyToUserId ? '<span class="comment-prefix">回复' + escapeHtml(reply.replyToUserId) + '：</span>' : '';
+        const currentUserId = getCurrentUserId();
+        const currentUsername = getUsername();
+        const isMine = (reply.userId || "") === currentUserId || (reply.userId || "") === currentUsername;
+        const authorName = reply.username || reply.userId || "匿名";
+        const replyToName = reply.replyToUsername || reply.replyToUserId || "";
+        const prefix = replyToName ? '<span class="comment-prefix">回复' + escapeHtml(replyToName) + '：</span>' : '';
         return '<div class="comment-item">' +
             '<div class="comment-main">' +
                 getCommentAvatarHtml(reply.userId) +
                 '<div class="comment-body">' +
-                    '<div class="comment-meta">' + escapeHtml(reply.userId || "匿名") + ' · ' + escapeHtml(formatDate(reply.createdAt)) + '</div>' +
+                    '<div class="comment-meta">' + escapeHtml(authorName) + ' · ' + escapeHtml(formatDate(reply.createdAt)) + '</div>' +
                     '<div class="comment-content">' + prefix + escapeHtml(reply.content || "") + '</div>' +
                     '<div class="comment-actions">' +
-                        '<button class="comment-action-link" data-reply-user="' + escapeHtml(reply.userId || "") + '" data-root-id="' + escapeHtml(reply.parentCommentId || reply.commentId) + '">回复</button>' +
+                        '<button class="comment-action-link" data-reply-user="' + escapeHtml(reply.userId || "") + '" data-reply-name="' + escapeHtml(authorName) + '" data-root-id="' + escapeHtml(reply.parentCommentId || reply.commentId) + '">回复</button>' +
                         (isMine ? '<button class="comment-action-link" data-delete-comment="' + escapeHtml(reply.commentId) + '">删除</button>' : '') +
                     '</div>' +
                 '</div>' +
@@ -455,8 +424,12 @@
     }
 
     function renderCommentNode(comment) {
-        const isMine = (comment.userId || "") === getUsername();
-        const prefix = comment.replyToUserId ? '<span class="comment-prefix">回复' + escapeHtml(comment.replyToUserId) + '：</span>' : '';
+        const currentUserId = getCurrentUserId();
+        const currentUsername = getUsername();
+        const isMine = (comment.userId || "") === currentUserId || (comment.userId || "") === currentUsername;
+        const authorName = comment.username || comment.userId || "匿名";
+        const replyToName = comment.replyToUsername || comment.replyToUserId || "";
+        const prefix = replyToName ? '<span class="comment-prefix">回复' + escapeHtml(replyToName) + '：</span>' : '';
         const replies = Array.isArray(comment.replies) && comment.replies.length
             ? '<div class="comment-replies">' + comment.replies.map(renderCommentReply).join('') + '</div>'
             : '';
@@ -465,10 +438,10 @@
             '<div class="comment-main">' +
                 getCommentAvatarHtml(comment.userId) +
                 '<div class="comment-body">' +
-                    '<div class="comment-meta">' + escapeHtml(comment.userId || "匿名") + ' · ' + escapeHtml(formatDate(comment.createdAt)) + '</div>' +
+                    '<div class="comment-meta">' + escapeHtml(authorName) + ' · ' + escapeHtml(formatDate(comment.createdAt)) + '</div>' +
                     '<div class="comment-content">' + prefix + escapeHtml(comment.content || "") + '</div>' +
                     '<div class="comment-actions">' +
-                        '<button class="comment-action-link" data-reply-user="' + escapeHtml(comment.userId || "") + '" data-root-id="' + escapeHtml(comment.commentId) + '">回复</button>' +
+                        '<button class="comment-action-link" data-reply-user="' + escapeHtml(comment.userId || "") + '" data-reply-name="' + escapeHtml(authorName) + '" data-root-id="' + escapeHtml(comment.commentId) + '">回复</button>' +
                         (isMine ? '<button class="comment-action-link" data-delete-comment="' + escapeHtml(comment.commentId) + '">删除</button>' : '') +
                     '</div>' +
                 '</div>' +
@@ -477,14 +450,14 @@
         '</div>';
     }
 
-    function openCommentDrawer(rootId, replyToUserId) {
+    function openCommentDrawer(rootId, replyToUserId, replyToName) {
         activeCommentPostId = getPostId();
         activeReplyRootId = rootId || "";
         activeReplyToUserId = replyToUserId || "";
         const drawer = document.getElementById("commentDrawer");
         const input = document.getElementById("commentInput");
         const head = document.querySelector(".comment-drawer-head span");
-        head.textContent = activeReplyToUserId ? ("回复 " + activeReplyToUserId) : "发表评论";
+        head.textContent = activeReplyToUserId ? ("回复 " + (replyToName || activeReplyToUserId)) : "发表评论";
         input.value = "";
         drawer.classList.add("active");
         input.focus();
@@ -524,7 +497,7 @@
                 listEl.innerHTML = '<div class="empty">评论加载失败</div>';
                 return;
             }
-            const comments = await hydrateCommentAvatars(data.data);
+            const comments = data.data;
             if (!comments.length) {
                 listEl.innerHTML = '<div class="empty">还没有评论，来抢沙发吧。</div>';
                 return;
@@ -537,7 +510,7 @@
             document.querySelectorAll("[data-reply-user]").forEach((btn) => {
                 btn.addEventListener("click", () => {
                     if (!requireLogin("评论帖子", window.location.pathname.split("/").pop() + window.location.search)) return;
-                    openCommentDrawer(btn.getAttribute("data-root-id") || "", btn.getAttribute("data-reply-user") || "");
+                    openCommentDrawer(btn.getAttribute("data-root-id") || "", btn.getAttribute("data-reply-user") || "", btn.getAttribute("data-reply-name") || "");
                 });
             });
 
