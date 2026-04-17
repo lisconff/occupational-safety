@@ -149,7 +149,25 @@
 
     function getToken() { return localStorage.getItem("token") || sessionStorage.getItem("token") || ""; }
     function getUsername() { return localStorage.getItem("username") || sessionStorage.getItem("username") || "用户"; }
-    function getCurrentUserId() { return localStorage.getItem("userId") || sessionStorage.getItem("userId") || ""; }
+    function getCurrentUserId() {
+        const stored = localStorage.getItem("userId") || sessionStorage.getItem("userId") || "";
+        if (stored) return stored;
+        const token = getToken();
+        if (!token) return "";
+        try {
+            const payload = token.split('.')[1] || '';
+            const normalized = payload.replace(/-/g, '+').replace(/_/g, '/');
+            const decoded = JSON.parse(decodeURIComponent(escape(atob(normalized))));
+            const userId = decoded && decoded.sub ? String(decoded.sub) : '';
+            if (userId) {
+                localStorage.setItem("userId", userId);
+                sessionStorage.setItem("userId", userId);
+            }
+            return userId;
+        } catch (e) {
+            return "";
+        }
+    }
     function getAvatarDataUrl() {
         return localStorage.getItem("userAvatar") || sessionStorage.getItem("userAvatar") || "";
     }
@@ -404,7 +422,7 @@
     function renderCommentReply(reply) {
         const currentUserId = getCurrentUserId();
         const currentUsername = getUsername();
-        const isMine = (reply.userId || "") === currentUserId || (reply.userId || "") === currentUsername;
+        const isMine = (reply.userId || "") === currentUserId || (reply.userId || "") === currentUsername || (reply.username || "") === currentUsername;
         const authorName = reply.username || reply.userId || "匿名";
         const replyToName = reply.replyToUsername || reply.replyToUserId || "";
         const prefix = replyToName ? '<span class="comment-prefix">回复' + escapeHtml(replyToName) + '：</span>' : '';
@@ -426,7 +444,7 @@
     function renderCommentNode(comment) {
         const currentUserId = getCurrentUserId();
         const currentUsername = getUsername();
-        const isMine = (comment.userId || "") === currentUserId || (comment.userId || "") === currentUsername;
+        const isMine = (comment.userId || "") === currentUserId || (comment.userId || "") === currentUsername || (comment.username || "") === currentUsername;
         const authorName = comment.username || comment.userId || "匿名";
         const replyToName = comment.replyToUsername || comment.replyToUserId || "";
         const prefix = replyToName ? '<span class="comment-prefix">回复' + escapeHtml(replyToName) + '：</span>' : '';

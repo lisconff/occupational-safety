@@ -567,7 +567,15 @@ public class ForumServiceImpl implements ForumService {
 
     private record UserIdentity(String userId, String displayName, String avatarDataUrl) {
         static UserIdentity anonymous(String raw) {
-            return new UserIdentity(raw, raw, null);
+            if (!StringUtils.hasText(raw)) {
+                return new UserIdentity(raw, "匿名用户", null);
+            }
+            String trimmed = raw.trim();
+            String readable = trimmed;
+            if (trimmed.length() > 12 && trimmed.contains("-")) {
+                readable = "用户-" + trimmed.substring(0, 6);
+            }
+            return new UserIdentity(raw, readable, null);
         }
     }
 }

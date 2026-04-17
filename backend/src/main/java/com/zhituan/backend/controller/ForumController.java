@@ -1,6 +1,7 @@
 package com.zhituan.backend.controller;
 
 import com.zhituan.backend.common.api.ApiResponse;
+import com.zhituan.backend.common.utils.SecurityUtils;
 import com.zhituan.backend.domain.model.forum.ForumPostAttachment;
 import com.zhituan.backend.domain.model.forum.ForumPost;
 import com.zhituan.backend.dto.ForumDtos;
@@ -100,9 +101,10 @@ public class ForumController {
     @DeleteMapping("/comments/{commentId}")
     public ApiResponse<Void> deleteComment(
             @PathVariable String commentId,
-            @RequestParam String userId
+            @RequestParam(required = false) String userId
     ) {
-        forumService.deleteComment(commentId, userId);
+        String effectiveUserId = (userId != null && !userId.isBlank()) ? userId : SecurityUtils.getCurrentUserId();
+        forumService.deleteComment(commentId, effectiveUserId);
         return ApiResponse.ok("删除成功", null);
     }
 
@@ -135,9 +137,10 @@ public class ForumController {
     @DeleteMapping("/posts/{postId}")
     public ApiResponse<Void> deletePost(
             @PathVariable String postId,
-            @RequestParam String userId
+            @RequestParam(required = false) String userId
     ) {
-        forumService.deletePost(postId, userId);
+        String effectiveUserId = (userId != null && !userId.isBlank()) ? userId : SecurityUtils.getCurrentUserId();
+        forumService.deletePost(postId, effectiveUserId);
         return ApiResponse.ok("删除成功", null);
     }
 }

@@ -602,18 +602,6 @@
         </div>
     </div>
     
-    <!-- 底部页脚 -->
-    <footer class="footer">
-        <div class="footer-content">
-            <p>© 2024 大学生就业防坑服务平台 版权所有</p>
-            <p>咨询渠道：</p>
-            <div class="footer-links">
-                <a href="#">在线咨询</a>
-                <a href="#">电话咨询：400-123-4567</a>
-                <a href="#">邮箱：contact@job-safety.com</a>
-            </div>
-        </div>
-    </footer>
     
     <script>
         const API_BASE = 'https://occupational-safety.onrender.com';
@@ -644,7 +632,27 @@
         }
 
         function getCurrentUserId() {
-            return localStorage.getItem('userId') || sessionStorage.getItem('userId') || '';
+            const stored = localStorage.getItem('userId') || sessionStorage.getItem('userId') || '';
+            if (stored) {
+                return stored;
+            }
+            const token = getToken();
+            if (!token) {
+                return '';
+            }
+            try {
+                const payload = token.split('.')[1] || '';
+                const normalized = payload.replace(/-/g, '+').replace(/_/g, '/');
+                const decoded = JSON.parse(decodeURIComponent(escape(atob(normalized))));
+                const userId = decoded && decoded.sub ? String(decoded.sub) : '';
+                if (userId) {
+                    localStorage.setItem('userId', userId);
+                    sessionStorage.setItem('userId', userId);
+                }
+                return userId;
+            } catch (e) {
+                return '';
+            }
         }
 
         function getOnlineTimerStart() {
@@ -1079,7 +1087,7 @@
                 renderProfileAvatar();
             });
 
-            reportUserActivity({ onlineSeconds: flushOnlineSeconds() });
+            await reportUserActivity({ onlineSeconds: flushOnlineSeconds() });
 
             const result = await Promise.all([fetchCurrentProfile(), fetchRiskAssessment()]);
             const profile = result[0];
@@ -1087,6 +1095,11 @@
             fillProfileForm(profile);
             updateProfileHeader(profile, risk);
             renderRiskMetrics(risk);
+
+            // 确保页面首屏也会主动刷新一次风险评估，不依赖手动切换雷达图标签。
+            setTimeout(function () {
+                refreshRiskOnly();
+            }, 1200);
 
             const profileEditTab = document.getElementById('profileEditTab');
             const riskRadarTab = document.getElementById('riskRadarTab');
