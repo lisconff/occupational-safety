@@ -1816,6 +1816,14 @@
             return localStorage.getItem('userAvatar') || sessionStorage.getItem('userAvatar') || '';
         }
 
+        function getDisplayName() {
+            const username = getUsername();
+            if (username && username !== '游客') return username;
+            const userId = getUserId();
+            if (userId) return '用户-' + userId.slice(0, 6);
+            return '用户';
+        }
+
         function getOnlineTimerStart() {
             const raw = sessionStorage.getItem('onlineTimerStartAt') || '';
             const value = Number(raw);
@@ -1898,12 +1906,13 @@
             const token = getToken();
             const userId = getUserId();
             const avatarUrl = getAvatarDataUrl();
+            const displayName = getDisplayName();
             const hasSession = Boolean(token || (username && username !== '游客' && userId));
 
             if (hasSession) {
                 guestNav.style.display = 'none';
                 userNav.style.display = 'flex';
-                nameEl.textContent = username;
+                nameEl.textContent = displayName;
 
                 if (avatarUrl) {
                     avatarImg.src = avatarUrl;
@@ -1912,7 +1921,7 @@
                 } else {
                     avatarImg.style.display = 'none';
                     avatarLetter.style.display = 'inline';
-                    avatarLetter.textContent = (username || '游').charAt(0).toUpperCase();
+                    avatarLetter.textContent = displayName.charAt(0).toUpperCase();
                 }
             } else {
                 guestNav.style.display = 'flex';

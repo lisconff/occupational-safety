@@ -685,15 +685,27 @@
             }
         }
 
+        async function fetchJsonWithTimeout(url, options, timeoutMs) {
+            const controller = new AbortController();
+            const timer = setTimeout(function () {
+                controller.abort();
+            }, timeoutMs || 12000);
+            try {
+                const response = await fetch(url, Object.assign({}, options || {}, { signal: controller.signal }));
+                return await response.json();
+            } finally {
+                clearTimeout(timer);
+            }
+        }
+
         async function fetchRiskAssessment() {
             const token = getToken();
             const userId = getCurrentUserId();
             if (!token || !userId) return null;
             try {
-                const response = await fetch(API_BASE + '/api/users/' + encodeURIComponent(userId) + '/risk-assessment', {
+                const data = await fetchJsonWithTimeout(API_BASE + '/api/users/' + encodeURIComponent(userId) + '/risk-assessment', {
                     headers: { Authorization: 'Bearer ' + token }
-                });
-                const data = await response.json();
+                }, 12000);
                 if (data && data.code === 200 && data.data) {
                     return data.data;
                 }
@@ -725,7 +737,15 @@
             if (key && map[key]) {
                 return map[key];
             }
-            return '';
+            return localStorage.getItem('userAvatar') || sessionStorage.getItem('userAvatar') || '';
+        }
+
+        function getDisplayName() {
+            const username = getUsername();
+            if (username && username !== '游客') return username;
+            const userId = getCurrentUserId();
+            if (userId) return '用户-' + userId.slice(0, 6);
+            return '用户';
         }
 
         function setAvatarDataUrl(url) {
@@ -760,10 +780,9 @@
             const token = getToken();
             if (!userId || !token) return null;
             try {
-                const response = await fetch(API_BASE + '/api/users/' + encodeURIComponent(userId) + '/profile', {
+                const data = await fetchJsonWithTimeout(API_BASE + '/api/users/' + encodeURIComponent(userId) + '/profile', {
                     headers: { Authorization: 'Bearer ' + token }
-                });
-                const data = await response.json();
+                }, 12000);
                 if (data && data.code === 200 && data.data) {
                     return data.data;
                 }
@@ -782,8 +801,8 @@
         }
 
         function updateProfileHeader(profile, risk) {
-            const username = getUsername();
-            document.getElementById('profileDisplayName').textContent = username;
+            const displayName = getDisplayName();
+            document.getElementById('profileDisplayName').textContent = displayName;
             const school = profile && profile.school ? profile.school : '';
             const major = profile && profile.major ? profile.major : '';
             const summary = [school, major].filter(Boolean).join(' · ');
@@ -988,15 +1007,17 @@
             const username = getUsername();
             const token = getToken();
             const avatarUrl = getAvatarDataUrl(localStorage.getItem('userId') || sessionStorage.getItem('userId') || username);
+            const displayName = getDisplayName();
 
             if (token) {
                 guestNav.style.display = 'none';
                 userNav.style.display = 'flex';
-                nameEl.textContent = username;
+                nameEl.textContent = displayName;
                 if (avatarUrl) {
                     avatarImg.onerror = function () {
                         avatarImg.style.display = 'none';
                         avatarLetter.style.display = 'inline';
+                        avatarLetter.textContent = displayName.charAt(0).toUpperCase();
                     };
                     avatarImg.src = avatarUrl;
                     avatarImg.style.display = 'block';
@@ -1004,7 +1025,7 @@
                 } else {
                     avatarImg.style.display = 'none';
                     avatarLetter.style.display = 'inline';
-                    avatarLetter.textContent = (username || '游').charAt(0).toUpperCase();
+                    avatarLetter.textContent = displayName.charAt(0).toUpperCase();
                 }
             } else {
                 guestNav.style.display = 'flex';
@@ -1015,13 +1036,13 @@
         function renderProfileAvatar() {
             const avatar = document.getElementById('profileAvatar');
             const avatarLetter = document.getElementById('profileAvatarLetter');
-            const username = getUsername();
+            const displayName = getDisplayName();
             const avatarUrl = getAvatarDataUrl(localStorage.getItem('userId') || sessionStorage.getItem('userId') || getUsername());
             if (avatarUrl) {
                 avatar.onerror = function () {
                     avatar.style.display = 'none';
                     avatarLetter.style.display = 'inline-flex';
-                    avatarLetter.textContent = (username || '游').charAt(0).toUpperCase();
+                    avatarLetter.textContent = displayName.charAt(0).toUpperCase();
                 };
                 avatar.src = avatarUrl;
                 avatar.style.display = 'block';
@@ -1030,7 +1051,7 @@
                 avatar.removeAttribute('src');
                 avatar.style.display = 'none';
                 avatarLetter.style.display = 'inline-flex';
-                avatarLetter.textContent = (username || '游').charAt(0).toUpperCase();
+                avatarLetter.textContent = displayName.charAt(0).toUpperCase();
             }
         }
 
@@ -1047,14 +1068,16 @@
         document.addEventListener('DOMContentLoaded', async function() {
             renderInitialProfileState();
 
-            await syncCurrentUserAvatarFromBackend();
-            renderTopRightUser();
-            renderProfileAvatar();
+            syncCurrentUserAvatarFromBackend().then(function () {
+                renderTopRightUser();
+                renderProfileAvatar();
+            });
 
-            await reportUserActivity({ onlineSeconds: flushOnlineSeconds() });
+            reportUserActivity({ onlineSeconds: flushOnlineSeconds() });
 
-            const profile = await fetchCurrentProfile();
-            const risk = await fetchRiskAssessment();
+            const result = await Promise.all([fetchCurrentProfile(), fetchRiskAssessment()]);
+            const profile = result[0];
+            const risk = result[1];
             fillProfileForm(profile);
             updateProfileHeader(profile, risk);
             renderRiskMetrics(risk);

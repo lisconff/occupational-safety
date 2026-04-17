@@ -777,7 +777,15 @@ function getAvatarDataUrl() {
     const map = getAvatarMap();
     if (userId && map[userId]) return map[userId];
     if (username && map[username]) return map[username];
-    return '';
+    return localStorage.getItem('userAvatar') || sessionStorage.getItem('userAvatar') || '';
+}
+
+function getDisplayName() {
+    const username = getUsername();
+    if (username && username !== '游客') return username;
+    const userId = getUserId();
+    if (userId) return '用户-' + userId.slice(0, 6);
+    return '用户';
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -789,7 +797,7 @@ document.addEventListener('DOMContentLoaded', () => {
         userNav.style.display = 'flex';
         heroGuestActions.style.display = 'none';
         heroUserActions.style.display = 'none';
-        const displayName = name || 'User';
+        const displayName = getDisplayName();
         userNameEl.textContent = displayName;
         const avatarUrl = getAvatarDataUrl();
         if (avatarUrl) {

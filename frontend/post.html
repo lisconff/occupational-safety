@@ -371,7 +371,15 @@
         const map = getAvatarMap();
         if (userId && map[userId]) return map[userId];
         if (username && map[username]) return map[username];
-        return "";
+        return localStorage.getItem("userAvatar") || sessionStorage.getItem("userAvatar") || "";
+    }
+
+    function getDisplayName() {
+        const username = getUsername();
+        if (username && username !== "游客") return username;
+        const userId = getUserId();
+        if (userId) return "用户-" + userId.slice(0, 6);
+        return "用户";
     }
 
     function renderTopRightUser() {
@@ -387,11 +395,12 @@
         const token = getToken();
         const username = getUsername();
         const avatarUrl = getAvatarDataUrl();
+        const displayName = getDisplayName();
 
         if (token) {
             guestNav.style.display = "none";
             userNav.style.display = "flex";
-            nameEl.textContent = username || "用户";
+            nameEl.textContent = displayName;
             if (avatarUrl) {
                 avatarImg.src = avatarUrl;
                 avatarImg.style.display = "block";
@@ -399,7 +408,7 @@
             } else {
                 avatarImg.style.display = "none";
                 avatarLetter.style.display = "inline";
-                avatarLetter.textContent = (username || "游").charAt(0).toUpperCase();
+                avatarLetter.textContent = displayName.charAt(0).toUpperCase();
             }
         } else {
             guestNav.style.display = "flex";
