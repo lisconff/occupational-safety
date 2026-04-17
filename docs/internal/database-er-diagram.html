@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>职途安 - 数据库 ER 图（内部）</title>
+  <style>
+    :root {
+      --bg: #f1f6ff;
+      --panel: #ffffff;
+      --line: #93b6ec;
+      --line-strong: #2f6fd9;
+      --text: #0f1e3a;
+      --muted: #4d648b;
+      --pk: #0f5bd4;
+      --fk: #2b8a3e;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Microsoft YaHei", "PingFang SC", sans-serif; }
+
+    body {
+      background: radial-gradient(circle at 0% 0%, #ffffff 0, #eef4ff 46%, #dbe9ff 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 22px 14px 30px;
+    }
+
+    .wrap { max-width: 1640px; margin: 0 auto; }
+    .title { text-align: center; margin-bottom: 10px; }
+    .title h1 { font-size: 30px; color: #18448b; letter-spacing: 0.4px; }
+    .title p { color: var(--muted); font-size: 14px; margin-top: 6px; }
+
+    .notice {
+      max-width: 980px;
+      margin: 0 auto 14px;
+      text-align: center;
+      font-size: 13px;
+      color: #1f4f9b;
+      border: 1px solid #bfd6ff;
+      background: #ecf4ff;
+      border-radius: 10px;
+      padding: 8px 12px;
+    }
+
+    .legend {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+      font-size: 12px;
+      color: #315b99;
+    }
+
+    .legend span {
+      border: 1px solid #bfd6ff;
+      border-radius: 999px;
+      padding: 4px 10px;
+      background: #f2f7ff;
+    }
+
+    .board {
+      background: rgba(255,255,255,0.92);
+      border: 1px solid #c8dbff;
+      border-radius: 16px;
+      box-shadow: 0 12px 28px rgba(39, 102, 205, 0.14);
+      padding: 16px;
+      overflow-x: auto;
+    }
+
+    .er-grid {
+      min-width: 1540px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .entity {
+      border: 1px solid #c7dafc;
+      border-radius: 12px;
+      background: #ffffff;
+      overflow: hidden;
+      box-shadow: 0 6px 16px rgba(47, 111, 217, 0.08);
+    }
+
+    .entity h3 {
+      background: linear-gradient(90deg, #e9f2ff, #f4f9ff);
+      border-bottom: 1px solid #d7e6ff;
+      color: #1f56b1;
+      font-size: 15px;
+      padding: 8px 10px;
+    }
+
+    .fields {
+      list-style: none;
+      padding: 8px 10px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 12px;
+      color: #1f355d;
+      line-height: 1.5;
+    }
+
+    .pk { color: var(--pk); font-weight: 700; }
+    .fk { color: var(--fk); font-weight: 700; }
+    .hint { color: #6b7ea4; }
+
+    .relation-list {
+      margin-top: 14px;
+      border-top: 1px dashed #c7dafc;
+      padding-top: 10px;
+      font-size: 13px;
+      color: #33527f;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 6px 14px;
+      min-width: 900px;
+    }
+
+    .relation-list div { background: #f3f8ff; border: 1px solid #d6e5ff; border-radius: 8px; padding: 6px 8px; }
+
+    @media (max-width: 1100px) {
+      .title h1 { font-size: 24px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="title">
+      <h1>职途安数据库 ER 图</h1>
+      <p>实体关系模型（Entity-Relationship）- 内部设计视图</p>
+    </div>
+
+    <div class="notice">Internal Only: 本 ER 图用于研发/测试/运维协作，不对外公开部署。</div>
+
+    <div class="legend">
+      <span>PK: 主键</span>
+      <span>FK: 外键/关联键</span>
+      <span>1:N: 一对多关系</span>
+      <span>N:1: 多对一关系</span>
+    </div>
+
+    <div class="board">
+      <div class="er-grid">
+        <section class="entity">
+          <h3>users</h3>
+          <ul class="fields">
+            <li><span class="pk">PK</span> user_id (UUID)</li>
+            <li>username (UNIQUE)</li>
+            <li>password_hash</li>
+            <li>role</li>
+            <li>created_at / updated_at</li>
+          </ul>
+        </section>
+
+        <section class="entity">
+          <h3>user_profiles</h3>
+          <ul class="fields">
+            <li><span class="pk">PK</span> user_id</li>
+            <li><span class="fk">FK</span> user_id -> users.user_id</li>
+            <li>school, major, graduation_year</li>
+            <li>expected_city, expected_salary</li>
+            <li>avatar_data_url, bio</li>
+            <li>online_seconds, ai_query_count ...</li>
+          </ul>
+        </section>
+
+        <section class="entity">
+          <h3>auth_sessions</h3>
+          <ul class="fields">
+            <li><span class="pk">PK</span> session_id</li>
+            <li><span class="fk">FK</span> user_id -> users.user_id</li>
+            <li>token_hash / token</li>
+            <li>expires_at</li>
+            <li>created_at / updated_at</li>
+          </ul>
+        </section>
+
+        <section class="entity">
+          <h3>ai_chat_messages</h3>
+          <ul class="fields">
+            <li><span class="pk">PK</span> id</li>
+            <li><span class="fk">FK</span> user_id -> users.user_id</li>
+            <li>session_id</li>
+            <li>role (user/bot)</li>
+            <li>content</li>
+            <li>created_at</li>
+          </ul>
+        </section>
+
+        <section class="entity">
+          <h3>forum_posts</h3>
+          <ul class="fields">
+            <li><span class="pk">PK</span> post_id</li>
+            <li><span class="fk">FK</span> user_id -> users.user_id</li>
+            <li>title, content</li>
+            <li>like_count, favorite_count, comment_count</li>
+            <li>created_at / updated_at</li>
+          </ul>
+        </section>
+
+        <section class="entity">
+          <h3>forum_post_comments</h3>
+          <ul class="fields">
+            <li><span class="pk">PK</span> comment_id</li>
+            <li><span class="fk">FK</span> post_id -> forum_posts.post_id</li>
+            <li><span class="fk">FK</span> user_id -> users.user_id</li>
+            <li>parent_comment_id (root评论为空)</li>
+            <li>reply_to_user_id (二级回复目标)</li>
+            <li>content, created_at</li>
+          </ul>
+        </section>
+
+        <section class="entity">
+          <h3>forum_post_likes</h3>
+          <ul class="fields">
+            <li><span class="pk">PK</span> id</li>
+            <li><span class="fk">FK</span> post_id -> forum_posts.post_id</li>
+            <li><span class="fk">FK</span> user_id -> users.user_id</li>
+            <li>created_at</li>
+            <li class="hint">建议: UNIQUE(post_id, user_id)</li>
+          </ul>
+        </section>
+
+        <section class="entity">
+          <h3>forum_post_favorites</h3>
+          <ul class="fields">
+            <li><span class="pk">PK</span> id</li>
+            <li><span class="fk">FK</span> post_id -> forum_posts.post_id</li>
+            <li><span class="fk">FK</span> user_id -> users.user_id</li>
+            <li>created_at</li>
+            <li class="hint">建议: UNIQUE(post_id, user_id)</li>
+          </ul>
+        </section>
+
+        <section class="entity">
+          <h3>forum_post_attachments</h3>
+          <ul class="fields">
+            <li><span class="pk">PK</span> attachment_id</li>
+            <li><span class="fk">FK</span> post_id -> forum_posts.post_id</li>
+            <li>original_name, stored_name</li>
+            <li>content_type, file_size, file_path</li>
+            <li>created_at</li>
+          </ul>
+        </section>
+
+        <section class="entity">
+          <h3>analysis_reports</h3>
+          <ul class="fields">
+            <li><span class="pk">PK</span> report_id</li>
+            <li><span class="fk">FK</span> user_id -> users.user_id</li>
+            <li>business_type, input_summary</li>
+            <li>score, overall_risk_level</li>
+            <li>created_at</li>
+          </ul>
+        </section>
+
+        <section class="entity">
+          <h3>risk_items</h3>
+          <ul class="fields">
+            <li><span class="pk">PK</span> id</li>
+            <li><span class="fk">FK</span> report_id -> analysis_reports.report_id</li>
+            <li>matched_text, start_index, end_index</li>
+            <li>risk_level, reason, suggestion</li>
+          </ul>
+        </section>
+      </div>
+
+      <div class="relation-list">
+        <div>users 1 : N auth_sessions</div>
+        <div>users 1 : 1 user_profiles</div>
+        <div>users 1 : N forum_posts</div>
+        <div>users 1 : N forum_post_comments</div>
+        <div>forum_posts 1 : N forum_post_comments</div>
+        <div>forum_posts 1 : N forum_post_likes</div>
+        <div>forum_posts 1 : N forum_post_favorites</div>
+        <div>forum_posts 1 : N forum_post_attachments</div>
+        <div>users 1 : N ai_chat_messages</div>
+        <div>users 1 : N analysis_reports</div>
+        <div>analysis_reports 1 : N risk_items</div>
+        <div>forum_post_comments 1 : N forum_post_comments(二级回复)</div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

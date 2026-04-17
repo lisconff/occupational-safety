@@ -427,42 +427,63 @@ public class ForumServiceImpl implements ForumService {
                 .map(String::trim)
                 .collect(Collectors.toSet());
 
+        if (keys.isEmpty()) {
+            return Map.of();
+        }
+
+        List<User> usersById = userRepository.findByUserIdIn(keys);
+        List<User> usersByUsername = userRepository.findByUsernameIn(keys);
+
+        Map<String, User> byIdMap = usersById.stream()
+                .collect(Collectors.toMap(User::getUserId, Function.identity(), (a, b) -> a));
+        Map<String, User> byUsernameMap = usersByUsername.stream()
+                .collect(Collectors.toMap(User::getUsername, Function.identity(), (a, b) -> a));
+
+        Set<String> resolvedUserIds = new java.util.HashSet<>();
+        resolvedUserIds.addAll(usersById.stream().map(User::getUserId).collect(Collectors.toSet()));
+        resolvedUserIds.addAll(usersByUsername.stream().map(User::getUserId).collect(Collectors.toSet()));
+
+        Map<String, UserProfile> profileByUserId = userProfileRepository.findAllById(resolvedUserIds).stream()
+                .collect(Collectors.toMap(UserProfile::getUserId, Function.identity(), (a, b) -> a));
+
         Map<String, UserIdentity> map = new HashMap<>();
         for (String key : keys) {
-            map.put(key, resolveUserIdentity(key));
+            User byId = byIdMap.get(key);
+            if (byId != null) {
+                UserProfile profile = profileByUserId.get(byId.getUserId());
+                map.put(key, new UserIdentity(byId.getUserId(), byId.getUsername(), avatarFromProfile(profile)));
+                continue;
+            }
+
+            User byUsername = byUsernameMap.get(key);
+            if (byUsername != null) {
+                UserProfile profile = profileByUserId.get(byUsername.getUserId());
+                map.put(key, new UserIdentity(byUsername.getUserId(), byUsername.getUsername(), avatarFromProfile(profile)));
+                continue;
+            }
+
+            UserProfile profile = userProfileRepository.findById(key).orElse(null);
+            map.put(key, new UserIdentity(key, displayFallbackName(key), avatarFromProfile(profile)));
         }
         return map;
     }
 
-    private UserIdentity resolveUserIdentity(String rawUserKey) {
-        if (!StringUtils.hasText(rawUserKey)) {
-            return UserIdentity.anonymous(rawUserKey);
+    private String avatarFromProfile(UserProfile profile) {
+        if (profile == null || !StringUtils.hasText(profile.getAvatarDataUrl())) {
+            return null;
         }
-
-        String key = rawUserKey.trim();
-        User byId = userRepository.findById(key).orElse(null);
-        if (byId != null) {
-            return new UserIdentity(byId.getUserId(), byId.getUsername(), loadUserAvatarByUserId(byId.getUserId()));
-        }
-
-        User byUsername = userRepository.findByUsername(key).orElse(null);
-        if (byUsername != null) {
-            return new UserIdentity(byUsername.getUserId(), byUsername.getUsername(), loadUserAvatarByUserId(byUsername.getUserId()));
-        }
-
-        UserProfile profile = userProfileRepository.findById(key).orElse(null);
-        return new UserIdentity(key, key, profile == null ? null : profile.getAvatarDataUrl());
+        return profile.getAvatarDataUrl();
     }
 
-    private String loadUserAvatarByUserId(String userId) {
-        if (!StringUtils.hasText(userId)) {
-            return null;
+    private String displayFallbackName(String raw) {
+        if (!StringUtils.hasText(raw)) {
+            return "匿名用户";
         }
-        UserProfile profile = userProfileRepository.findById(userId).orElse(null);
-        if (profile == null) {
-            return null;
+        String trimmed = raw.trim();
+        if (trimmed.length() > 12 && trimmed.contains("-")) {
+            return "用户-" + trimmed.substring(0, 6);
         }
-        return StringUtils.hasText(profile.getAvatarDataUrl()) ? profile.getAvatarDataUrl() : null;
+        return trimmed;
     }
 
     private void saveAttachments(String postId, List<MultipartFile> attachments) {
@@ -571,11 +592,10 @@ public class ForumServiceImpl implements ForumService {
                 return new UserIdentity(raw, "匿名用户", null);
             }
             String trimmed = raw.trim();
-            String readable = trimmed;
             if (trimmed.length() > 12 && trimmed.contains("-")) {
-                readable = "用户-" + trimmed.substring(0, 6);
+                return new UserIdentity(raw, "用户-" + trimmed.substring(0, 6), null);
             }
-            return new UserIdentity(raw, readable, null);
+            return new UserIdentity(raw, trimmed, null);
         }
     }
 }

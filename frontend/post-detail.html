@@ -146,6 +146,8 @@
     let currentPreviewAttachment = null;
     let attachmentRegistry = {};
     let commentAvatarCache = {};
+    const DETAIL_CACHE_TTL_MS = 90000;
+    const COMMENTS_CACHE_TTL_MS = 60000;
 
     function getToken() { return localStorage.getItem("token") || sessionStorage.getItem("token") || ""; }
     function getUsername() { return localStorage.getItem("username") || sessionStorage.getItem("username") || "用户"; }
@@ -240,6 +242,38 @@
         if (Number.isNaN(d.getTime())) return value;
         const pad = (n) => String(n).padStart(2, "0");
         return d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate()) + " " + pad(d.getHours()) + ":" + pad(d.getMinutes());
+    }
+
+    async function fetchJsonWithTimeout(url, options, timeoutMs) {
+        const controller = new AbortController();
+        const timer = setTimeout(() => controller.abort(), timeoutMs || 12000);
+        try {
+            const response = await fetch(url, Object.assign({}, options || {}, { signal: controller.signal }));
+            return await response.json();
+        } finally {
+            clearTimeout(timer);
+        }
+    }
+
+    function readCache(key, ttlMs) {
+        try {
+            const raw = localStorage.getItem(key);
+            if (!raw) return null;
+            const parsed = JSON.parse(raw);
+            if (!parsed || typeof parsed !== "object") return null;
+            if ((Date.now() - (parsed.savedAt || 0)) > ttlMs) return null;
+            return parsed.data;
+        } catch (e) {
+            return null;
+        }
+    }
+
+    function writeCache(key, data) {
+        try {
+            localStorage.setItem(key, JSON.stringify({ savedAt: Date.now(), data }));
+        } catch (e) {
+            // ignore cache write failures
+        }
     }
 
     function renderTopRightUser() {
@@ -446,8 +480,7 @@
         const currentUsername = getUsername();
         const isMine = (comment.userId || "") === currentUserId || (comment.userId || "") === currentUsername || (comment.username || "") === currentUsername;
         const authorName = comment.username || comment.userId || "匿名";
-        const replyToName = comment.replyToUsername || comment.replyToUserId || "";
-        const prefix = replyToName ? '<span class="comment-prefix">回复' + escapeHtml(replyToName) + '：</span>' : '';
+        const prefix = '';
         const replies = Array.isArray(comment.replies) && comment.replies.length
             ? '<div class="comment-replies">' + comment.replies.map(renderCommentReply).join('') + '</div>'
             : '';
@@ -505,54 +538,72 @@
         await loadDetail();
     }
 
+    function renderCommentsList(comments) {
+        const listEl = document.getElementById("commentsList");
+        if (!listEl) return;
+        if (!Array.isArray(comments) || !comments.length) {
+            listEl.innerHTML = '<div class="empty">还没有评论，来抢沙发吧。</div>';
+            return;
+        }
+
+        listEl.innerHTML = '<div class="comment-tree">' + comments.map(renderCommentNode).join('') + '</div>';
+        collectCommentAvatarCache(comments);
+        applyCommentAvatarImages();
+
+        document.querySelectorAll("[data-reply-user]").forEach((btn) => {
+            btn.addEventListener("click", () => {
+                if (!requireLogin("评论帖子", window.location.pathname.split("/").pop() + window.location.search)) return;
+                openCommentDrawer(btn.getAttribute("data-root-id") || "", btn.getAttribute("data-reply-user") || "", btn.getAttribute("data-reply-name") || "");
+            });
+        });
+
+        document.querySelectorAll("[data-delete-comment]").forEach((btn) => {
+            btn.addEventListener("click", async (event) => {
+                event.stopPropagation();
+                if (!window.confirm("确定删除这条评论吗？")) return;
+                const result = await deleteComment(btn.getAttribute("data-delete-comment") || "");
+                if (!(result && result.code === 200)) {
+                    window.alert(result && result.message ? result.message : "删除失败");
+                    return;
+                }
+                await loadDetail();
+            });
+        });
+
+        document.querySelectorAll("[data-avatar-user]").forEach((avatar) => {
+            avatar.addEventListener("click", () => {
+                const userId = avatar.getAttribute("data-avatar-user") || "";
+                if (userId) window.location.href = "forum-user-posts.html?userId=" + encodeURIComponent(userId);
+            });
+        });
+    }
+
     async function loadComments() {
         const listEl = document.getElementById("commentsList");
         if (!listEl) return;
+        const postId = getPostId();
+        const cacheKey = "forum_post_comments_cache_v1:" + postId;
+
+        const cachedComments = readCache(cacheKey, COMMENTS_CACHE_TTL_MS);
+        if (cachedComments && Array.isArray(cachedComments)) {
+            renderCommentsList(cachedComments);
+        }
+
         try {
-            const response = await fetch(API_BASE + "/api/forum/posts/" + encodeURIComponent(getPostId()) + "/comments");
-            const data = await response.json();
+            const data = await fetchJsonWithTimeout(API_BASE + "/api/forum/posts/" + encodeURIComponent(postId) + "/comments", {}, 12000);
             if (!(data && data.code === 200 && Array.isArray(data.data))) {
-                listEl.innerHTML = '<div class="empty">评论加载失败</div>';
+                if (!cachedComments) {
+                    listEl.innerHTML = '<div class="empty">评论加载失败</div>';
+                }
                 return;
             }
             const comments = data.data;
-            if (!comments.length) {
-                listEl.innerHTML = '<div class="empty">还没有评论，来抢沙发吧。</div>';
-                return;
-            }
-
-            listEl.innerHTML = '<div class="comment-tree">' + comments.map(renderCommentNode).join('') + '</div>';
-            collectCommentAvatarCache(comments);
-            applyCommentAvatarImages();
-
-            document.querySelectorAll("[data-reply-user]").forEach((btn) => {
-                btn.addEventListener("click", () => {
-                    if (!requireLogin("评论帖子", window.location.pathname.split("/").pop() + window.location.search)) return;
-                    openCommentDrawer(btn.getAttribute("data-root-id") || "", btn.getAttribute("data-reply-user") || "", btn.getAttribute("data-reply-name") || "");
-                });
-            });
-
-            document.querySelectorAll("[data-delete-comment]").forEach((btn) => {
-                btn.addEventListener("click", async (event) => {
-                    event.stopPropagation();
-                    if (!window.confirm("确定删除这条评论吗？")) return;
-                    const result = await deleteComment(btn.getAttribute("data-delete-comment") || "");
-                    if (!(result && result.code === 200)) {
-                        window.alert(result && result.message ? result.message : "删除失败");
-                        return;
-                    }
-                    await loadDetail();
-                });
-            });
-
-            document.querySelectorAll("[data-avatar-user]").forEach((avatar) => {
-                avatar.addEventListener("click", () => {
-                    const userId = avatar.getAttribute("data-avatar-user") || "";
-                    if (userId) window.location.href = "forum-user-posts.html?userId=" + encodeURIComponent(userId);
-                });
-            });
+            writeCache(cacheKey, comments);
+            renderCommentsList(comments);
         } catch (err) {
-            listEl.innerHTML = '<div class="empty">网络错误，评论加载失败。</div>';
+            if (!cachedComments) {
+                listEl.innerHTML = '<div class="empty">网络错误，评论加载失败。</div>';
+            }
         }
     }
 
@@ -588,82 +639,99 @@
         });
     }
 
+    function renderDetailCard(p) {
+        const wrap = document.getElementById("detailWrap");
+        const attachments = Array.isArray(p.attachments) ? p.attachments : [];
+        attachmentRegistry = {};
+        const attachmentsHtml = attachments.length ?
+            '<div class="attachments-wrap">' +
+                '<div class="attachments-title">附件</div>' +
+                '<div class="attachment-list">' +
+                    attachments.map((item) => {
+                        if (item && item.attachmentId) {
+                            attachmentRegistry[item.attachmentId] = item;
+                        }
+                        const sizeMb = item.fileSize ? (item.fileSize / (1024 * 1024)).toFixed(2) : "0.00";
+                        const openUrl = toApiUrl(item.downloadUrl || "");
+                        const downloadUrl = openUrl + (openUrl.includes("?") ? "&download=true" : "?download=true");
+                        const previewKind = getAttachmentPreviewKind(item);
+                        if (previewKind === "image") {
+                            return '<div>' +
+                                '<img class="attachment-image" src="' + escapeHtml(openUrl) + '" alt="' + escapeHtml(item.originalName || "附件") + '">' +
+                                '<div class="attachment-meta" style="margin-top:6px;">' + escapeHtml(item.originalName || "附件") + ' · ' + sizeMb + ' MB</div>' +
+                                '<div style="margin-top:6px;display:flex;gap:8px;flex-wrap:wrap;"><button class="attachment-link" type="button" data-preview-attachment="' + escapeHtml(item.attachmentId || "") + '" data-preview-url="' + escapeHtml(openUrl) + '">预览</button><button class="attachment-link" type="button" data-download-url="' + escapeHtml(downloadUrl) + '" data-download-name="' + escapeHtml(item.originalName || "附件") + '">下载</button></div>' +
+                            '</div>';
+                        }
+                        return '<div class="attachment-item">' +
+                            '<div>' +
+                                '<div class="attachment-name">' + escapeHtml(item.originalName || "附件") + '</div>' +
+                                '<div class="attachment-meta">' + sizeMb + ' MB · ' + escapeHtml(item.contentType || "file") + '</div>' +
+                            '</div>' +
+                            '<div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;">' +
+                                '<button class="attachment-link" type="button" data-preview-attachment="' + escapeHtml(item.attachmentId || "") + '" data-preview-url="' + escapeHtml(openUrl) + '">预览</button>' +
+                                '<button class="attachment-link" type="button" data-download-url="' + escapeHtml(downloadUrl) + '" data-download-name="' + escapeHtml(item.originalName || "附件") + '">下载</button>' +
+                            '</div>' +
+                        '</div>';
+                    }).join('') +
+                '</div>' +
+            '</div>' : '';
+
+        wrap.innerHTML =
+            '<h2 class="title">' + escapeHtml(p.title) + '</h2>' +
+            '<div class="meta">' +
+                '<span>作者：' + escapeHtml(p.userId || "匿名") + '</span>' +
+                '<span>点赞：' + (p.likeCount || 0) + '</span>' +
+                '<span>评论：' + (p.commentCount || 0) + '</span>' +
+                '<span>收藏：' + (p.favoriteCount || 0) + '</span>' +
+                '<span>发布时间：' + escapeHtml(formatDate(p.createdAt)) + '</span>' +
+            '</div>' +
+            '<div class="actions">' +
+                '<button class="action-btn" id="likeBtn">👍 点赞</button>' +
+                '<button class="action-btn" id="favoriteBtn">⭐ 收藏</button>' +
+                '<button class="action-btn" id="commentBtn">💬 评论</button>' +
+            '</div>' +
+            '<div class="content">' + escapeHtml(p.content || "") + '</div>' +
+            attachmentsHtml +
+            '<div class="comments-wrap">' +
+                '<div class="comments-title">评论区</div>' +
+                '<div id="commentsList"><div class="empty">正在加载评论...</div></div>' +
+            '</div>';
+
+        bindDetailActions();
+    }
+
     async function loadDetail() {
         const wrap = document.getElementById("detailWrap");
-        if (!getPostId()) {
+        const postId = getPostId();
+        if (!postId) {
             wrap.innerHTML = '<div class="empty">缺少帖子ID</div>';
             return;
         }
 
+        const cacheKey = "forum_post_detail_cache_v1:" + postId;
+        const cachedDetail = readCache(cacheKey, DETAIL_CACHE_TTL_MS);
+        if (cachedDetail) {
+            renderDetailCard(cachedDetail);
+            loadComments();
+        }
+
         try {
-            const response = await fetch(API_BASE + "/api/forum/posts/" + encodeURIComponent(getPostId()));
-            const data = await response.json();
+            const data = await fetchJsonWithTimeout(API_BASE + "/api/forum/posts/" + encodeURIComponent(postId), {}, 12000);
             if (!(data && data.code === 200 && data.data)) {
-                wrap.innerHTML = '<div class="empty">加载失败：' + escapeHtml(data && data.message ? data.message : "未知错误") + '</div>';
+                if (!cachedDetail) {
+                    wrap.innerHTML = '<div class="empty">加载失败：' + escapeHtml(data && data.message ? data.message : "未知错误") + '</div>';
+                }
                 return;
             }
 
             const p = data.data;
-            const attachments = Array.isArray(p.attachments) ? p.attachments : [];
-            attachmentRegistry = {};
-            const attachmentsHtml = attachments.length ?
-                '<div class="attachments-wrap">' +
-                    '<div class="attachments-title">附件</div>' +
-                    '<div class="attachment-list">' +
-                        attachments.map((item) => {
-                            if (item && item.attachmentId) {
-                                attachmentRegistry[item.attachmentId] = item;
-                            }
-                            const sizeMb = item.fileSize ? (item.fileSize / (1024 * 1024)).toFixed(2) : "0.00";
-                            const openUrl = toApiUrl(item.downloadUrl || "");
-                            const downloadUrl = openUrl + (openUrl.includes("?") ? "&download=true" : "?download=true");
-                            const previewKind = getAttachmentPreviewKind(item);
-                            if (previewKind === "image") {
-                                return '<div>' +
-                                    '<img class="attachment-image" src="' + escapeHtml(openUrl) + '" alt="' + escapeHtml(item.originalName || "附件") + '">' +
-                                    '<div class="attachment-meta" style="margin-top:6px;">' + escapeHtml(item.originalName || "附件") + ' · ' + sizeMb + ' MB</div>' +
-                                    '<div style="margin-top:6px;display:flex;gap:8px;flex-wrap:wrap;"><button class="attachment-link" type="button" data-preview-attachment="' + escapeHtml(item.attachmentId || "") + '" data-preview-url="' + escapeHtml(openUrl) + '">预览</button><button class="attachment-link" type="button" data-download-url="' + escapeHtml(downloadUrl) + '" data-download-name="' + escapeHtml(item.originalName || "附件") + '">下载</button></div>' +
-                                '</div>';
-                            }
-                            return '<div class="attachment-item">' +
-                                '<div>' +
-                                    '<div class="attachment-name">' + escapeHtml(item.originalName || "附件") + '</div>' +
-                                    '<div class="attachment-meta">' + sizeMb + ' MB · ' + escapeHtml(item.contentType || "file") + '</div>' +
-                                '</div>' +
-                                '<div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;">' +
-                                    '<button class="attachment-link" type="button" data-preview-attachment="' + escapeHtml(item.attachmentId || "") + '" data-preview-url="' + escapeHtml(openUrl) + '">预览</button>' +
-                                    '<button class="attachment-link" type="button" data-download-url="' + escapeHtml(downloadUrl) + '" data-download-name="' + escapeHtml(item.originalName || "附件") + '">下载</button>' +
-                                '</div>' +
-                            '</div>';
-                        }).join('') +
-                    '</div>' +
-                '</div>' : '';
-
-            wrap.innerHTML =
-                '<h2 class="title">' + escapeHtml(p.title) + '</h2>' +
-                '<div class="meta">' +
-                    '<span>作者：' + escapeHtml(p.userId || "匿名") + '</span>' +
-                    '<span>点赞：' + (p.likeCount || 0) + '</span>' +
-                    '<span>评论：' + (p.commentCount || 0) + '</span>' +
-                    '<span>收藏：' + (p.favoriteCount || 0) + '</span>' +
-                    '<span>发布时间：' + escapeHtml(formatDate(p.createdAt)) + '</span>' +
-                '</div>' +
-                '<div class="actions">' +
-                    '<button class="action-btn" id="likeBtn">👍 点赞</button>' +
-                    '<button class="action-btn" id="favoriteBtn">⭐ 收藏</button>' +
-                    '<button class="action-btn" id="commentBtn">💬 评论</button>' +
-                '</div>' +
-                '<div class="content">' + escapeHtml(p.content || "") + '</div>' +
-                attachmentsHtml +
-                '<div class="comments-wrap">' +
-                    '<div class="comments-title">评论区</div>' +
-                    '<div id="commentsList"><div class="empty">正在加载评论...</div></div>' +
-                '</div>';
-
-            bindDetailActions();
+            writeCache(cacheKey, p);
+            renderDetailCard(p);
             await loadComments();
         } catch (err) {
-            wrap.innerHTML = '<div class="empty">网络错误，无法连接后端服务。</div>';
+            if (!cachedDetail) {
+                wrap.innerHTML = '<div class="empty">网络错误，无法连接后端服务。</div>';
+            }
         }
     }
 
